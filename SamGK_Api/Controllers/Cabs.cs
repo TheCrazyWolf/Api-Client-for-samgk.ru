@@ -3,6 +3,7 @@ using RestSharp;
 using SamGK_Api.Interfaces.Cabs;
 using SamGK_Api.Interfaces.Client;
 using SamGK_Api.Models.Cabs;
+using SamGK_Api.Services;
 
 namespace SamGK_Api.Controllers;
 
@@ -15,7 +16,7 @@ public class Cabs : _BaseController, ICab
         if (_cachedCabs != null && !forceLoad)
             return _cachedCabs;
         
-        var options = new RestRequest("https://asu.samgk.ru/api/teachers", Method.Get);
+        var options = new RestRequest("https://asu.samgk.ru/api/cabs", Method.Get);
         options.AddHeader("origin", "https://samgk.ru");
         options.AddHeader("referer", "https://samgk.ru");
         
@@ -24,7 +25,7 @@ public class Cabs : _BaseController, ICab
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        _cachedCabs = JsonConvert.DeserializeObject<IEnumerable<CabResult>>(result.Content);
+        _cachedCabs = CabParser.Parse(JsonConvert.DeserializeObject<Dictionary<string,string>>(result.Content));
         return _cachedCabs;
     }
 
@@ -33,7 +34,7 @@ public class Cabs : _BaseController, ICab
         if (_cachedCabs != null && !forceLoad)
             return _cachedCabs;
         
-        var options = new RestRequest("https://asu.samgk.ru/api/teachers", Method.Get);
+        var options = new RestRequest("\nhttps://asu.samgk.ru/api/cabs", Method.Get);
         options.AddHeader("origin", "https://samgk.ru");
         options.AddHeader("referer", "https://samgk.ru");
         
@@ -42,7 +43,7 @@ public class Cabs : _BaseController, ICab
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        _cachedCabs = JsonConvert.DeserializeObject<IEnumerable<CabResult>>(result.Content);
+        _cachedCabs = CabParser.Parse(JsonConvert.DeserializeObject<Dictionary<string,string>>(result.Content));
         return _cachedCabs;
     }
 }
