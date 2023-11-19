@@ -1,4 +1,4 @@
-namespace SamGK_Api.Interfaces.Shedule;
+namespace SamGK_Api.Interfaces.Schedule;
 
 public interface ILesson
 {

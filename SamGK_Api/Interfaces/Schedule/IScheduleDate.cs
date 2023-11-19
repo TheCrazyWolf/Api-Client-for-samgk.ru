@@ -1,6 +1,6 @@
-namespace SamGK_Api.Interfaces.Shedule;
+namespace SamGK_Api.Interfaces.Schedule;
 
-public interface ISheduleDate
+public interface IScheduleDate
 {
     public string Date { get; set; }
     public IEnumerable<ILesson> Lessons { get; set; }

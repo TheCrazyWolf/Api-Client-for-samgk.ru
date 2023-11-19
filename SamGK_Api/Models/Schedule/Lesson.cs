@@ -1,4 +1,4 @@
-using SamGK_Api.Interfaces.Shedule;
+using SamGK_Api.Interfaces.Schedule;
 
 namespace SamGK_Api.Models.Schedule;
 
