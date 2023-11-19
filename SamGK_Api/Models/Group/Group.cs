@@ -1,6 +1,8 @@
-namespace SamGK_Api.Interfaces.Groups;
+using SamGK_Api.Interfaces.Groups;
 
-public interface IGroupResult
+namespace SamGK_Api.Models.Group;
+
+public class Group : IGroup
 {
     public int Id { get; set; }
     public string Name { get; set; }

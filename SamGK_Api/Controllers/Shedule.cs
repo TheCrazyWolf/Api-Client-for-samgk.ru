@@ -4,7 +4,7 @@ using SamGK_Api.Interfaces.Schedule;
 
 namespace SamGK_Api.Controllers;
 
-public class Shedule : _BaseController, ISсhedule
+public class Shedule : _BaseController, ISсheduleController
 {
     private IEnumerable<IScheduleDate>? Get<TAccountResult>(DateOnly date, TAccountResult entity)
     {
@@ -16,7 +16,7 @@ public class Shedule : _BaseController, ISсhedule
         return null;
     }
     
-    IEnumerable<IScheduleDate>? ISсhedule.Get<T>(DateOnly date, T entity)
+    IEnumerable<IScheduleDate>? ISсheduleController.Get<T>(DateOnly date, T entity)
     {
         return Get(date, entity);
     }

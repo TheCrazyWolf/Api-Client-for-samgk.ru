@@ -6,14 +6,14 @@ namespace SamGK_Api.Services;
 
 public static class CabParser
 {
-    public static IEnumerable<ICabsResult>? Parse(Dictionary<string, string>? dataCabs)
+    public static IEnumerable<ICab>? Parse(Dictionary<string, string>? dataCabs)
     {
         if (dataCabs is null)
             return null;
 
         var data = dataCabs
             .Select(item => new CabResult() { name = item.Value })
-            .Cast<ICabsResult>()
+            .Cast<ICab>()
             .ToList();
 
         return data;

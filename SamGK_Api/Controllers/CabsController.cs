@@ -7,11 +7,11 @@ using SamGK_Api.Services;
 
 namespace SamGK_Api.Controllers;
 
-public class Cabs : _BaseController, ICab
+public class CabsController : _BaseController, ICabController
 {
-    private IEnumerable<ICabsResult>? _cachedCabs;
+    private IEnumerable<ICab>? _cachedCabs;
     
-    public IEnumerable<ICabsResult>? Get(bool forceLoad = false)
+    public IEnumerable<ICab>? Get(bool forceLoad = false)
     {
         if (_cachedCabs != null && !forceLoad)
             return _cachedCabs;
@@ -29,7 +29,7 @@ public class Cabs : _BaseController, ICab
         return _cachedCabs;
     }
 
-    public async Task<IEnumerable<ICabsResult>?> GetAsync(bool forceLoad = false)
+    public async Task<IEnumerable<ICab>?> GetAsync(bool forceLoad = false)
     {
         if (_cachedCabs != null && !forceLoad)
             return _cachedCabs;

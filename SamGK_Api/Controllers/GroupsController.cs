@@ -6,11 +6,11 @@ using SamGK_Api.Models.Group;
 
 namespace SamGK_Api.Controllers;
 
-public class Groups : _BaseController, IGroup
+public class GroupsController : _BaseController, IGroupController
 {
-    private IEnumerable<IGroupResult>? _cachedGroups;
+    private IEnumerable<IGroup>? _cachedGroups;
     
-    public IEnumerable<IGroupResult>? Get(bool forceLoad = false)
+    public IEnumerable<IGroup>? Get(bool forceLoad = false)
     {
         if (_cachedGroups != null && !forceLoad)
             return _cachedGroups;
@@ -24,11 +24,11 @@ public class Groups : _BaseController, IGroup
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        _cachedGroups = JsonConvert.DeserializeObject<IEnumerable<GroupResult>>(result.Content);
+        _cachedGroups = JsonConvert.DeserializeObject<IEnumerable<Group>>(result.Content);
         return _cachedGroups;
     }
 
-    public async Task<IEnumerable<IGroupResult>?> GetAsync(bool forceLoad = false)
+    public async Task<IEnumerable<IGroup>?> GetAsync(bool forceLoad = false)
     {
         if (_cachedGroups != null && !forceLoad)
             return _cachedGroups;
@@ -42,7 +42,7 @@ public class Groups : _BaseController, IGroup
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        _cachedGroups = JsonConvert.DeserializeObject<IEnumerable<GroupResult>>(result.Content);
+        _cachedGroups = JsonConvert.DeserializeObject<IEnumerable<Group>>(result.Content);
         return _cachedGroups;
     }
 }

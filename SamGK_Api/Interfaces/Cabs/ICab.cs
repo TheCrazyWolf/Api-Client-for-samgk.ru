@@ -1,6 +1,6 @@
 namespace SamGK_Api.Interfaces.Cabs;
 
-public interface ICabsResult
+public interface ICab
 {
     public string name { get; set; }
 }

@@ -6,11 +6,11 @@ using SamGK_Api.Models.Account;
 
 namespace SamGK_Api.Controllers;
 
-public class Account : _BaseController, IAccount
+public class AccountController : _BaseController, IAccountController
 {
     private IEnumerable<IEmployee>? _cachedEmployees;
     
-    public IAccountResult? Authorization(IAuthorizationPacket packet)
+    public IAccount? Authorization(IAuthorizationPacket packet)
     {
         var options = new RestRequest("https://mfc.samgk.ru/api/auth", Method.Post);
         options.AddBody(packet);
@@ -20,10 +20,10 @@ public class Account : _BaseController, IAccount
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        return JsonConvert.DeserializeObject<AccountResult>(result.Content);
+        return JsonConvert.DeserializeObject<Account>(result.Content);
     }
 
-    public async Task<IAccountResult?> AuthorizationAsync(IAuthorizationPacket packet)
+    public async Task<IAccount?> AuthorizationAsync(IAuthorizationPacket packet)
     {
         var options = new RestRequest("https://mfc.samgk.ru/api/auth", Method.Post);
         options.AddBody(packet);
@@ -33,7 +33,7 @@ public class Account : _BaseController, IAccount
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        return JsonConvert.DeserializeObject<AccountResult>(result.Content);
+        return JsonConvert.DeserializeObject<Account>(result.Content);
     }
 
     public IEnumerable<IEmployee>? GetEmployees(bool forceLoad = false)

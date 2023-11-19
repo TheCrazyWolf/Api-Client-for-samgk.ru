@@ -1,6 +1,6 @@
 namespace SamGK_Api.Interfaces.Account;
 
-public interface IAccountResult
+public interface IAccount
 {
     public int Code { get; set; }
     public string? Group { get; set; }
