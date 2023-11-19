@@ -6,7 +6,7 @@ namespace SamGK_Api;
 
 public class ClientSamgk : IDisposable
 {
-    public IShedule Shedule { get; protected set; }
+    public ISсhedule Sсhedule { get; protected set; }
     public IAccount Account { get; protected set; }
     public IGroup Groups { get; protected set; }
     public ICab Cabs { get; protected set; }

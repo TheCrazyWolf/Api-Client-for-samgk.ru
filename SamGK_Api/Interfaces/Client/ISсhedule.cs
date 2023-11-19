@@ -1,6 +1,6 @@
 namespace SamGK_Api.Interfaces.Client;
 
-public interface IShedule
+public interface ISсhedule
 {
     
 }
