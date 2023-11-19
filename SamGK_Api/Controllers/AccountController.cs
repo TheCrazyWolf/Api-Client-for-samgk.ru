@@ -13,6 +13,8 @@ public class AccountController : _BaseController, IAccountController
     public IAccount? Authorization(IAuthorizationPacket packet)
     {
         var options = new RestRequest("https://mfc.samgk.ru/api/auth", Method.Post);
+        
+        options.AddHeaders(GetHeaders());
         options.AddBody(packet);
 
         var result = _client.Execute(options);
@@ -26,6 +28,7 @@ public class AccountController : _BaseController, IAccountController
     public async Task<IAccount?> AuthorizationAsync(IAuthorizationPacket packet)
     {
         var options = new RestRequest("https://mfc.samgk.ru/api/auth", Method.Post);
+        options.AddHeaders(GetHeaders());
         options.AddBody(packet);
         
         var result = await _client.ExecuteAsync(options);
@@ -42,8 +45,7 @@ public class AccountController : _BaseController, IAccountController
             return _cachedEmployees;
         
         var options = new RestRequest("https://asu.samgk.ru/api/teachers", Method.Get);
-        options.AddHeader("origin", "https://samgk.ru");
-        options.AddHeader("referer", "https://samgk.ru");
+        options.AddHeaders(GetHeaders());
         
         var result = _client.Execute(options);
 
@@ -60,8 +62,7 @@ public class AccountController : _BaseController, IAccountController
             return _cachedEmployees;
         
         var options = new RestRequest("https://asu.samgk.ru/api/teachers", Method.Get);
-        options.AddHeader("origin", "https://samgk.ru");
-        options.AddHeader("referer", "https://samgk.ru");
+        options.AddHeaders(GetHeaders());
         
         var result = await _client.ExecuteAsync(options);
 

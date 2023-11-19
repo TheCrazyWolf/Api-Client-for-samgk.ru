@@ -2,7 +2,6 @@ using Newtonsoft.Json;
 using RestSharp;
 using SamGK_Api.Interfaces.Cabs;
 using SamGK_Api.Interfaces.Client;
-using SamGK_Api.Models.Cabs;
 using SamGK_Api.Services;
 
 namespace SamGK_Api.Controllers;
@@ -17,8 +16,7 @@ public class CabsController : _BaseController, ICabController
             return _cachedCabs;
         
         var options = new RestRequest("https://asu.samgk.ru/api/cabs", Method.Get);
-        options.AddHeader("origin", "https://samgk.ru");
-        options.AddHeader("referer", "https://samgk.ru");
+        options.AddHeaders(GetHeaders());
         
         var result = _client.Execute(options);
 
@@ -34,9 +32,8 @@ public class CabsController : _BaseController, ICabController
         if (_cachedCabs != null && !forceLoad)
             return _cachedCabs;
         
-        var options = new RestRequest("\nhttps://asu.samgk.ru/api/cabs", Method.Get);
-        options.AddHeader("origin", "https://samgk.ru");
-        options.AddHeader("referer", "https://samgk.ru");
+        var options = new RestRequest("https://asu.samgk.ru/api/cabs", Method.Get);
+        options.AddHeaders(GetHeaders());
         
         var result = await _client.ExecuteAsync(options);
 

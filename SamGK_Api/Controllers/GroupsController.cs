@@ -16,8 +16,7 @@ public class GroupsController : _BaseController, IGroupController
             return _cachedGroups;
         
         var options = new RestRequest("https://mfc.samgk.ru/api/groups", Method.Get);
-        options.AddHeader("origin", "https://samgk.ru");
-        options.AddHeader("referer", "https://samgk.ru");
+        options.AddHeaders(GetHeaders());
         
         var result = _client.Execute(options);
 
@@ -34,8 +33,7 @@ public class GroupsController : _BaseController, IGroupController
             return _cachedGroups;
         
         var options = new RestRequest("https://mfc.samgk.ru/api/groups", Method.Get);
-        options.AddHeader("origin", "https://samgk.ru");
-        options.AddHeader("referer", "https://samgk.ru");
+        options.AddHeaders(GetHeaders());
         
         var result = await _client.ExecuteAsync(options);
 

@@ -1,18 +1,18 @@
 using RestSharp;
+using SamGK_Api.Interfaces.Account;
 using SamGK_Api.Interfaces.Client;
 using SamGK_Api.Interfaces.Schedule;
 
 namespace SamGK_Api.Controllers;
 
-public class Shedule : _BaseController, ISсheduleController
+public class ScheduleController : _BaseController, ISсheduleController
 {
-    private IEnumerable<IScheduleDate>? Get<TAccountResult>(DateOnly date, TAccountResult entity)
+    private IEnumerable<IScheduleDate>? Get<IEmployee>(DateOnly date, IEmployee entity)
     {
-        
-        var options = new RestRequest("https://mfc.samgk.ru/api/groups", Method.Get);
+        var options = new RestRequest($"https://asu.samgk.ru/api/schedule/teacher/2023-11-20/{entity.Id}", Method.Get);
         options.AddHeader("origin", "https://samgk.ru");
         options.AddHeader("referer", "https://samgk.ru");
-
+        options.AddHeaders()
         return null;
     }
     
