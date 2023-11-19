@@ -12,7 +12,7 @@ public static class CabParser
             return null;
 
         var data = dataCabs
-            .Select(item => new CabResult() { name = item.Value })
+            .Select(item => new Cab() { name = item.Value })
             .Cast<ICab>()
             .ToList();
 

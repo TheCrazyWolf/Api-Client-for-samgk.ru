@@ -52,7 +52,7 @@ public class AccountController : _BaseController, IAccountController
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<EmployeeResult>>(result.Content);
+        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<Employee>>(result.Content);
         return _cachedEmployees;
     }
 
@@ -69,7 +69,7 @@ public class AccountController : _BaseController, IAccountController
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<EmployeeResult>>(result.Content);
+        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<Employee>>(result.Content);
         return _cachedEmployees;
     }
 }
