@@ -10,7 +10,7 @@ public class GroupsController : _BaseController, IGroupController
 {
     private IEnumerable<IGroup>? _cachedGroups;
     
-    public IEnumerable<IGroup>? Get(bool forceLoad = false)
+    public IEnumerable<IGroup>? GetGroups(bool forceLoad = false)
     {
         if (_cachedGroups != null && !forceLoad)
             return _cachedGroups;
@@ -27,7 +27,7 @@ public class GroupsController : _BaseController, IGroupController
         return _cachedGroups;
     }
 
-    public async Task<IEnumerable<IGroup>?> GetAsync(bool forceLoad = false)
+    public async Task<IEnumerable<IGroup>?> GetGroupsAsync(bool forceLoad = false)
     {
         if (_cachedGroups != null && !forceLoad)
             return _cachedGroups;

@@ -4,6 +4,6 @@ namespace SamGK_Api.Interfaces.Client;
 
 public interface IGroupController
 {
-    IEnumerable<IGroup>? Get(bool forceLoad = false);
-    Task<IEnumerable<IGroup>?> GetAsync(bool forceLoad = false);
+    IEnumerable<IGroup>? GetGroups(bool forceLoad = false);
+    Task<IEnumerable<IGroup>?> GetGroupsAsync(bool forceLoad = false);
 }

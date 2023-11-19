@@ -10,7 +10,7 @@ public class CabsController : _BaseController, ICabController
 {
     private IEnumerable<ICab>? _cachedCabs;
     
-    public IEnumerable<ICab>? Get(bool forceLoad = false)
+    public IEnumerable<ICab>? GetCabs(bool forceLoad = false)
     {
         if (_cachedCabs != null && !forceLoad)
             return _cachedCabs;
@@ -27,7 +27,7 @@ public class CabsController : _BaseController, ICabController
         return _cachedCabs;
     }
 
-    public async Task<IEnumerable<ICab>?> GetAsync(bool forceLoad = false)
+    public async Task<IEnumerable<ICab>?> GetCabsAsync(bool forceLoad = false)
     {
         if (_cachedCabs != null && !forceLoad)
             return _cachedCabs;
