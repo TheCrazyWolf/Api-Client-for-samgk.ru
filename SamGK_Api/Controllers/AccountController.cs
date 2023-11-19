@@ -10,7 +10,7 @@ public class AccountController : _BaseController, IAccountController
 {
     private IEnumerable<IEmployee>? _cachedEmployees;
     
-    public IAccount? Authorization(IAuthorizationPacket packet)
+    public IAccount? Authorization(ICredentialSgk packet)
     {
         var options = new RestRequest("https://mfc.samgk.ru/api/auth", Method.Post);
         
@@ -25,7 +25,7 @@ public class AccountController : _BaseController, IAccountController
         return JsonConvert.DeserializeObject<Account>(result.Content);
     }
 
-    public async Task<IAccount?> AuthorizationAsync(IAuthorizationPacket packet)
+    public async Task<IAccount?> AuthorizationAsync(ICredentialSgk packet)
     {
         var options = new RestRequest("https://mfc.samgk.ru/api/auth", Method.Post);
         options.AddHeaders(GetHeaders());
