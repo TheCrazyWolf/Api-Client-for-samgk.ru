@@ -1,0 +1,78 @@
+using Newtonsoft.Json;
+using RestSharp;
+using SamGK_Api.Interfaces.Account;
+using SamGK_Api.Interfaces.Client;
+
+namespace SamGK_Api.Controllers;
+
+public class Account : _BaseController, IAccount
+{
+    private IEnumerable<IEmployee>? _cachedEmployees;
+    
+    public Account()
+    {
+        _client = new RestClient();
+    }
+    
+    public IAccountResult? Authorization(IAuthorizationPacket packet)
+    {
+        var options = new RestRequest("https://mfc.samgk.ru/api/auth", Method.Post);
+        options.AddBody(packet);
+
+        var result = _client.Execute(options);
+
+        if (!result.IsSuccessStatusCode || result.Content is null)
+            return null;
+
+        return JsonConvert.DeserializeObject<IAccountResult>(result.Content);
+    }
+
+    public async Task<IAccountResult?> AuthorizationAsync(IAuthorizationPacket packet)
+    {
+        var options = new RestRequest("https://mfc.samgk.ru/api/auth", Method.Post);
+        options.AddBody(packet);
+        
+        var result = await _client.ExecuteAsync(options);
+
+        if (!result.IsSuccessStatusCode || result.Content is null)
+            return null;
+
+        return JsonConvert.DeserializeObject<IAccountResult>(result.Content);
+    }
+
+    public IEnumerable<IEmployee>? GetEmployees()
+    {
+        if (_cachedEmployees is not null)
+            return _cachedEmployees;
+        
+        var options = new RestRequest("https://asu.samgk.ru/api/teachers", Method.Get);
+        options.AddHeader("origin", "https://samgk.ru");
+        options.AddHeader("referer", "https://samgk.ru");
+        
+        var result = _client.Execute(options);
+
+        if (!result.IsSuccessStatusCode || result.Content is null)
+            return null;
+
+        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<IEmployee>>(result.Content);
+        return _cachedEmployees;
+    }
+
+    public async Task<IEnumerable<IEmployee>?> GetEmployeesAsync(IAuthorizationPacket packet)
+    {
+        if (_cachedEmployees is not null)
+            return _cachedEmployees;
+        
+        var options = new RestRequest("https://asu.samgk.ru/api/teachers", Method.Get);
+        options.AddHeader("origin", "https://samgk.ru");
+        options.AddHeader("referer", "https://samgk.ru");
+        
+        var result = await _client.ExecuteAsync(options);
+
+        if (!result.IsSuccessStatusCode || result.Content is null)
+            return null;
+
+        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<IEmployee>>(result.Content);
+        return _cachedEmployees;
+    }
+}
