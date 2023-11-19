@@ -36,9 +36,9 @@ public class Account : _BaseController, IAccount
         return JsonConvert.DeserializeObject<AccountResult>(result.Content);
     }
 
-    public IEnumerable<IEmployee>? GetEmployees()
+    public IEnumerable<IEmployee>? GetEmployees(bool forceLoad = false)
     {
-        if (_cachedEmployees is not null)
+        if (_cachedEmployees != null && !forceLoad)
             return _cachedEmployees;
         
         var options = new RestRequest("https://asu.samgk.ru/api/teachers", Method.Get);
@@ -54,9 +54,9 @@ public class Account : _BaseController, IAccount
         return _cachedEmployees;
     }
 
-    public async Task<IEnumerable<IEmployee>?> GetEmployeesAsync(IAuthorizationPacket packet)
+    public async Task<IEnumerable<IEmployee>?> GetEmployeesAsync(bool forceLoad = false)
     {
-        if (_cachedEmployees is not null)
+        if (_cachedEmployees != null && !forceLoad)
             return _cachedEmployees;
         
         var options = new RestRequest("https://asu.samgk.ru/api/teachers", Method.Get);

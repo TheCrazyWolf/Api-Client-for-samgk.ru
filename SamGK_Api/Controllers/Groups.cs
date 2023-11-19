@@ -10,9 +10,9 @@ public class Groups : _BaseController, IGroup
 {
     private IEnumerable<IGroupResult>? _cachedGroups;
     
-    public IEnumerable<IGroupResult>? Get()
+    public IEnumerable<IGroupResult>? Get(bool forceLoad = false)
     {
-        if (_cachedGroups is not null)
+        if (_cachedGroups != null && !forceLoad)
             return _cachedGroups;
         
         var options = new RestRequest("https://mfc.samgk.ru/api/groups", Method.Get);
@@ -28,9 +28,9 @@ public class Groups : _BaseController, IGroup
         return _cachedGroups;
     }
 
-    public async Task<IEnumerable<IGroupResult>?> GetAsync()
+    public async Task<IEnumerable<IGroupResult>?> GetAsync(bool forceLoad = false)
     {
-        if (_cachedGroups is not null)
+        if (_cachedGroups != null && !forceLoad)
             return _cachedGroups;
         
         var options = new RestRequest("https://mfc.samgk.ru/api/groups", Method.Get);
