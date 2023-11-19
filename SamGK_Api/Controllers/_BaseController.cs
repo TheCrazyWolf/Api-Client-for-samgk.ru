@@ -15,7 +15,7 @@ public class _BaseController
     /// Лекарство от жадности
     /// </summary>
     /// <returns></returns>
-    public ICollection<KeyValuePair<string,string>> GetHeaders()
+    protected ICollection<KeyValuePair<string,string>> GetHeaders()
     {
         var dickPick = new List<KeyValuePair<string, string>>()
         {

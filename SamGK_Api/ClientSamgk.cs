@@ -6,16 +6,17 @@ namespace SamGK_Api;
 
 public class ClientSamgk : IDisposable
 {
-    public ISсheduleController SсheduleController { get; protected set; }
-    public IAccountController AccountController { get; protected set; }
-    public IGroupController GroupsController { get; protected set; }
-    public ICabController CabsController { get; protected set; }
+    public ISсheduleController Sсhedule { get; protected set; }
+    public IAccountController Accounts { get; protected set; }
+    public IGroupController Groups { get; protected set; }
+    public ICabController Cabs { get; protected set; }
 
     public ClientSamgk()
     {
-        GroupsController = new GroupsController();
-        AccountController = new AccountController();
-        CabsController = new CabsController();
+        Groups = new GroupsController();
+        Accounts = new AccountController();
+        Cabs = new CabsController();
+        Sсhedule = new ScheduleController();
     }
     
     public void Dispose()
