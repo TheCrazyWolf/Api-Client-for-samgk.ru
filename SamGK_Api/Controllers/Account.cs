@@ -2,17 +2,13 @@ using Newtonsoft.Json;
 using RestSharp;
 using SamGK_Api.Interfaces.Account;
 using SamGK_Api.Interfaces.Client;
+using SamGK_Api.Models.Account;
 
 namespace SamGK_Api.Controllers;
 
 public class Account : _BaseController, IAccount
 {
     private IEnumerable<IEmployee>? _cachedEmployees;
-    
-    public Account()
-    {
-        _client = new RestClient();
-    }
     
     public IAccountResult? Authorization(IAuthorizationPacket packet)
     {
@@ -24,7 +20,7 @@ public class Account : _BaseController, IAccount
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        return JsonConvert.DeserializeObject<IAccountResult>(result.Content);
+        return JsonConvert.DeserializeObject<AccountResult>(result.Content);
     }
 
     public async Task<IAccountResult?> AuthorizationAsync(IAuthorizationPacket packet)
@@ -37,7 +33,7 @@ public class Account : _BaseController, IAccount
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        return JsonConvert.DeserializeObject<IAccountResult>(result.Content);
+        return JsonConvert.DeserializeObject<AccountResult>(result.Content);
     }
 
     public IEnumerable<IEmployee>? GetEmployees()
@@ -54,7 +50,7 @@ public class Account : _BaseController, IAccount
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<IEmployee>>(result.Content);
+        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<EmployeeResult>>(result.Content);
         return _cachedEmployees;
     }
 
@@ -72,7 +68,7 @@ public class Account : _BaseController, IAccount
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
 
-        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<IEmployee>>(result.Content);
+        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<EmployeeResult>>(result.Content);
         return _cachedEmployees;
     }
 }
