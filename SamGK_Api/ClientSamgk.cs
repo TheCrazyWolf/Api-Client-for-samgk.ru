@@ -1,10 +1,11 @@
 ﻿using SamGK_Api.Controllers;
+using SamGK_Api.Interfaces;
 using SamGK_Api.Interfaces.Cabs;
 using SamGK_Api.Interfaces.Client;
 
 namespace SamGK_Api;
 
-public class ClientSamgk : IDisposable
+public class ClientSamgk
 {
     public ISсheduleController Sсhedule { get; protected set; }
     public IAccountController Accounts { get; protected set; }
@@ -17,10 +18,5 @@ public class ClientSamgk : IDisposable
         Accounts = new AccountController();
         Cabs = new CabsController();
         Sсhedule = new ScheduleController();
-    }
-    
-    public void Dispose()
-    {
-        throw new NotImplementedException();
     }
 }
