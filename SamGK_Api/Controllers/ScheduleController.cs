@@ -204,7 +204,7 @@ public class ScheduleController : _BaseController, ISсheduleController
     {
         var options =
             new RestRequest(
-                $"https://asu.samgk.ru/api/schedule/cabs/{date.ToString("yyyy-MM-dd")}/cabNum/{entity.name.Replace(@"/", "_")}",
+                $"https://asu.samgk.ru/api/schedule/cabs/{date.ToString("yyyy-MM-dd")}/cabNum/{entity.Name.Replace(@"/", "_")}",
                 Method.Get);
         options.AddHeaders(GetHeaders());
 
@@ -222,7 +222,7 @@ public class ScheduleController : _BaseController, ISсheduleController
     {
         var options =
             new RestRequest(
-                $"https://asu.samgk.ru/api/schedule/cabs/{date.ToString("yyyy-MM-dd")}/cabNum/{entity.name.Replace(@"/", "_")}",
+                $"https://asu.samgk.ru/api/schedule/cabs/{date.ToString("yyyy-MM-dd")}/cabNum/{entity.Name.Replace(@"/", "_")}",
                 Method.Get);
         options.AddHeaders(GetHeaders());
 
@@ -244,7 +244,7 @@ public class ScheduleController : _BaseController, ISсheduleController
         {
             var options =
                 new RestRequest(
-                    $"https://asu.samgk.ru/api/schedule/cabs/{startDate.ToString("yyyy-MM-dd")}/cabNum/{entity.name.Replace(@"/", "_")}",
+                    $"https://asu.samgk.ru/api/schedule/cabs/{startDate.ToString("yyyy-MM-dd")}/cabNum/{entity.Name.Replace(@"/", "_")}",
                     Method.Get);
             options.AddHeaders(GetHeaders());
 
@@ -275,7 +275,7 @@ public class ScheduleController : _BaseController, ISсheduleController
         {
             var options =
                 new RestRequest(
-                    $"https://asu.samgk.ru/api/schedule/cabs/{startDate.ToString("yyyy-MM-dd")}/cabNum/{entity.name.Replace(@"/", "_")}",
+                    $"https://asu.samgk.ru/api/schedule/cabs/{startDate.ToString("yyyy-MM-dd")}/cabNum/{entity.Name.Replace(@"/", "_")}",
                     Method.Get);
             options.AddHeaders(GetHeaders());
 

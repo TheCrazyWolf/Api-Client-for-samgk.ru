@@ -1,6 +1,4 @@
 ﻿using SamGK_Api.Controllers;
-using SamGK_Api.Interfaces;
-using SamGK_Api.Interfaces.Cabs;
 using SamGK_Api.Interfaces.Client;
 
 namespace SamGK_Api;

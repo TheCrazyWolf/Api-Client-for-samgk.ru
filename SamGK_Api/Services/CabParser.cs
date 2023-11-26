@@ -10,7 +10,7 @@ public static class CabParser
     {
         var data = dataCabs?
             .Select(item => new Cab
-                { name = item.Value })
+                { Name = item.Value })
             .Cast<ICab>()
             .ToList();
 

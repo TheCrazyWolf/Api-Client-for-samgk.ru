@@ -4,10 +4,10 @@ namespace SamGK_Api.Models.Schedule;
 
 public class Lesson : ILesson
 {
-    public string? num { get; set; }
-    public string? title { get; set; }
-    public string? teachername { get; set; }
-    public string? nameGroup { get; set; }
-    public string? cab { get; set; }
-    public string? resource { get; set; }
+    public string? Num { get; set; }
+    public string? Title { get; set; }
+    public string? Teachername { get; set; }
+    public string? NameGroup { get; set; }
+    public string? Cab { get; set; }
+    public string? Resource { get; set; }
 }
