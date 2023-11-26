@@ -8,7 +8,9 @@ public static class CabParser
 {
     public static IEnumerable<ICab>? Parse(Dictionary<string, string>? dataCabs)
     {
-        var data = dataCabs?.Select(item => new Cab() { name = item.Value })
+        var data = dataCabs?
+            .Select(item => new Cab
+                { name = item.Value })
             .Cast<ICab>()
             .ToList();
 
