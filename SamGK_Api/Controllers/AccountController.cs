@@ -15,7 +15,8 @@ public class AccountController : _BaseController, IAccountController
         var options = new RestRequest("https://mfc.samgk.ru/api/auth", Method.Post);
         
         options.AddHeaders(GetHeaders());
-        options.AddBody(packet);
+        options.AddParameter("username", packet.Username);
+        options.AddParameter("password", packet.Password);
 
         var result = _client.Execute(options);
 
@@ -29,7 +30,8 @@ public class AccountController : _BaseController, IAccountController
     {
         var options = new RestRequest("https://mfc.samgk.ru/api/auth", Method.Post);
         options.AddHeaders(GetHeaders());
-        options.AddBody(packet);
+        options.AddParameter("username", packet.Username);
+        options.AddParameter("password", packet.Password);
         
         var result = await _client.ExecuteAsync(options);
 
