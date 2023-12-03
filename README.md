@@ -1,6 +1,6 @@
 # Библиотека для работы с API samgk.ru
 
-Загрузить https://github.com/TheCrazyWolf/Api-Client-for-samgk.ru/releases/tag/v1
+Загрузить https://github.com/TheCrazyWolf/Api-Client-for-samgk.ru/releases
 
 # Зависимости
 Эти пакеты нужны для работы библиотеки, вы можете их установить самостоятельно через NuGet или так же внедрить DLL файлы в проект
