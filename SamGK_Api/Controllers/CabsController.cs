@@ -43,4 +43,10 @@ public class CabsController : _BaseController, ICabController
         _cachedCabs = CabParser.Parse(JsonConvert.DeserializeObject<Dictionary<string,string>>(result.Content));
         return _cachedCabs;
     }
+
+    public ICab? GetCab(string cabName)
+    {
+        _cachedCabs ??= GetCabs();
+        return _cachedCabs?.FirstOrDefault(cab => cab.Name.ToUpper() == cabName.ToUpper());
+    }
 }
