@@ -39,4 +39,17 @@ public interface IAccountController
     /// Передайте true, если хотите заново загрузить список</param>
     /// <returns>Возращает IEnumerable&lt;IEmployee&gt; если есть, что загружать, если нечего - null</returns>
     Task<IEnumerable<IEmployee>?> GetEmployeesAsync(bool forceLoad = false);
+
+    /// <summary>
+    /// Получить сотрудника по ID
+    /// </summary>
+    /// <param name="idEmploee">ID сотрудника</param>
+    /// <returns>Возращает IEnumerable&lt;IEmployee&gt; если есть, что загружать, если нечего - null</returns>
+    IEmployee? GetEmployee(int idEmploee);
+    /// <summary>
+    /// Получить сотрудника по ФИО
+    /// </summary>
+    /// <param name="nameSearch">Поиск сотрудника по ФИО</param>
+    /// <returns>Возращает IEnumerable&lt;IEmployee&gt; если есть, что загружать, если нечего - null</returns>
+    IEmployee? GetEmployee(string nameSearch);
 }
