@@ -27,6 +27,6 @@ public interface ICabController
     /// Получение группы по номеру кабинета
     /// </summary>
     /// <param name="cabName">Номер кабинета</param>
-    /// <returns>Возращает IEnumerable&lt;ICab&gt; если все хорошо, если проблемы - null</returns>
+    /// <returns>Возращает ICab если все хорошо, если проблемы - null</returns>
     ICab? GetCab(string cabName);
 }

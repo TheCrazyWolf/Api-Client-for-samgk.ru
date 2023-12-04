@@ -44,12 +44,12 @@ public interface IAccountController
     /// Получить сотрудника по ID
     /// </summary>
     /// <param name="idEmployee">ID сотрудника</param>
-    /// <returns>Возращает IEnumerable&lt;IEmployee&gt; если есть, что загружать, если нечего - null</returns>
+    /// <returns>Возращает IEmployee если есть, что загружать, если нечего - null</returns>
     IEmployee? GetEmployee(int idEmployee);
     /// <summary>
     /// Получить сотрудника по ФИО
     /// </summary>
     /// <param name="nameSearch">Поиск сотрудника по ФИО</param>
-    /// <returns>Возращает IEnumerable&lt;IEmployee&gt; если есть, что загружать, если нечего - null</returns>
+    /// <returns>Возращает IEmployee если есть, что загружать, если нечего - null</returns>
     IEmployee? GetEmployee(string nameSearch);
 }

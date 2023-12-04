@@ -27,12 +27,12 @@ public interface IGroupController
     /// Поиск группы по ID
     /// </summary>
     /// <param name="idGroup">ID группы</param>
-    /// <returns>Возращает IEnumerable&lt;IGroup&gt; если все хорошо, если проблемы - null</returns>
+    /// <returns>Возращает IGroup если все хорошо, если проблемы - null</returns>
     IGroup? GetGroup(int idGroup);
     /// <summary>
     /// Поиск группы по названию
     /// </summary>
     /// <param name="searchGroup">Название группы</param>
-    /// <returns>Возращает IEnumerable&lt;IGroup&gt; если все хорошо, если проблемы - null</returns>
+    /// <returns>Возращает IGroup если все хорошо, если проблемы - null</returns>
     IGroup? GetGroup(string searchGroup);
 }
