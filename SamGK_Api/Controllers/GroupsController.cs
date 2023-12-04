@@ -43,4 +43,16 @@ public class GroupsController : _BaseController, IGroupController
         _cachedGroups = JsonConvert.DeserializeObject<IEnumerable<Group>>(result.Content);
         return _cachedGroups;
     }
+
+    public IGroup? GetGroup(int idGroup)
+    {
+        _cachedGroups ??= GetGroups();
+        return _cachedGroups?.FirstOrDefault(group => group.Id == idGroup);
+    }
+
+    public IGroup? GetGroup(string searchGroup)
+    {
+        _cachedGroups ??= GetGroups();
+        return _cachedGroups?.FirstOrDefault(group => group.Name.ToUpper() == searchGroup.ToUpper());
+    }
 }
