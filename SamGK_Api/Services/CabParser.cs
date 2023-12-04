@@ -6,6 +6,13 @@ namespace SamGK_Api.Services;
 
 public static class CabParser
 {
+    
+    /* 
+     * Одно приходит в виде JSON, другое в виде XML
+     * А КАБИНЕТЫ ПРИХОДЯТ В ВИДЕ СЛОВАРИКА!! (Если можно так называть!!)
+     * СЕРЕГА ЧТО ЗА ХЕРНЯ?????
+     */
+    
     public static IEnumerable<ICab>? Parse(Dictionary<string, string>? dataCabs)
     {
         var data = dataCabs?
