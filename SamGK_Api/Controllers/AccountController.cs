@@ -74,4 +74,16 @@ public class AccountController : _BaseController, IAccountController
         _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<Employee>>(result.Content);
         return _cachedEmployees;
     }
+
+    public IEmployee? GetEmployee(int idEmploee)
+    {
+        _cachedEmployees ??= GetEmployees();
+        return _cachedEmployees?.FirstOrDefault(employee => employee.Id == idEmploee);
+    }
+
+    public IEmployee? GetEmployee(string nameSearch)
+    {
+        _cachedEmployees ??= GetEmployees();
+        return _cachedEmployees?.FirstOrDefault(employee => employee.Name.ToUpper() == nameSearch.ToUpper());
+    }
 }
