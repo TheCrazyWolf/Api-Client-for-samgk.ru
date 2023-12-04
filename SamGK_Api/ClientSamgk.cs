@@ -5,16 +5,8 @@ namespace SamGK_Api;
 
 public class ClientSamgk
 {
-    public ISсheduleController Sсhedule { get; protected set; }
-    public IAccountController Accounts { get; protected set; }
-    public IGroupController Groups { get; protected set; }
-    public ICabController Cabs { get; protected set; }
-
-    public ClientSamgk()
-    {
-        Groups = new GroupsController();
-        Accounts = new AccountController();
-        Cabs = new CabsController();
-        Sсhedule = new ScheduleController();
-    }
+    public ISсheduleController Sсhedule { get; protected set; } = new ScheduleController();
+    public IAccountController Accounts { get; protected set; } = new AccountController();
+    public IGroupController Groups { get; protected set; } = new GroupsController();
+    public ICabController Cabs { get; protected set; } = new CabsController();
 }
