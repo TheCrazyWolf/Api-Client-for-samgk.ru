@@ -75,10 +75,10 @@ public class AccountController : _BaseController, IAccountController
         return _cachedEmployees;
     }
 
-    public IEmployee? GetEmployee(int idEmploee)
+    public IEmployee? GetEmployee(int idEmployee)
     {
         _cachedEmployees ??= GetEmployees();
-        return _cachedEmployees?.FirstOrDefault(employee => employee.Id == idEmploee);
+        return _cachedEmployees?.FirstOrDefault(employee => employee.Id == idEmployee);
     }
 
     public IEmployee? GetEmployee(string nameSearch)

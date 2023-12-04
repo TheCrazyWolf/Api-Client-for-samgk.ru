@@ -43,9 +43,9 @@ public interface IAccountController
     /// <summary>
     /// Получить сотрудника по ID
     /// </summary>
-    /// <param name="idEmploee">ID сотрудника</param>
+    /// <param name="idEmployee">ID сотрудника</param>
     /// <returns>Возращает IEnumerable&lt;IEmployee&gt; если есть, что загружать, если нечего - null</returns>
-    IEmployee? GetEmployee(int idEmploee);
+    IEmployee? GetEmployee(int idEmployee);
     /// <summary>
     /// Получить сотрудника по ФИО
     /// </summary>
