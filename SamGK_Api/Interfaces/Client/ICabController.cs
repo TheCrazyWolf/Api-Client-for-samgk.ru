@@ -22,4 +22,11 @@ public interface ICabController
     /// Передайте true, если хотите заново загрузить список</param>
     /// <returns>Возращает IEnumerable&lt;ICab&gt; если все хорошо, если проблемы - null</returns>
     Task<IEnumerable<ICab>?> GetCabsAsync(bool forceLoad = false);
+
+    /// <summary>
+    /// Получение группы по номеру кабинета
+    /// </summary>
+    /// <param name="cabName">Номер кабинета</param>
+    /// <returns>Возращает IEnumerable&lt;ICab&gt; если все хорошо, если проблемы - null</returns>
+    ICab? GetCab(string cabName);
 }
