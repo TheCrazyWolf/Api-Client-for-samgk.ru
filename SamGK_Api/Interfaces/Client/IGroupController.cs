@@ -22,4 +22,17 @@ public interface IGroupController
     /// Передайте true, если хотите заново загрузить список</param>
     /// <returns>Возращает IEnumerable&lt;IGroup&gt; если все хорошо, если проблемы - null</returns>
     Task<IEnumerable<IGroup>?> GetGroupsAsync(bool forceLoad = false);
+
+    /// <summary>
+    /// Поиск группы по ID
+    /// </summary>
+    /// <param name="idGroup">ID группы</param>
+    /// <returns>Возращает IEnumerable&lt;IGroup&gt; если все хорошо, если проблемы - null</returns>
+    IGroup? GetGroup(int idGroup);
+    /// <summary>
+    /// Поиск группы по названию
+    /// </summary>
+    /// <param name="searchGroup">Название группы</param>
+    /// <returns>Возращает IEnumerable&lt;IGroup&gt; если все хорошо, если проблемы - null</returns>
+    IGroup? GetGroup(string searchGroup);
 }
