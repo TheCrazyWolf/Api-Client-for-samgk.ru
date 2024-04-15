@@ -5,7 +5,7 @@ public interface IEmployee
     /// <summary>
     /// ID сотрудника
     /// </summary>
-    public int Id { get; set; }
+    public long Id { get; set; }
     /// <summary>
     /// Фамилия Имя Отчество сотрудника
     /// </summary>
