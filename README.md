@@ -12,7 +12,7 @@ var teachers = api.Accounts.GetEmployees();
 
 // Использование старого API
 // Получаем всех сотрудников
-var teachers = api.Accounts.GetEmployees(useLegacyMethod = true);
+var teachers = api.Accounts.GetEmployees(useLegacyMethod: true);
 ```
 
 
