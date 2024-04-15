@@ -12,19 +12,7 @@ public class GroupsController : _BaseController, IGroupController
     
     public IEnumerable<IGroup>? GetGroups(bool forceLoad = false)
     {
-        if (_cachedGroups != null && !forceLoad)
-            return _cachedGroups;
-        
-        var options = new RestRequest("https://mfc.samgk.ru/api/groups", Method.Get);
-        options.AddHeaders(GetHeaders());
-        
-        var result = _client.Execute(options);
-
-        if (!result.IsSuccessStatusCode || result.Content is null)
-            return null;
-
-        _cachedGroups = JsonConvert.DeserializeObject<IEnumerable<Group>>(result.Content);
-        return _cachedGroups;
+        return GetGroupsAsync(forceLoad: forceLoad).GetAwaiter().GetResult();
     }
 
     public async Task<IEnumerable<IGroup>?> GetGroupsAsync(bool forceLoad = false)

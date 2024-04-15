@@ -12,18 +12,7 @@ public class AccountController : _BaseController, IAccountController
     
     public IAccount? Authorization(ICredentialSgk packet)
     {
-        var options = new RestRequest("https://mfc.samgk.ru/api/auth", Method.Post);
-        
-        options.AddHeaders(GetHeaders());
-        options.AddParameter("username", packet.Username);
-        options.AddParameter("password", packet.Password);
-
-        var result = _client.Execute(options);
-
-        if (!result.IsSuccessStatusCode || result.Content is null)
-            return null;
-
-        return JsonConvert.DeserializeObject<Account>(result.Content);
+        return AuthorizationAsync(packet).GetAwaiter().GetResult();
     }
 
     public async Task<IAccount?> AuthorizationAsync(ICredentialSgk packet)
@@ -43,19 +32,7 @@ public class AccountController : _BaseController, IAccountController
 
     public IEnumerable<IEmployee>? GetEmployees(bool forceLoad = false)
     {
-        if (_cachedEmployees != null && !forceLoad)
-            return _cachedEmployees;
-        
-        var options = new RestRequest("https://asu.samgk.ru/api/teachers", Method.Get);
-        options.AddHeaders(GetHeaders());
-        
-        var result = _client.Execute(options);
-
-        if (!result.IsSuccessStatusCode || result.Content is null)
-            return null;
-
-        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<Employee>>(result.Content);
-        return _cachedEmployees;
+        return GetEmployeesAsync(forceLoad: forceLoad).GetAwaiter().GetResult();
     }
 
     public async Task<IEnumerable<IEmployee>?> GetEmployeesAsync(bool forceLoad = false)
@@ -63,7 +40,7 @@ public class AccountController : _BaseController, IAccountController
         if (_cachedEmployees != null && !forceLoad)
             return _cachedEmployees;
         
-        var options = new RestRequest("https://asu.samgk.ru/api/teachers", Method.Get);
+        var options = new RestRequest("https://asu.samgk.ru/api/teachers");
         options.AddHeaders(GetHeaders());
         
         var result = await _client.ExecuteAsync(options);
