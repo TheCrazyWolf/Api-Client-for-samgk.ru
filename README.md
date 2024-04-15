@@ -1,6 +1,20 @@
 # Библиотека для работы с API samgk.ru
 
 Загрузить https://github.com/TheCrazyWolf/Api-Client-for-samgk.ru/releases
+# Что нового
+1. Подгрузка списка сотрудников из нового адреса API (mfc) по умолчанию
+2. Для вызова API старой версии необходимо передать параметр useLegacyMethod в метод GetEmployeesAsync()
+Пример:
+```C#
+// Использование нового API
+// Получаем только преподов
+var teachers = api.Accounts.GetEmployees();
+
+// Использование старого API
+// Получаем всех сотрудников
+var teachers = api.Accounts.GetEmployees(useLegacyMethod = true);
+```
+
 
 # Зависимости
 1. Newtonsoft.Json.dll

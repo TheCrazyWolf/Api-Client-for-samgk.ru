@@ -26,19 +26,22 @@ public interface IAccountController
     /// При первой загрузке список помещается в статичный лист,
     /// при следующем обращении подтягиваются данные из листа
     /// </summary>
+    /// <param name="useLegacyMethod">Получение списка сотрудников из api.samgk.ru. По умолчанию возращаются только списки преподавателей</param>
     /// <param name="forceLoad">Принудительная загрузка.
     /// Передайте true, если хотите заново загрузить список</param>
     /// <returns>Возращает IEnumerable&lt;IEmployee&gt; если есть, что загружать, если нечего - null</returns>
-    IEnumerable<IEmployee>? GetEmployees(bool forceLoad = false);
+    IEnumerable<IEmployee>? GetEmployees(bool useLegacyMethod = false, bool forceLoad = false);
+
     /// <summary>
     /// Получение списка сотрудников колледжа
     /// При первой загрузке список помещается в статичный лист,
     /// при следующем обращении подтягиваются данные из листа
     /// </summary>
+    /// <param name="useLegacyMethod">Получение списка сотрудников из api.samgk.ru. По умолчанию возращаются только списки преподавателей</param>
     /// <param name="forceLoad">Принудительная загрузка.
     /// Передайте true, если хотите заново загрузить список</param>
     /// <returns>Возращает IEnumerable&lt;IEmployee&gt; если есть, что загружать, если нечего - null</returns>
-    Task<IEnumerable<IEmployee>?> GetEmployeesAsync(bool forceLoad = false);
+    Task<IEnumerable<IEmployee>?> GetEmployeesAsync(bool useLegacyMethod = false, bool forceLoad = false);
 
     /// <summary>
     /// Получить сотрудника по ID

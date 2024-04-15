@@ -30,17 +30,17 @@ public class AccountController : BaseController, IAccountController
         return JsonConvert.DeserializeObject<Account>(result.Content);
     }
 
-    public IEnumerable<IEmployee>? GetEmployees(bool forceLoad = false)
+    public IEnumerable<IEmployee>? GetEmployees(bool useLegacyMethod = false, bool forceLoad = false)
     {
-        return GetEmployeesAsync(forceLoad: forceLoad).GetAwaiter().GetResult();
+        return GetEmployeesAsync(useLegacyMethod: useLegacyMethod, forceLoad: forceLoad).GetAwaiter().GetResult();
     }
 
-    public async Task<IEnumerable<IEmployee>?> GetEmployeesAsync(bool forceLoad = false)
+    public async Task<IEnumerable<IEmployee>?> GetEmployeesAsync(bool useLegacyMethod = false, bool forceLoad = false)
     {
         if (_cachedEmployees != null && !forceLoad)
             return _cachedEmployees;
         
-        var options = new RestRequest("https://asu.samgk.ru/api/teachers");
+        var options = new RestRequest(useLegacyMethod ? "https://asu.samgk.ru/api/teachers" : "https://mfc.samgk.ru/api/teachers");
         options.AddHeaders(GetHeaders());
         
         var result = await Client.ExecuteAsync(options);
