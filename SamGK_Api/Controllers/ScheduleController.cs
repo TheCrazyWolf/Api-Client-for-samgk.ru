@@ -9,7 +9,7 @@ using SamGK_Api.Models.Schedule;
 
 namespace SamGK_Api.Controllers;
 
-public class ScheduleController : _BaseController, ISсheduleController
+public class ScheduleController : BaseController, ISсheduleController
 {
     public IEnumerable<IScheduleDate>? GetSchedule(DateOnly date, IEmployee entity)
     {
@@ -22,7 +22,7 @@ public class ScheduleController : _BaseController, ISсheduleController
             new RestRequest($"https://asu.samgk.ru/api/schedule/teacher/{date.ToString("yyyy-MM-dd")}/{entity.Id}");
         options.AddHeaders(GetHeaders());
 
-        var result = await _client.ExecuteAsync(options);
+        var result = await Client.ExecuteAsync(options);
 
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
@@ -51,7 +51,7 @@ public class ScheduleController : _BaseController, ISсheduleController
                     $"https://asu.samgk.ru/api/schedule/teacher/{startDate.ToString("yyyy-MM-dd")}/{entity.Id}");
             options.AddHeaders(GetHeaders());
 
-            var result = await _client.ExecuteAsync(options);
+            var result = await Client.ExecuteAsync(options);
 
             if (!result.IsSuccessStatusCode || result.Content is null)
                 return null;
@@ -80,7 +80,7 @@ public class ScheduleController : _BaseController, ISсheduleController
             new RestRequest($"https://asu.samgk.ru/api/schedule/{entity.Id}/{date.ToString("yyyy-MM-dd")}");
         options.AddHeaders(GetHeaders());
 
-        var result = await _client.ExecuteAsync(options);
+        var result = await Client.ExecuteAsync(options);
 
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
@@ -107,7 +107,7 @@ public class ScheduleController : _BaseController, ISсheduleController
                 new RestRequest($"https://asu.samgk.ru/api/schedule/{entity.Id}/{startDate.ToString("yyyy-MM-dd")}");
             options.AddHeaders(GetHeaders());
 
-            var result = await _client.ExecuteAsync(options);
+            var result = await Client.ExecuteAsync(options);
 
             if (!result.IsSuccessStatusCode || result.Content is null)
                 return null;
@@ -137,7 +137,7 @@ public class ScheduleController : _BaseController, ISсheduleController
                 $"https://asu.samgk.ru/api/schedule/cabs/{date.ToString("yyyy-MM-dd")}/cabNum/{entity.Name.Replace(@"/", "_")}");
         options.AddHeaders(GetHeaders());
 
-        var result = await _client.ExecuteAsync(options);
+        var result = await Client.ExecuteAsync(options);
 
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
@@ -165,7 +165,7 @@ public class ScheduleController : _BaseController, ISсheduleController
                     $"https://asu.samgk.ru/api/schedule/cabs/{startDate.ToString("yyyy-MM-dd")}/cabNum/{entity.Name.Replace(@"/", "_")}");
             options.AddHeaders(GetHeaders());
 
-            var result = await _client.ExecuteAsync(options);
+            var result = await Client.ExecuteAsync(options);
 
             if (!result.IsSuccessStatusCode || result.Content is null)
                 return null;
@@ -204,7 +204,7 @@ public class ScheduleController : _BaseController, ISсheduleController
             new RestRequest(url);
         options.AddHeaders(GetHeaders());
 
-        var result = await _client.ExecuteAsync(options);
+        var result = await Client.ExecuteAsync(options);
 
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
@@ -243,7 +243,7 @@ public class ScheduleController : _BaseController, ISсheduleController
                     url);
             options.AddHeaders(GetHeaders());
 
-            var result = await _client.ExecuteAsync(options);
+            var result = await Client.ExecuteAsync(options);
 
             if (!result.IsSuccessStatusCode || result.Content is null)
                 return null;

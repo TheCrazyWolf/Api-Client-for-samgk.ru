@@ -6,7 +6,7 @@ using SamGK_Api.Services;
 
 namespace SamGK_Api.Controllers;
 
-public class CabsController : _BaseController, ICabController
+public class CabsController : BaseController, ICabController
 {
     private IEnumerable<ICab>? _cachedCabs;
     
@@ -23,7 +23,7 @@ public class CabsController : _BaseController, ICabController
         var options = new RestRequest("https://asu.samgk.ru/api/cabs");
         options.AddHeaders(GetHeaders());
         
-        var result = await _client.ExecuteAsync(options);
+        var result = await Client.ExecuteAsync(options);
 
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;

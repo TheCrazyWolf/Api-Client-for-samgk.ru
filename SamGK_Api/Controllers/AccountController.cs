@@ -6,7 +6,7 @@ using SamGK_Api.Models.Account;
 
 namespace SamGK_Api.Controllers;
 
-public class AccountController : _BaseController, IAccountController
+public class AccountController : BaseController, IAccountController
 {
     private IEnumerable<IEmployee>? _cachedEmployees;
     
@@ -22,7 +22,7 @@ public class AccountController : _BaseController, IAccountController
         options.AddParameter("username", packet.Username);
         options.AddParameter("password", packet.Password);
         
-        var result = await _client.ExecuteAsync(options);
+        var result = await Client.ExecuteAsync(options);
 
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
@@ -43,7 +43,7 @@ public class AccountController : _BaseController, IAccountController
         var options = new RestRequest("https://asu.samgk.ru/api/teachers");
         options.AddHeaders(GetHeaders());
         
-        var result = await _client.ExecuteAsync(options);
+        var result = await Client.ExecuteAsync(options);
 
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;

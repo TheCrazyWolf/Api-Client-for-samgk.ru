@@ -2,13 +2,13 @@ using RestSharp;
 
 namespace SamGK_Api.Controllers;
 
-public class _BaseController
+public class BaseController
 {
-    protected RestClient _client;
+    protected readonly RestClient Client;
 
-    public _BaseController()
+    protected BaseController()
     {
-        _client = new();
+        Client = new();
     }
 
     /// <summary>

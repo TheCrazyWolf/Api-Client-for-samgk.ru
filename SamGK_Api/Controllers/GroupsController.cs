@@ -6,7 +6,7 @@ using SamGK_Api.Models.Group;
 
 namespace SamGK_Api.Controllers;
 
-public class GroupsController : _BaseController, IGroupController
+public class GroupsController : BaseController, IGroupController
 {
     private IEnumerable<IGroup>? _cachedGroups;
     
@@ -23,7 +23,7 @@ public class GroupsController : _BaseController, IGroupController
         var options = new RestRequest("https://mfc.samgk.ru/api/groups", Method.Get);
         options.AddHeaders(GetHeaders());
         
-        var result = await _client.ExecuteAsync(options);
+        var result = await Client.ExecuteAsync(options);
 
         if (!result.IsSuccessStatusCode || result.Content is null)
             return null;
