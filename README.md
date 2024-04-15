@@ -3,13 +3,19 @@
 Загрузить https://github.com/TheCrazyWolf/Api-Client-for-samgk.ru/releases
 
 # Зависимости
-Эти пакеты нужны для работы библиотеки, вы можете их установить самостоятельно через NuGet или так же внедрить DLL файлы в проект
 1. Newtonsoft.Json.dll
 2. RestSharp.dll
 3. RestSharp.Serializers.NewtonsoftJson.dll
 
+# Сборка Nuget пакета из исходников
+```C#
+dotnet pack
+```
+
 # Подключение библиотеки в проект
-Добавьте SamGK_Api.dll и зависимые библиотеки в свой проект
+Вариант №1 Добавьте SamGK_Api.dll и зависимые библиотеки в свой проект
+
+Вариант №2 Добавьте Nuget пакеты в локальную ветку и установить из NUGET
 
 Подключени пространство имен
 ```C#
