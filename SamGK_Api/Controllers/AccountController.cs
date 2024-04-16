@@ -48,7 +48,7 @@ public class AccountController : BaseController, IAccountController
         if (!result.IsSuccessStatusCode || result.Content is null)
             return new List<IEmployee>();
 
-        _cachedEmployees = JsonConvert.DeserializeObject<IList<IEmployee>>(result.Content);
+        _cachedEmployees = JsonConvert.DeserializeObject<IList<Employee>>(result.Content)?.Cast<IEmployee>().ToList();
         return _cachedEmployees ?? new List<IEmployee>();
     }
 

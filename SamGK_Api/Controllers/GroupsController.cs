@@ -20,7 +20,7 @@ public class GroupsController : BaseController, IGroupController
         if (_cachedGroups != null && !forceLoad)
             return _cachedGroups;
         
-        var options = new RestRequest("https://mfc.samgk.ru/api/groups", Method.Get);
+        var options = new RestRequest("https://mfc.samgk.ru/api/groups");
         options.AddHeaders(GetHeaders());
         
         var result = await Client.ExecuteAsync(options);
@@ -28,7 +28,7 @@ public class GroupsController : BaseController, IGroupController
         if (!result.IsSuccessStatusCode || result.Content is null)
             return _cachedGroups ?? new List<IGroup>();
 
-        _cachedGroups = JsonConvert.DeserializeObject<IList<IGroup>>(result.Content);
+        _cachedGroups = JsonConvert.DeserializeObject<IList<Group>>(result.Content)?.Cast<IGroup>().ToList();
         return _cachedGroups ?? new List<IGroup>();
     }
 
