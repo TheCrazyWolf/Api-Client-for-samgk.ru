@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamGK_Api", "SamGK_Api\SamGK_Api.csproj", "{87EB5304-F3A7-4BA0-BE67-9099814E0865}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samgk_Api_Example", "Samgk_Api_Example\Samgk_Api_Example.csproj", "{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{87EB5304-F3A7-4BA0-BE67-9099814E0865}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87EB5304-F3A7-4BA0-BE67-9099814E0865}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87EB5304-F3A7-4BA0-BE67-9099814E0865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
