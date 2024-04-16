@@ -82,7 +82,7 @@ DateOnly date = new DateOnly(2023, 11, 20);
 ```
 получение расписания этого сотрудника
 ```C#
-IEnumerable<IScheduleDate>? sheduleList = api.Sсhedule.GetSchedule(date, account)?.ToArray();
+var sheduleList = api.Sсhedule.GetSchedule(date, account).ToArray();
 ```
 
 Получение расписание по группе:
