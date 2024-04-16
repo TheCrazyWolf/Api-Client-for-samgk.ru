@@ -12,7 +12,7 @@ public interface ICabController
     /// <param name="forceLoad">Принудительная загрузка.
     /// Передайте true, если хотите заново загрузить список</param>
     /// <returns>Возращает IEnumerable&lt;ICab&gt; если все хорошо, если проблемы - null</returns>
-    IEnumerable<ICab>? GetCabs(bool forceLoad = false);
+    IList<ICab> GetCabs(bool forceLoad = false);
     /// <summary>
     /// Возращает список кабинетов
     /// При первой загрузке список помещается в статичный лист,
@@ -21,7 +21,7 @@ public interface ICabController
     /// <param name="forceLoad">Принудительная загрузка.
     /// Передайте true, если хотите заново загрузить список</param>
     /// <returns>Возращает IEnumerable&lt;ICab&gt; если все хорошо, если проблемы - null</returns>
-    Task<IEnumerable<ICab>?> GetCabsAsync(bool forceLoad = false);
+    Task<IList<ICab>> GetCabsAsync(bool forceLoad = false);
 
     /// <summary>
     /// Получение группы по номеру кабинета

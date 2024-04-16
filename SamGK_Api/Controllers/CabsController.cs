@@ -8,17 +8,17 @@ namespace SamGK_Api.Controllers;
 
 public class CabsController : BaseController, ICabController
 {
-    private IEnumerable<ICab>? _cachedCabs;
+    private IList<ICab>? _cachedCabs;
     
-    public IEnumerable<ICab>? GetCabs(bool forceLoad = false)
+    public IList<ICab> GetCabs(bool forceLoad = false)
     {
         return GetCabsAsync(forceLoad: forceLoad).GetAwaiter().GetResult();
     }
 
-    public async Task<IEnumerable<ICab>?> GetCabsAsync(bool forceLoad = false)
+    public async Task<IList<ICab>> GetCabsAsync(bool forceLoad = false)
     {
         if (_cachedCabs != null && !forceLoad)
-            return _cachedCabs;
+            return _cachedCabs ?? new List<ICab>();
         
         var options = new RestRequest("https://asu.samgk.ru/api/cabs");
         options.AddHeaders(GetHeaders());
@@ -26,10 +26,10 @@ public class CabsController : BaseController, ICabController
         var result = await Client.ExecuteAsync(options);
 
         if (!result.IsSuccessStatusCode || result.Content is null)
-            return null;
+            return _cachedCabs ?? new List<ICab>();
 
         _cachedCabs = CabParser.Parse(JsonConvert.DeserializeObject<Dictionary<string,string>>(result.Content));
-        return _cachedCabs;
+        return _cachedCabs ?? new List<ICab>();
     }
 
     public ICab? GetCab(string cabName)

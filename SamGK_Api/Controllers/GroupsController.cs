@@ -8,14 +8,14 @@ namespace SamGK_Api.Controllers;
 
 public class GroupsController : BaseController, IGroupController
 {
-    private IEnumerable<IGroup>? _cachedGroups;
+    private IList<IGroup>? _cachedGroups;
     
-    public IEnumerable<IGroup>? GetGroups(bool forceLoad = false)
+    public IList<IGroup> GetGroups(bool forceLoad = false)
     {
         return GetGroupsAsync(forceLoad: forceLoad).GetAwaiter().GetResult();
     }
 
-    public async Task<IEnumerable<IGroup>?> GetGroupsAsync(bool forceLoad = false)
+    public async Task<IList<IGroup>> GetGroupsAsync(bool forceLoad = false)
     {
         if (_cachedGroups != null && !forceLoad)
             return _cachedGroups;
@@ -26,10 +26,10 @@ public class GroupsController : BaseController, IGroupController
         var result = await Client.ExecuteAsync(options);
 
         if (!result.IsSuccessStatusCode || result.Content is null)
-            return null;
+            return _cachedGroups ?? new List<IGroup>();
 
-        _cachedGroups = JsonConvert.DeserializeObject<IEnumerable<Group>>(result.Content);
-        return _cachedGroups;
+        _cachedGroups = JsonConvert.DeserializeObject<IList<IGroup>>(result.Content);
+        return _cachedGroups ?? new List<IGroup>();
     }
 
     public IGroup? GetGroup(int idGroup)

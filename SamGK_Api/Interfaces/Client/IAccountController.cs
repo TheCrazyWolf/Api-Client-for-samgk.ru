@@ -30,7 +30,7 @@ public interface IAccountController
     /// <param name="forceLoad">Принудительная загрузка.
     /// Передайте true, если хотите заново загрузить список</param>
     /// <returns>Возращает IEnumerable&lt;IEmployee&gt; если есть, что загружать, если нечего - null</returns>
-    IEnumerable<IEmployee>? GetEmployees(bool useLegacyMethod = false, bool forceLoad = false);
+    IList<IEmployee> GetEmployees(bool useLegacyMethod = false, bool forceLoad = false);
 
     /// <summary>
     /// Получение списка сотрудников колледжа
@@ -41,7 +41,7 @@ public interface IAccountController
     /// <param name="forceLoad">Принудительная загрузка.
     /// Передайте true, если хотите заново загрузить список</param>
     /// <returns>Возращает IEnumerable&lt;IEmployee&gt; если есть, что загружать, если нечего - null</returns>
-    Task<IEnumerable<IEmployee>?> GetEmployeesAsync(bool useLegacyMethod = false, bool forceLoad = false);
+    Task<IList<IEmployee>> GetEmployeesAsync(bool useLegacyMethod = false, bool forceLoad = false);
 
     /// <summary>
     /// Получить сотрудника по ID

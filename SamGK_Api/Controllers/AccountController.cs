@@ -8,7 +8,7 @@ namespace SamGK_Api.Controllers;
 
 public class AccountController : BaseController, IAccountController
 {
-    private IEnumerable<IEmployee>? _cachedEmployees;
+    private IList<IEmployee>? _cachedEmployees;
     
     public IAccount? Authorization(ICredentialSgk packet)
     {
@@ -30,15 +30,15 @@ public class AccountController : BaseController, IAccountController
         return JsonConvert.DeserializeObject<Account>(result.Content);
     }
 
-    public IEnumerable<IEmployee>? GetEmployees(bool useLegacyMethod = false, bool forceLoad = false)
+    public IList<IEmployee> GetEmployees(bool useLegacyMethod = false, bool forceLoad = false)
     {
         return GetEmployeesAsync(useLegacyMethod: useLegacyMethod, forceLoad: forceLoad).GetAwaiter().GetResult();
     }
 
-    public async Task<IEnumerable<IEmployee>?> GetEmployeesAsync(bool useLegacyMethod = false, bool forceLoad = false)
+    public async Task<IList<IEmployee>> GetEmployeesAsync(bool useLegacyMethod = false, bool forceLoad = false)
     {
         if (_cachedEmployees != null && !forceLoad)
-            return _cachedEmployees;
+            return _cachedEmployees ?? new List<IEmployee>();
         
         var options = new RestRequest(useLegacyMethod ? "https://asu.samgk.ru/api/teachers" : "https://mfc.samgk.ru/api/teachers");
         options.AddHeaders(GetHeaders());
@@ -46,10 +46,10 @@ public class AccountController : BaseController, IAccountController
         var result = await Client.ExecuteAsync(options);
 
         if (!result.IsSuccessStatusCode || result.Content is null)
-            return null;
+            return new List<IEmployee>();
 
-        _cachedEmployees = JsonConvert.DeserializeObject<IEnumerable<Employee>>(result.Content);
-        return _cachedEmployees;
+        _cachedEmployees = JsonConvert.DeserializeObject<IList<IEmployee>>(result.Content);
+        return _cachedEmployees ?? new List<IEmployee>();
     }
 
     public IEmployee? GetEmployee(int idEmployee)

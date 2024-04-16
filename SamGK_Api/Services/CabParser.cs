@@ -12,7 +12,7 @@ public static class CabParser
      * СЕРЕГА ЧТО ЗА ХЕРНЯ?????
      */
     
-    public static IEnumerable<ICab>? Parse(Dictionary<string, string>? dataCabs)
+    public static IList<ICab>? Parse(Dictionary<string, string>? dataCabs)
     {
         var data = dataCabs?
             .Select(item => new Cab
