@@ -13,174 +13,77 @@ public class ScheduleController : BaseController, ISсheduleController
 {
     public IEnumerable<IScheduleDate>? GetSchedule(DateOnly date, IEmployee entity)
     {
-        return GetScheduleAsync(date: date, entity: entity).GetAwaiter().GetResult();
+        return GetScheduleAsync(date: date, type: SheduleSearchType.Employee, entity.Id.ToString()).GetAwaiter()
+            .GetResult();
     }
 
     public async Task<IEnumerable<IScheduleDate>?> GetScheduleAsync(DateOnly date, IEmployee entity)
     {
-        var options =
-            new RestRequest($"https://asu.samgk.ru/api/schedule/teacher/{date.ToString("yyyy-MM-dd")}/{entity.Id}");
-        options.AddHeaders(GetHeaders());
-
-        var result = await Client.ExecuteAsync(options);
-
-        if (!result.IsSuccessStatusCode || result.Content is null)
-            return null;
-
-        var obj = JsonConvert.DeserializeObject<ScheduleDate>(result.Content);
-
-        return obj is null ? null : new List<IScheduleDate> { obj };
+        return await GetScheduleAsync(date: date, type: SheduleSearchType.Employee, entity.Id.ToString());
     }
 
     public IEnumerable<IScheduleDate>? GetSchedule(DateOnly startDate, DateOnly endDate, IEmployee entity,
         int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, entity: entity, delay: delay).GetAwaiter()
-            .GetResult();
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Employee,
+            entity.Id.ToString(), delay: delay).GetAwaiter().GetResult();
     }
 
     public async Task<IEnumerable<IScheduleDate>?> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
         IEmployee entity, int delay = 700)
     {
-        var sсheduleList = new List<IScheduleDate>();
-        endDate = endDate.AddDays(1);
-        while (startDate != endDate)
-        {
-            var options =
-                new RestRequest(
-                    $"https://asu.samgk.ru/api/schedule/teacher/{startDate.ToString("yyyy-MM-dd")}/{entity.Id}");
-            options.AddHeaders(GetHeaders());
-
-            var result = await Client.ExecuteAsync(options);
-
-            if (!result.IsSuccessStatusCode || result.Content is null)
-                return null;
-
-            var currentScheduleDate = JsonConvert.DeserializeObject<ScheduleDate>(result.Content);
-
-            if (currentScheduleDate?.Lessons.Count() != 0 && currentScheduleDate != null)
-                sсheduleList.Add(currentScheduleDate);
-
-            startDate = startDate.AddDays(1);
-
-            await Task.Delay(delay);
-        }
-
-        return sсheduleList;
+        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Employee,
+            entity.Id.ToString(), delay: delay);
     }
 
     public IEnumerable<IScheduleDate>? GetSchedule(DateOnly date, IGroup entity)
     {
-        return GetScheduleAsync(date: date, entity: entity).GetAwaiter().GetResult();
+        return GetScheduleAsync(date: date, type: SheduleSearchType.Group,
+            entity.Id.ToString()).GetAwaiter().GetResult();
     }
 
     public async Task<IEnumerable<IScheduleDate>?> GetScheduleAsync(DateOnly date, IGroup entity)
     {
-        var options =
-            new RestRequest($"https://asu.samgk.ru/api/schedule/{entity.Id}/{date.ToString("yyyy-MM-dd")}");
-        options.AddHeaders(GetHeaders());
-
-        var result = await Client.ExecuteAsync(options);
-
-        if (!result.IsSuccessStatusCode || result.Content is null)
-            return null;
-
-        var obj = JsonConvert.DeserializeObject<ScheduleDate>(result.Content);
-
-        return obj is null ? null : new List<IScheduleDate> { obj };
+        return await GetScheduleAsync(date: date, type: SheduleSearchType.Group,
+            entity.Id.ToString());
     }
 
     public IEnumerable<IScheduleDate>? GetSchedule(DateOnly startDate, DateOnly endDate, IGroup entity, int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, entity: entity, delay: delay).GetAwaiter()
-            .GetResult();
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Group,
+            entity.Id.ToString(), delay: delay).GetAwaiter().GetResult();
     }
 
     public async Task<IEnumerable<IScheduleDate>?> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IGroup entity,
         int delay = 700)
     {
-        var sсheduleList = new List<IScheduleDate>();
-        endDate = endDate.AddDays(1);
-        while (startDate != endDate)
-        {
-            var options =
-                new RestRequest($"https://asu.samgk.ru/api/schedule/{entity.Id}/{startDate.ToString("yyyy-MM-dd")}");
-            options.AddHeaders(GetHeaders());
-
-            var result = await Client.ExecuteAsync(options);
-
-            if (!result.IsSuccessStatusCode || result.Content is null)
-                return null;
-
-            var currentScheduleDate = JsonConvert.DeserializeObject<ScheduleDate>(result.Content);
-
-            if (currentScheduleDate?.Lessons.Count() != 0 && currentScheduleDate != null)
-                sсheduleList.Add(currentScheduleDate);
-
-            startDate = startDate.AddDays(1);
-
-            await Task.Delay(delay);
-        }
-
-        return sсheduleList;
+        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Group,
+            entity.Id.ToString(), delay: delay);
     }
 
     public IEnumerable<IScheduleDate>? GetSchedule(DateOnly date, ICab entity)
     {
-        return GetScheduleAsync(date: date, entity: entity).GetAwaiter().GetResult();
+        return GetScheduleAsync(date: date, type: SheduleSearchType.Cab,
+            entity.Name).GetAwaiter().GetResult();
     }
 
     public async Task<IEnumerable<IScheduleDate>?> GetScheduleAsync(DateOnly date, ICab entity)
     {
-        var options =
-            new RestRequest(
-                $"https://asu.samgk.ru/api/schedule/cabs/{date.ToString("yyyy-MM-dd")}/cabNum/{entity.Name.Replace(@"/", "_")}");
-        options.AddHeaders(GetHeaders());
-
-        var result = await Client.ExecuteAsync(options);
-
-        if (!result.IsSuccessStatusCode || result.Content is null)
-            return null;
-
-        var obj = JsonConvert.DeserializeObject<ScheduleDate>(result.Content);
-
-        return obj is null ? null : new List<IScheduleDate> { obj };
+        return await GetScheduleAsync(date: date, type: SheduleSearchType.Cab,
+            entity.Name);
     }
 
     public IEnumerable<IScheduleDate>? GetSchedule(DateOnly startDate, DateOnly endDate, ICab entity, int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, entity: entity, delay: delay).GetAwaiter()
-            .GetResult();
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Cab,
+            entity.Name, delay: delay).GetAwaiter().GetResult();
     }
 
     public async Task<IEnumerable<IScheduleDate>?> GetScheduleAsync(DateOnly startDate, DateOnly endDate, ICab entity,
         int delay = 700)
     {
-        var sсheduleList = new List<IScheduleDate>();
-        endDate = endDate.AddDays(1);
-        while (startDate != endDate)
-        {
-            var options =
-                new RestRequest(
-                    $"https://asu.samgk.ru/api/schedule/cabs/{startDate.ToString("yyyy-MM-dd")}/cabNum/{entity.Name.Replace(@"/", "_")}");
-            options.AddHeaders(GetHeaders());
-
-            var result = await Client.ExecuteAsync(options);
-
-            if (!result.IsSuccessStatusCode || result.Content is null)
-                return null;
-
-            var currentScheduleDate = JsonConvert.DeserializeObject<ScheduleDate>(result.Content);
-
-            if (currentScheduleDate?.Lessons.Count() != 0 && currentScheduleDate != null)
-                sсheduleList.Add(currentScheduleDate);
-
-            startDate = startDate.AddDays(1);
-
-            await Task.Delay(delay);
-        }
-
-        return sсheduleList;
+        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Cab,
+            entity.Name, delay: delay);
     }
 
     public IEnumerable<IScheduleDate>? GetSchedule(DateOnly date, SheduleSearchType type, string id)
