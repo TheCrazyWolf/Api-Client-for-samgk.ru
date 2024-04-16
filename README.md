@@ -93,7 +93,7 @@ IGroup group = new Group()
     Name = "ИС-22-02"
 };
 
-IEnumerable<IScheduleDate>? sheduleList = api.Sсhedule.GetSchedule(date, group)?.ToArray();
+var sheduleList = api.Sсhedule.GetSchedule(date, group).ToArray();
 ```
 
 Получение расписание по кабинету:
@@ -103,7 +103,7 @@ ICab cabinet = new Cab()
     name = "5/526"
 };
 
-IEnumerable<IScheduleDate>? sheduleList = api.Sсhedule.GetSchedule(date, cabinet)?.ToArray();
+var sheduleList = api.Sсhedule.GetSchedule(date, cabinet).ToArray();
 ```
 
 Можно получить диапозон расписания, для этого передайте во входых параметрах две даты - начало и конец.
@@ -112,7 +112,7 @@ IEnumerable<IScheduleDate>? sheduleList = api.Sсhedule.GetSchedule(date, cabine
 DateOnly start = new DateOnly(2023, 09, 01);
 DateOnly end = new DateOnly(2023, 11, 20);
 
-IEnumerable<IScheduleDate>? sheduleList = api.Sсhedule.GetSchedule(start, end, group, 0)?.ToArray();
+var sheduleList = api.Sсhedule.GetSchedule(start, end, group, 0).ToArray();
 ```
 где 0 - задержка в МС между запросами (не обязательный параметр), используйте задержку для имитации живой проверки расписания, в противном случае Вы можете получить блокировку по IP. В рамках сети колледжа Вы можете задать задержку 0 мс
 
@@ -120,11 +120,11 @@ IEnumerable<IScheduleDate>? sheduleList = api.Sсhedule.GetSchedule(start, end, 
 ```C#
 DateOnly date = new DateOnly(2023, 09, 01);
 SheduleSearchType type = SheduleSearchType.Employee;
-string id = 1468.ToString();
+string id = "1468";
 
-IEnumerable<IScheduleDate>? sheduleList = api.Sсhedule.GetSchedule(date, type, id)?.ToArray();
+var sheduleList = api.Sсhedule.GetSchedule(date, type, id).ToArray();
 // или
-IEnumerable<IScheduleDate>? sheduleList = api.Sсhedule.GetSchedule(date, SheduleSearchType.Employee, 1468.ToString())?.ToArray();
+var sheduleList = api.Sсhedule.GetSchedule(date, SheduleSearchType.Employee, 1468.ToString()).ToArray();
 ```
 
 # Пример возможных действий
@@ -154,7 +154,7 @@ var listShedule = api.Sсhedule
     .GetSchedule(start, SheduleSearchType.Cab, "дист_дист")?.ToList();
 
 ICollection<IGroup> groupByElectronicEducation = new List<IGroup>();
-IEnumerable<IGroup>? groupsFromApi = api.Groups.GetGroups()?.ToList();
+IEnumerable<IGroup> groupsFromApi = api.Groups.GetGroups().ToList();
 
 foreach (var item in listShedule)
 {
