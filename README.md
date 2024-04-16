@@ -8,11 +8,11 @@
 ```C#
 // Использование нового API
 // Получаем только преподов
-var teachers = api.Accounts.GetEmployees();
+var teachers = await api.Accounts.GetEmployeesAsync();
 
 // Использование старого API
 // Получаем всех сотрудников
-var teachers = api.Accounts.GetEmployees(useLegacyMethod: true);
+var teachers = await api.Accounts.GetEmployeesAsync(useLegacyMethod: true);
 ```
 
 
