@@ -13,8 +13,8 @@ public static class HeadersUtils
     {
         request.AddOrUpdateHeaders(GetHeaders());
     }
-    
-    static ICollection<KeyValuePair<string,string>> GetHeaders()
+
+    private static ICollection<KeyValuePair<string,string>> GetHeaders()
     {
         var dickPick = new List<KeyValuePair<string, string>>()
         {
