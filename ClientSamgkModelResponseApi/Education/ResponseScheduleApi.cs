@@ -1,4 +1,4 @@
-namespace ClientSamgkModelResponceApi.Education;
+namespace ClientSamgkModelResponseApi.Education;
 
 public class ResponseScheduleApi
 {
