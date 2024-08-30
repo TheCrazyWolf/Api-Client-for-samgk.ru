@@ -1,8 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamGK_Api", "SamGK_Api\SamGK_Api.csproj", "{87EB5304-F3A7-4BA0-BE67-9099814E0865}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientSamgk", "ClientSamgk\ClientSamgk.csproj", "{87EB5304-F3A7-4BA0-BE67-9099814E0865}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samgk_Api_Example", "Samgk_Api_Example\Samgk_Api_Example.csproj", "{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientSamgkExample", "ClientSamgkExample\ClientSamgkExample.csproj", "{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7AD8D5C5-CE46-4F42-9F90-515F19014FC3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{4347AB99-6680-4721-87EB-F975B8A0F983}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +22,9 @@ Global
 		{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{87EB5304-F3A7-4BA0-BE67-9099814E0865} = {7AD8D5C5-CE46-4F42-9F90-515F19014FC3}
+		{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D} = {4347AB99-6680-4721-87EB-F975B8A0F983}
 	EndGlobalSection
 EndGlobal

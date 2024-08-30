@@ -5,10 +5,12 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <AssemblyName>ClientSamgkExample</AssemblyName>
+        <RootNamespace>ClientSamgkExample</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SamGK_Api\SamGK_Api.csproj" />
+      <ProjectReference Include="..\ClientSamgk\ClientSamgk.csproj" />
     </ItemGroup>
 
 </Project>
