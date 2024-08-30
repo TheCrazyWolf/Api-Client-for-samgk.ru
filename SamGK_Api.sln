@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{43
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientSamgkModelResponceApi", "ClientSamgkModelResponceApi\ClientSamgkModelResponceApi.csproj", "{FEE6430B-E255-4C92-ADCD-99186F627917}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientSamgkOutputResponse", "ClientSamgkOutputResponse\ClientSamgkOutputResponse.csproj", "{AD0BBC6E-FAFD-42C8-8F87-CAE8CD494E40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,10 +30,15 @@ Global
 		{FEE6430B-E255-4C92-ADCD-99186F627917}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEE6430B-E255-4C92-ADCD-99186F627917}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEE6430B-E255-4C92-ADCD-99186F627917}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD0BBC6E-FAFD-42C8-8F87-CAE8CD494E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD0BBC6E-FAFD-42C8-8F87-CAE8CD494E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD0BBC6E-FAFD-42C8-8F87-CAE8CD494E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD0BBC6E-FAFD-42C8-8F87-CAE8CD494E40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{87EB5304-F3A7-4BA0-BE67-9099814E0865} = {7AD8D5C5-CE46-4F42-9F90-515F19014FC3}
 		{49CE7F0D-4AE6-4E9A-9AAE-F1D2A0B4B67D} = {4347AB99-6680-4721-87EB-F975B8A0F983}
 		{FEE6430B-E255-4C92-ADCD-99186F627917} = {7AD8D5C5-CE46-4F42-9F90-515F19014FC3}
+		{AD0BBC6E-FAFD-42C8-8F87-CAE8CD494E40} = {7AD8D5C5-CE46-4F42-9F90-515F19014FC3}
 	EndGlobalSection
 EndGlobal
