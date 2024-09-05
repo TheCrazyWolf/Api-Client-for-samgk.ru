@@ -1,6 +1,6 @@
 using RestSharp;
 
-namespace SamGK_Api.Controllers;
+namespace ClientSamgk.Controllers;
 
 public class BaseController
 {
