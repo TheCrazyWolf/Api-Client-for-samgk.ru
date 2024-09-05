@@ -1,4 +1,4 @@
-using ClientSamgk.Controllers;
+using ClientSamgk.Common;
 using Newtonsoft.Json;
 using RestSharp;
 using SamGK_Api.Interfaces.Account;
@@ -10,7 +10,7 @@ using SamGK_Api.Models.Schedule;
 
 namespace SamGK_Api.Controllers;
 
-public class ScheduleController : BaseController, ISсheduleController
+public class ScheduleController : CommonSamgkController, ISсheduleController
 {
     public IList<IScheduleDate> GetSchedule(DateOnly date, IEmployee entity)
     {

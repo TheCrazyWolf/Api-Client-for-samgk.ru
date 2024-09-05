@@ -1,4 +1,4 @@
-using ClientSamgk.Controllers;
+using ClientSamgk.Common;
 using Newtonsoft.Json;
 using RestSharp;
 using SamGK_Api.Interfaces.Client;
@@ -7,7 +7,7 @@ using SamGK_Api.Models.Group;
 
 namespace SamGK_Api.Controllers;
 
-public class GroupsController : BaseController, IGroupController
+public class GroupsController : CommonSamgkController, IGroupController
 {
     private IList<IGroup>? _cachedGroups;
     

@@ -1,4 +1,4 @@
-using ClientSamgk.Controllers;
+using ClientSamgk.Common;
 using Newtonsoft.Json;
 using RestSharp;
 using SamGK_Api.Interfaces.Account;
@@ -7,7 +7,7 @@ using SamGK_Api.Models.Account;
 
 namespace SamGK_Api.Controllers;
 
-public class AccountController : BaseController, IAccountController
+public class AccountController : CommonSamgkController, IAccountController
 {
     private IList<IEmployee>? _cachedEmployees;
     

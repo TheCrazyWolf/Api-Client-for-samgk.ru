@@ -3,7 +3,7 @@
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net8.0</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>kulagin</Authors>
         <AssemblyName>ClientSamgk</AssemblyName>
@@ -11,8 +11,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="RestSharp" Version="110.2.0" />
       <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="110.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ClientSamgkApiModelResponce\ClientSamgkApiModelResponce.csproj" />
+      <ProjectReference Include="..\ClientSamgkOutputResponse\ClientSamgkOutputResponse.csproj" />
     </ItemGroup>
 
 </Project>

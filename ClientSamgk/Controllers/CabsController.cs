@@ -1,4 +1,4 @@
-using ClientSamgk.Controllers;
+using ClientSamgk.Common;
 using Newtonsoft.Json;
 using RestSharp;
 using SamGK_Api.Interfaces.Cabs;
@@ -7,7 +7,7 @@ using SamGK_Api.Services;
 
 namespace SamGK_Api.Controllers;
 
-public class CabsController : BaseController, ICabController
+public class CabsController : CommonSamgkController, ICabController
 {
     private IList<ICab>? _cachedCabs;
     
