@@ -1,6 +1,6 @@
-using SamGK_Api.Interfaces.Cabs;
+using ClientSamgkOutputResponse.Interfaces.Cabs;
 
-namespace SamGK_Api.Interfaces.Client;
+namespace ClientSamgk.Interfaces.Client;
 
 public interface ICabController
 {
@@ -12,21 +12,12 @@ public interface ICabController
     /// <param name="forceLoad">Принудительная загрузка.
     /// Передайте true, если хотите заново загрузить список</param>
     /// <returns>Возращает IEnumerable&lt;ICab&gt; если все хорошо, если проблемы - null</returns>
-    IList<ICab> GetCabs(bool forceLoad = false);
-    /// <summary>
-    /// Возращает список кабинетов
-    /// При первой загрузке список помещается в статичный лист,
-    /// при следующем обращении подтягиваются данные из листа
-    /// </summary>
-    /// <param name="forceLoad">Принудительная загрузка.
-    /// Передайте true, если хотите заново загрузить список</param>
-    /// <returns>Возращает IEnumerable&lt;ICab&gt; если все хорошо, если проблемы - null</returns>
-    Task<IList<ICab>> GetCabsAsync(bool forceLoad = false);
+    IList<IResultOutCab> GetCabs();
 
     /// <summary>
     /// Получение группы по номеру кабинета
     /// </summary>
     /// <param name="cabName">Номер кабинета</param>
     /// <returns>Возращает ICab если все хорошо, если проблемы - null</returns>
-    ICab? GetCab(string cabName);
+    IResultOutCab? GetCab(string cabName);
 }

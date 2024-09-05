@@ -1,241 +1,44 @@
-using SamGK_Api.Interfaces.Account;
-using SamGK_Api.Interfaces.Cabs;
-using SamGK_Api.Interfaces.Groups;
+using ClientSamgkOutputResponse.Interfaces.Cabs;
+using ClientSamgkOutputResponse.Interfaces.Groups;
+using ClientSamgkOutputResponse.Interfaces.Identity;
+using ClientSamgkOutputResponse.Interfaces.Schedule;
 using SamGK_Api.Interfaces.Schedule;
 
-namespace SamGK_Api.Interfaces.Client;
+namespace ClientSamgk.Interfaces.Client;
 
 public interface ISсheduleController
 {
-    /// <summary>
-    /// Получение расписание за определенный день
-    /// сотрудника
-    /// </summary>
-    /// <param name="date">Дата и время</param>
-    /// <param name="entity">Интерфейс сотрудника</param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    IList<IScheduleDate> GetSchedule(DateOnly date, IEmployee entity);
-    /// <summary>
-    /// Получение расписание за определенный день
-    /// сотрудника
-    /// </summary>
-    /// <param name="date">Дата</param>
-    /// <param name="entity">Интерфейс сотрудника</param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    Task<IList<IScheduleDate>> GetScheduleAsync(DateOnly date, IEmployee entity);
-    /// <summary>
-    /// Получение расписание за диапазон
-    /// сотрудника
-    /// </summary>
-    /// <param name="startDate">С какой даты</param>
-    /// <param name="endDate">По какую дату</param>
-    /// <param name="entity">Интерфейс сотрудника</param>
-    /// <param name="delay">Имитация задержки, используйте вне сети колледжа, чтобы не получить блокировку. Необязательный параметр
-    /// Default value = 700
-    /// </param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    IList<IScheduleDate> GetSchedule(DateOnly startDate, DateOnly endDate, IEmployee entity, int delay = 700);
-    /// <summary>
-    /// Получение расписание за диапазон
-    /// сотрудника
-    /// </summary>
-    /// <param name="startDate">С какой даты</param>
-    /// <param name="endDate">По какую дату</param>
-    /// <param name="entity">Интерфейс сотрудника</param>
-    /// <param name="delay">Имитация задержки, используйте вне сети колледжа, чтобы не получить блокировку. Необязательный параметр
-    /// Default value = 700
-    /// </param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    Task<IList<IScheduleDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IEmployee entity, int delay = 700);
-    /// <summary>
-    /// Получение расписание за конкретный день
-    /// группы
-    /// </summary>
-    /// <param name="date">Дата</param>
-    /// <param name="entity">Интерфейс группы</param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    IList<IScheduleDate> GetSchedule(DateOnly date, IGroup entity);
-    /// <summary>
-    /// Получение расписание за конкретный день
-    /// группы
-    /// </summary>
-    /// <param name="date">Дата</param>
-    /// <param name="entity">Интерфейс группы</param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    Task<IList<IScheduleDate>> GetScheduleAsync(DateOnly date, IGroup entity);
-    /// <summary>
-    /// Получение расписание за диапозон
-    /// группы
-    /// </summary>
-    /// <param name="startDate">С какой даты</param>
-    /// <param name="endDate">По какую дату</param>
-    /// <param name="entity">Интерфейс группы</param>
-    /// <param name="delay">Имитация задержки, используйте вне сети колледжа, чтобы не получить блокировку. Необязательный параметр
-    /// Default value = 700
-    /// </param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    IList<IScheduleDate> GetSchedule(DateOnly startDate, DateOnly endDate, IGroup entity, int delay = 700);
-    /// <summary>
-    /// Получение расписание за диапозон
-    /// группы
-    /// </summary>
-    /// <param name="startDate">С какой даты</param>
-    /// <param name="endDate">По какую дату</param>
-    /// <param name="entity">Интерфейс группы</param>
-    /// <param name="delay">Имитация задержки, используйте вне сети колледжа, чтобы не получить блокировку. Необязательный параметр
-    /// Default value = 700
-    /// </param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    Task<IList<IScheduleDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IGroup entity, int delay = 700);
-    /// <summary>
-    /// Получение расписание за конкретный день
-    /// по кабинету
-    /// </summary>
-    /// <param name="date">Дата</param>
-    /// <param name="entity">Интерфейс кабинета</param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    IList<IScheduleDate> GetSchedule(DateOnly date, ICab entity);
-    /// <summary>
-    /// Получение расписание за конкретный день
-    /// по кабинету
-    /// </summary>
-    /// <param name="date">Дата</param>
-    /// <param name="entity">Интерфейс кабинета</param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    Task<IList<IScheduleDate>> GetScheduleAsync(DateOnly date, ICab entity);
-    /// <summary>
-    /// Получение расписание за диапозон
-    /// по кабинету
-    /// </summary>
-    /// <param name="startDate">С какой даты</param>
-    /// <param name="endDate">По какую дату</param>
-    /// <param name="entity">Интерфейс группы</param>
-    /// <param name="delay">Имитация задержки, используйте вне сети колледжа, чтобы не получить блокировку. Необязательный параметр
-    /// Default value = 700
-    /// </param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    IList<IScheduleDate> GetSchedule(DateOnly startDate, DateOnly endDate, ICab entity, int delay = 700);
-    /// <summary>
-    /// Получение расписание за диапозон
-    /// по кабинету
-    /// </summary>
-    /// <param name="startDate">С какой даты</param>
-    /// <param name="endDate">По какую дату</param>
-    /// <param name="entity">Интерфейс группы</param>
-    /// <param name="delay">Имитация задержки, используйте вне сети колледжа, чтобы не получить блокировку. Необязательный параметр
-    /// Default value = 700
-    /// </param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    Task<IList<IScheduleDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, ICab entity, int delay = 700);
+    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutIdentity entity);
 
-    /// <summary>
-    /// Получение расписание за конкретный день
-    /// с помощью перечисления SheduleSearchType
-    /// </summary>
-    /// <param name="date">Дата получения расписание</param>
-    /// <param name="type">Перечисление
-    /// SheduleSearchType.Employee - расписание сотрудника
-    /// SheduleSearchType.Group - расписание по группе
-    /// SheduleSearchType.Cab - расписание по кабинету
-    /// </param>
-    /// <param name="id">ID сотрудника, кабинета, группы в формате строки</param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    IList<IScheduleDate> GetSchedule(DateOnly date, SheduleSearchType type, string id);
-    /// <summary>
-    /// Получение расписание за конкретный день
-    /// с помощью перечисления SheduleSearchType
-    /// </summary>
-    /// <param name="date">Дата получения расписание</param>
-    /// <param name="type">Перечисление
-    /// SheduleSearchType.Employee - расписание сотрудника
-    /// SheduleSearchType.Group - расписание по группе
-    /// SheduleSearchType.Cab - расписание по кабинету
-    /// </param>
-    /// <param name="id">ID сотрудника, кабинета, группы в формате строки</param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    Task<IList<IScheduleDate>> GetScheduleAsync(DateOnly date, SheduleSearchType type, string id);
-    /// <summary>
-    /// Получение расписание за конкретный день
-    /// с помощью перечисления SheduleSearchType
-    /// </summary>
-    /// <param name="startDate">С какой даты</param>
-    /// <param name="endDate">По какую дату</param>
-    /// <param name="type">Перечисление
-    /// SheduleSearchType.Employee - расписание сотрудника
-    /// SheduleSearchType.Group - расписание по группе
-    /// SheduleSearchType.Cab - расписание по кабинету
-    /// </param>
-    /// <param name="id">ID сотрудника, кабинета, группы в формате строки</param>
-    /// <param name="delay">Имитация задержки, используйте вне сети колледжа, чтобы не получить блокировку. Необязательный параметр
-    /// Default value = 700
-    /// </param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    IList<IScheduleDate> GetSchedule(DateOnly startDate, DateOnly endDate, SheduleSearchType type, string id, int delay = 700);
-    /// <summary>
-    /// Получение расписание за конкретный день
-    /// с помощью перечисления SheduleSearchType
-    /// </summary>
-    /// <param name="startDate">С какой даты</param>
-    /// <param name="endDate">По какую дату</param>
-    /// <param name="type">Перечисление
-    /// SheduleSearchType.Employee - расписание сотрудника
-    /// SheduleSearchType.Group - расписание по группе
-    /// SheduleSearchType.Cab - расписание по кабинету
-    /// </param>
-    /// <param name="id">ID сотрудника, кабинета, группы в формате строки</param>
-    /// <param name="delay">Имитация задержки, используйте вне сети колледжа, чтобы не получить блокировку. Необязательный параметр
-    /// Default value = 700
-    /// </param>
-    /// <returns>IEnumerable&lt;IScheduleDate&gt;
-    /// Если расписание за этот день есть,
-    /// если нет - null
-    /// </returns>
-    Task<IList<IScheduleDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, SheduleSearchType type, string id, int delay = 700);
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutIdentity entity);
+
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutIdentity entity, int delay = 700);
+
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutIdentity entity, int delay = 700);
+
+    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutGroup entity);
+
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutGroup entity);
+
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutGroup entity, int delay = 700);
+
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutGroup entity, int delay = 700);
+
+    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutCab entity);
+
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutCab entity);
+
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutCab entity, int delay = 700);
+
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutCab entity, int delay = 700);
+    
+    IResultOutScheduleFromDate GetSchedule(DateOnly date, SheduleSearchType type, string id);
+    
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, SheduleSearchType type, string id);
+    
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, SheduleSearchType type, string id, int delay = 700);
+
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, SheduleSearchType type, string id, int delay = 700);
 }
 
 public enum SheduleSearchType

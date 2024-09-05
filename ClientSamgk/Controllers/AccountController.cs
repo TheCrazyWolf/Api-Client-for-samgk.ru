@@ -1,11 +1,11 @@
-using ClientSamgk.Common;
+/*using ClientSamgk.Common;
 using Newtonsoft.Json;
 using RestSharp;
 using SamGK_Api.Interfaces.Account;
 using SamGK_Api.Interfaces.Client;
 using SamGK_Api.Models.Account;
 
-namespace SamGK_Api.Controllers;
+namespace ClientSamgk.Controllers;
 
 public class AccountController : CommonSamgkController, IAccountController
 {
@@ -64,4 +64,4 @@ public class AccountController : CommonSamgkController, IAccountController
         _cachedEmployees ??= GetEmployees();
         return _cachedEmployees?.FirstOrDefault(employee => employee.Name.ToUpper() == nameSearch.ToUpper());
     }
-}
+}*/

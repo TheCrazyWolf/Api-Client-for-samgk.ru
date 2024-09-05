@@ -5,7 +5,7 @@ public interface IResultOutIdentity
     /// <summary>
     /// ID сотрудника
     /// </summary>
-    public string Id { get; set; }
+    public long Id { get; set; }
     
     /// <summary>
     /// Фио преподавателя
