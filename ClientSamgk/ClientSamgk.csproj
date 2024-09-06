@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TargetFrameworks>net8.0</TargetFrameworks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>kulagin</Authors>
+        <AssemblyName>ClientSamgk</AssemblyName>
+        <RootNamespace>ClientSamgk</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="110.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ClientSamgkApiModelResponce\ClientSamgkApiModelResponce.csproj" />
+      <ProjectReference Include="..\ClientSamgkOutputResponse\ClientSamgkOutputResponse.csproj" />
+    </ItemGroup>
+
+</Project>
