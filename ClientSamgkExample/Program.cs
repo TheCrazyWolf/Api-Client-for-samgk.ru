@@ -1,9 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using ClientSamgk.Enums;
-using ClientSamgk.Interfaces.Client;
+
 var api = new ClientSamgk.ClientSamgk();
-await Task.Delay(1000);
 foreach (var group in api.Groups.GetGroups())
 {
     Console.WriteLine($"#{group.Id} - {group.Name}");

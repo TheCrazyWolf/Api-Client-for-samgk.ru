@@ -20,9 +20,8 @@ public class CommonSamgkController : CommonCache
     protected CommonSamgkController()
     {
         _client = new RestClient();
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        ConfiguringCache();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        ConfiguringCache()
+            .GetAwaiter().GetResult();
     }
 
     protected async Task<T> SendRequest<T>(string url)
