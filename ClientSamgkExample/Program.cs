@@ -20,7 +20,7 @@ foreach (var rasp in api.Sсhedule.GetSchedule(new DateOnly(2024, 09, 04), Shedu
 
 
 foreach (var rasp in api.Sсhedule.GetSchedule(new DateOnly(2024, 09, 04),
-             new DateOnly(2024, 09, 05), SheduleSearchType.Cab, "5/512"))
+             new DateOnly(2024, 09, 09), SheduleSearchType.Cab, "5/512"))
 {
     Console.WriteLine($"#{rasp.Date}");
 

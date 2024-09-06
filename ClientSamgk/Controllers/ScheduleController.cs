@@ -110,46 +110,54 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             _ => ""
         };
 
-        var returenableResult = new ResultOutResultOutScheduleFromDate();
-        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
-
-        returenableResult.Date = date;
-
-        foreach (var scheduleItem in result.Values)
+        var returenableResult = new ResultOutResultOutScheduleFromDate
         {
-            foreach (var resultLessonsApi in scheduleItem)
+            Date = date
+        };
+        
+        try
+        {
+            var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
+            foreach (var scheduleItem in result.Values)
             {
-                foreach (var item in resultLessonsApi.Value)
+                foreach (var resultLessonsApi in scheduleItem)
                 {
-                    var lesson = new ResultOutResultOutLesson
+                    foreach (var item in resultLessonsApi.Value)
                     {
-                        NumPair = item.Pair,
-                        NumLesson = item.Number,
-                        SubjectDetails = new ResultOutCabSubject
+                        var lesson = new ResultOutResultOutLesson
                         {
-                            Id = item.DisciplineInfo.Id,
-                            SubjectName =
-                                $"{item.DisciplineInfo.IndexName}.{item.DisciplineInfo.IndexNum} {item.DisciplineName}"
-                        },
-                        EducationGroup = CachesGroups.First(x => x.Id == item.Group)
-                    };
+                            NumPair = item.Pair,
+                            NumLesson = item.Number,
+                            SubjectDetails = new ResultOutCabSubject
+                            {
+                                Id = item.DisciplineInfo.Id,
+                                SubjectName =
+                                    $"{item.DisciplineInfo.IndexName}.{item.DisciplineInfo.IndexNum} {item.DisciplineName}"
+                            },
+                            EducationGroup = CachesGroups.First(x => x.Id == item.Group)
+                        };
 
-                    foreach (var idTeacher in item.Teacher)
-                        lesson.Identity.Add(CachedIdentities.First(x => x.Id == idTeacher));
+                        foreach (var idTeacher in item.Teacher)
+                            lesson.Identity.Add(CachedIdentities.First(x => x.Id == idTeacher));
 
-                    foreach (var idCab in item.Cab)
-                        lesson.Cabs.Add(CachesCabs.First(x => x.Adress == idCab));
+                        foreach (var idCab in item.Cab)
+                            lesson.Cabs.Add(CachesCabs.First(x => x.Adress == idCab));
 
-                    returenableResult.Lessons.Add(lesson);
+                        returenableResult.Lessons.Add(lesson);
+                    }
                 }
-            }
             
-        }
+            }
 
-        returenableResult.Lessons = returenableResult.Lessons
-            .OrderBy(x => x.NumPair) 
-            .ThenBy(x => x.NumLesson)
-            .ToList();
+            returenableResult.Lessons = returenableResult.Lessons
+                .OrderBy(x => x.NumPair) 
+                .ThenBy(x => x.NumLesson)
+                .ToList();
+        }
+        catch 
+        {
+            return returenableResult;
+        }
         
         return returenableResult;
     }
