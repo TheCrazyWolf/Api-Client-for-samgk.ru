@@ -15,19 +15,21 @@ namespace ClientSamgk.Common;
 
 public class CommonSamgkController : CommonCache
 {
-    protected readonly RestClient Client;
+    private readonly RestClient _client;
 
     protected CommonSamgkController()
     {
-        Client = new RestClient();
-        _ = ConfiguringCache();
+        _client = new RestClient();
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        ConfiguringCache();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
     }
 
     protected async Task<T> SendRequest<T>(string url)
     {
         var options = new RestRequest(url);
         options.ConfigureAntiGreedHeaders();
-        var restResponse = await Client.ExecuteAsync(options);
+        var restResponse = await _client.ExecuteAsync(options);
 
         if (!restResponse.IsSuccessStatusCode || restResponse.Content == null)
             throw new UnsuccessResponse("");
@@ -39,24 +41,31 @@ public class CommonSamgkController : CommonCache
 
     private async Task ConfiguringCache()
     {
-        await ConfiguringCacheGroups();
         await ConfiguringCacheTeachers();
         await ConfiguringCacheCabs();
+        await ConfiguringCacheGroups();
     }
 
     private async Task ConfiguringCacheGroups()
     {
+        if (CachesGroups.Count is not 0)
+            return;
+        
         CachesGroups = (await SendRequest<IList<SamGkGroupApiResult>>("https://mfc.samgk.ru/api/groups"))
             .Select(x => (IResultOutGroup)new ResultOutGroup
             {
                 Id = x.Id,
-                Name = x.Name
+                Name = x.Name,
+                Currator = CachedIdentities.FirstOrDefault(y=> y.Id == x.Currator),
             })
             .ToList();
     }
     
     private async Task ConfiguringCacheTeachers()
     {
+        if (CachedIdentities.Count is not 0)
+            return;
+        
         CachedIdentities = (await SendRequest<IList<SamgkTeacherApiResult>>("https://mfc.samgk.ru/api/teachers"))
             .Select(x => (IResultOutIdentity)new ResultOutIdentity
             {
@@ -68,6 +77,9 @@ public class CommonSamgkController : CommonCache
     
     private async Task ConfiguringCacheCabs()
     {
+        if (CachesCabs.Count is not 0)
+            return;
+        
         CachesCabs = (await SendRequest<Dictionary<string,string>>("https://mfc.samgk.ru/api/cabs"))
             .Select(x => (IResultOutCab)new ResultOutCab
             {

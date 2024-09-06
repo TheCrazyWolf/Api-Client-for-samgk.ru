@@ -1,8 +1,8 @@
+using ClientSamgk.Enums;
 using ClientSamgkOutputResponse.Interfaces.Cabs;
 using ClientSamgkOutputResponse.Interfaces.Groups;
 using ClientSamgkOutputResponse.Interfaces.Identity;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
-using SamGK_Api.Interfaces.Schedule;
 
 namespace ClientSamgk.Interfaces.Client;
 
@@ -39,9 +39,4 @@ public interface ISсheduleController
     IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, SheduleSearchType type, string id, int delay = 700);
 
     Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, SheduleSearchType type, string id, int delay = 700);
-}
-
-public enum SheduleSearchType
-{
-    Employee, Group, Cab
 }

@@ -7,7 +7,7 @@ namespace ClientSamgk.Common;
 
 public class CommonCache 
 {
-    protected IList<IResultOutCab> CachesCabs = new Collection<IResultOutCab>();
-    protected IList<IResultOutGroup> CachesGroups = new Collection<IResultOutGroup>();
-    protected IList<IResultOutIdentity> CachedIdentities = new Collection<IResultOutIdentity>();
+    protected static IList<IResultOutCab> CachesCabs = new Collection<IResultOutCab>();
+    protected static IList<IResultOutGroup> CachesGroups = new Collection<IResultOutGroup>();
+    protected static IList<IResultOutIdentity> CachedIdentities = new Collection<IResultOutIdentity>();
 }

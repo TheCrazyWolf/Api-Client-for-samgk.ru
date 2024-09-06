@@ -1,3 +1,5 @@
+using ClientSamgkOutputResponse.Interfaces.Identity;
+
 namespace ClientSamgkOutputResponse.Interfaces.Groups;
 
 public interface IResultOutGroup
@@ -13,5 +15,5 @@ public interface IResultOutGroup
     /// <summary>
     /// ID куратора группы, которые не работает и не совпадает с реальной жизнью
     /// </summary>
-    public int? Currator { get; set; }
+    public IResultOutIdentity? Currator { get; set; }
 }

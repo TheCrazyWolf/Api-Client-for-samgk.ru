@@ -1,3 +1,6 @@
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+
 namespace ClientSamgkApiModelResponse.Education;
 
 public class DisciplineInfo
@@ -7,7 +10,9 @@ public class DisciplineInfo
     public string Type { get; set; }
     public int IdPlan { get; set; }
     public int IdParent { get; set; }
+    [JsonProperty("index_name")]
     public string IndexName { get; set; }
+    [JsonProperty("index_num")]
     public string IndexNum { get; set; }
     public int Fignja { get; set; }
     public int Variativ { get; set; }

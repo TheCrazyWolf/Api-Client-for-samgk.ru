@@ -1,4 +1,5 @@
 using ClientSamgk.Common;
+using ClientSamgk.Enums;
 using ClientSamgk.Interfaces.Client;
 using ClientSamgkApiModelResponse.Shedules;
 using ClientSamgkOutputResponse.Implementation.Education;
@@ -110,34 +111,46 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         };
 
         var returenableResult = new ResultOutResultOutScheduleFromDate();
-        var result = await SendRequest<SheduleResponseApi>(url);
+        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
 
         returenableResult.Date = date;
 
-        foreach (var scheduleItem in result.Schedules)
+        foreach (var scheduleItem in result.Values)
         {
-            var lesson = new ResultOutResultOutLesson
+            foreach (var resultLessonsApi in scheduleItem)
             {
-                NumPair = scheduleItem.Value.Pair,
-                NumLesson = scheduleItem.Value.Number,
-                SubjectDetails = new ResultOutCabSubject
+                foreach (var item in resultLessonsApi.Value)
                 {
-                    Id = scheduleItem.Value.DisciplineInfo.Id,
-                    SubjectName =
-                        $"{scheduleItem.Value.DisciplineInfo.IndexName}.{scheduleItem.Value.DisciplineInfo.IndexNum} {scheduleItem.Value.DisciplineName}"
-                },
-                EducationGroup = CachesGroups.First(x => x.Id == scheduleItem.Value.Group)
-            };
+                    var lesson = new ResultOutResultOutLesson
+                    {
+                        NumPair = item.Pair,
+                        NumLesson = item.Number,
+                        SubjectDetails = new ResultOutCabSubject
+                        {
+                            Id = item.DisciplineInfo.Id,
+                            SubjectName =
+                                $"{item.DisciplineInfo.IndexName}.{item.DisciplineInfo.IndexNum} {item.DisciplineName}"
+                        },
+                        EducationGroup = CachesGroups.First(x => x.Id == item.Group)
+                    };
 
-            foreach (var idTeacher in scheduleItem.Value.Teacher)
-                lesson.Identity.Add(CachedIdentities.First(x => x.Id == idTeacher));
+                    foreach (var idTeacher in item.Teacher)
+                        lesson.Identity.Add(CachedIdentities.First(x => x.Id == idTeacher));
 
-            foreach (var idCab in scheduleItem.Value.Cab)
-                lesson.Cabs.Add(CachesCabs.First(x => x.Adress == idCab));
+                    foreach (var idCab in item.Cab)
+                        lesson.Cabs.Add(CachesCabs.First(x => x.Adress == idCab));
 
-            returenableResult.Lessons.Add(lesson);
+                    returenableResult.Lessons.Add(lesson);
+                }
+            }
+            
         }
 
+        returenableResult.Lessons = returenableResult.Lessons
+            .OrderBy(x => x.NumPair) 
+            .ThenBy(x => x.NumLesson)
+            .ToList();
+        
         return returenableResult;
     }
 
@@ -157,8 +170,6 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             startDate = startDate.AddDays(1);
 
             await Task.Delay(delay);
-
-            return resultOutScheduleFromDates;
         }
 
         return resultOutScheduleFromDates;
