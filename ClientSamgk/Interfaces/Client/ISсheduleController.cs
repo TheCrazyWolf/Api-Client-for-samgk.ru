@@ -32,11 +32,11 @@ public interface ISсheduleController
 
     Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutCab entity, int delay = 700);
     
-    IResultOutScheduleFromDate GetSchedule(DateOnly date, SheduleSearchType type, string id);
+    IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, string id);
     
-    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, SheduleSearchType type, string id);
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id);
     
-    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, SheduleSearchType type, string id, int delay = 700);
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, string id, int delay = 700);
 
-    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, SheduleSearchType type, string id, int delay = 700);
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, string id, int delay = 700);
 }

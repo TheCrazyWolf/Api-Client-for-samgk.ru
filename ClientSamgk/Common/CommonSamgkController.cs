@@ -31,11 +31,11 @@ public class CommonSamgkController : CommonCache
         var restResponse = await _client.ExecuteAsync(options);
 
         if (!restResponse.IsSuccessStatusCode || restResponse.Content == null)
-            throw new UnsuccessResponse("");
+            throw new UnsuccessResponse("Пустой ответ или сервер вернул неуспешный код");
 
         var deserializeObject = JsonConvert.DeserializeObject<T>(restResponse.Content);
 
-        return deserializeObject ?? throw new DeserializationObjectNull(nameof(T));
+        return deserializeObject ?? throw new DeserializationObjectNull($"Ошибка при десерализации {nameof(T)}");
     }
 
     private async Task ConfiguringCache()

@@ -1,7 +1,6 @@
 using ClientSamgk.Common;
 using ClientSamgk.Interfaces.Client;
 using ClientSamgkOutputResponse.Interfaces.Groups;
-using SamGK_Api.Interfaces.Client;
 
 namespace ClientSamgk.Controllers;
 

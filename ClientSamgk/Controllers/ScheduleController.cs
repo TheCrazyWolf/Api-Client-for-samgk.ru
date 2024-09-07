@@ -15,98 +15,98 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 {
     public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutIdentity entity)
     {
-        return GetScheduleAsync(date: date, type: SheduleSearchType.Employee, entity.Id.ToString()).GetAwaiter()
+        return GetScheduleAsync(date: date, type: ScheduleSearchType.Employee, entity.Id.ToString()).GetAwaiter()
             .GetResult();
     }
 
     public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutIdentity entity)
     {
-        return await GetScheduleAsync(date: date, type: SheduleSearchType.Employee, entity.Id.ToString());
+        return await GetScheduleAsync(date: date, type: ScheduleSearchType.Employee, entity.Id.ToString());
     }
 
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutIdentity entity,
         int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Employee,
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Employee,
             entity.Id.ToString(), delay: delay).GetAwaiter().GetResult();
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
         IResultOutIdentity entity, int delay = 700)
     {
-        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Employee,
+        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Employee,
             entity.Id.ToString(), delay: delay);
     }
 
     public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutGroup entity)
     {
-        return GetScheduleAsync(date: date, type: SheduleSearchType.Group,
+        return GetScheduleAsync(date: date, type: ScheduleSearchType.Group,
             entity.Id.ToString()).GetAwaiter().GetResult();
     }
 
     public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutGroup entity)
     {
-        return await GetScheduleAsync(date: date, type: SheduleSearchType.Group,
+        return await GetScheduleAsync(date: date, type: ScheduleSearchType.Group,
             entity.Id.ToString());
     }
 
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutGroup entity, int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Group,
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Group,
             entity.Id.ToString(), delay: delay).GetAwaiter().GetResult();
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutGroup entity,
         int delay = 700)
     {
-        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Group,
+        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Group,
             entity.Id.ToString(), delay: delay);
     }
 
     public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutCab entity)
     {
-        return GetScheduleAsync(date: date, type: SheduleSearchType.Cab,
+        return GetScheduleAsync(date: date, type: ScheduleSearchType.Cab,
             entity.Adress).GetAwaiter().GetResult();
     }
 
     public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutCab entity)
     {
-        return await GetScheduleAsync(date: date, type: SheduleSearchType.Cab,
+        return await GetScheduleAsync(date: date, type: ScheduleSearchType.Cab,
             entity.Adress);
     }
 
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutCab entity, int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Cab,
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
             entity.Adress, delay: delay).GetAwaiter().GetResult();
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutCab entity,
         int delay = 700)
     {
-        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: SheduleSearchType.Cab,
+        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
             entity.Adress, delay: delay);
     }
 
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, SheduleSearchType type, string id)
+    public IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, string id)
     {
         return GetScheduleAsync(date: date, type: type, id: id).GetAwaiter().GetResult();
     }
 
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, SheduleSearchType type,
+    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
         string id, int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay).GetAwaiter()
             .GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, SheduleSearchType type, string id)
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id)
     {
         var url = type switch
         {
-            SheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&teacher={id}",
-            SheduleSearchType.Group => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&group={id}",
-            SheduleSearchType.Cab => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&cab={id}",
+            ScheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&teacher={id}",
+            ScheduleSearchType.Group => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&group={id}",
+            ScheduleSearchType.Cab => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&cab={id}",
             _ => ""
         };
 
@@ -128,7 +128,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                         {
                             NumPair = item.Pair,
                             NumLesson = item.Number,
-                            SubjectDetails = new ResultOutCabSubject
+                            SubjectDetails = new ResultOutSubject
                             {
                                 Id = item.DisciplineInfo.Id,
                                 SubjectName =
@@ -163,7 +163,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
-        SheduleSearchType type, string id, int delay = 700)
+        ScheduleSearchType type, string id, int delay = 700)
     {
         var resultOutScheduleFromDates = new List<IResultOutScheduleFromDate>();
         endDate = endDate.AddDays(1);

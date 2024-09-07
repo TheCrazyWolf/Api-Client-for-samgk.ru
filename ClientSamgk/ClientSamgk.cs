@@ -1,6 +1,5 @@
 ﻿using ClientSamgk.Controllers;
 using ClientSamgk.Interfaces.Client;
-using SamGK_Api.Interfaces.Client;
 
 namespace ClientSamgk;
 
