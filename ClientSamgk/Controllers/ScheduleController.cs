@@ -128,7 +128,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                         {
                             NumPair = item.Pair,
                             NumLesson = item.Number,
-                            SubjectDetails = new ResultOutCabSubject
+                            SubjectDetails = new ResultOutSubject
                             {
                                 Id = item.DisciplineInfo.Id,
                                 SubjectName =

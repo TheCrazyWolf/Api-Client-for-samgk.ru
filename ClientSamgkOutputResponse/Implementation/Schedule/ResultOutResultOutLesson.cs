@@ -12,7 +12,7 @@ public class ResultOutResultOutLesson : IResultOutLesson
 {
     public IList<IResultOutIdentity> Identity { get; set; } = new List<IResultOutIdentity>();
     public IResultOutGroup EducationGroup { get; set; } = new ResultOutGroup();
-    public IResultOutSubjectItem SubjectDetails { get; set; } = new ResultOutCabSubject();
+    public IResultOutSubjectItem SubjectDetails { get; set; } = new ResultOutSubject();
     public IList<IResultOutCab> Cabs { get; set; } = new List<IResultOutCab>();
     public int NumPair { get; set; }
     public int NumLesson { get; set; }
