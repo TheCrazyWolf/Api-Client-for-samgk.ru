@@ -1,6 +1,6 @@
 namespace ClientSamgk.Enums;
 
-public enum SheduleSearchType
+public enum SсheduleSearchType
 {
     Employee, Group, Cab
 }
