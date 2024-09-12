@@ -5,4 +5,5 @@ namespace ClientSamgk.Interfaces.Client;
 public interface IIdentityController
 {
     IList<IResultOutIdentity> GetTeachers();
+    IResultOutIdentity? GetTeacher(string teacherName);
 }

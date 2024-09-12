@@ -10,4 +10,10 @@ public class AccountController : CommonSamgkController, IIdentityController
     {
         return CachedIdentities.OrderBy(x=> x.Name).ToList();
     }
+
+    public IResultOutIdentity? GetTeacher(string teacherName)
+    {
+        return CachedIdentities.FirstOrDefault(x=> string.Equals(x.Name, teacherName, 
+            StringComparison.CurrentCultureIgnoreCase));
+    }
 }
