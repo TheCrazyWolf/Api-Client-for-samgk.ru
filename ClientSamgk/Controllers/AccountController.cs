@@ -8,6 +8,6 @@ public class AccountController : CommonSamgkController, IIdentityController
 {
     public IList<IResultOutIdentity> GetTeachers()
     {
-        return CachedIdentities;
+        return CachedIdentities.OrderBy(x=> x.Name).ToList();
     }
 }

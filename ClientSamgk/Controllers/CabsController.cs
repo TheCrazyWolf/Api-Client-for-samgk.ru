@@ -8,7 +8,9 @@ public class CabsController : CommonSamgkController, ICabController
 {
     public IList<IResultOutCab> GetCabs()
     {
-        return CachesCabs;
+        return CachesCabs
+            .OrderBy(x=> x.Adress)
+            .ToList();
     }
 
     public IResultOutCab? GetCab(string cabName)

@@ -8,7 +8,9 @@ public class GroupsController : CommonSamgkController, IGroupController
 {
     public IList<IResultOutGroup> GetGroups()
     {
-        return CachesGroups;
+        return CachesGroups
+            .OrderBy(x=> x.Name)
+            .ToList();
     }
 
     public IResultOutGroup? GetGroup(int idGroup)
