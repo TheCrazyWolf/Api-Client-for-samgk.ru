@@ -3,7 +3,7 @@ using ClientSamgk.Interfaces.Client;
 
 namespace ClientSamgk;
 
-public class ClientSamgk
+public class ClientSamgkApi
 {
     public ISсheduleController Sсhedule { get; protected set; } = new ScheduleController();
     /*public IAccountController Accounts { get; protected set; } = new AccountController();*/

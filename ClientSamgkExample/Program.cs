@@ -2,7 +2,7 @@
 
 using ClientSamgk.Enums;
 
-var api = new ClientSamgk.ClientSamgk();
+var api = new ClientSamgk.ClientSamgkApi();
 foreach (var group in api.Groups.GetGroups())
 {
     Console.WriteLine($"#{group.Id} - {group.Name}");
