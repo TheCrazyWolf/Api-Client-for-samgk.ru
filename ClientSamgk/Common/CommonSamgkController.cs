@@ -20,8 +20,7 @@ public class CommonSamgkController : CommonCache
     protected CommonSamgkController()
     {
         _client = new RestClient();
-        ConfiguringCache()
-            .GetAwaiter().GetResult();
+        Task.Run(() => Task.FromResult(ConfiguringCache())).Wait();
     }
 
     protected async Task<T> SendRequest<T>(string url)

@@ -8,6 +8,7 @@
         <Authors>kulagin</Authors>
         <AssemblyName>ClientSamgk</AssemblyName>
         <RootNamespace>ClientSamgk</RootNamespace>
+        <Version>2.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
