@@ -102,6 +102,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
     public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id)
     {
+        await ConfiguringCache();
         var url = type switch
         {
             ScheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&teacher={id}",
@@ -164,7 +165,9 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
         ScheduleSearchType type, string id, int delay = 700)
+    
     {
+        await ConfiguringCache();
         var resultOutScheduleFromDates = new List<IResultOutScheduleFromDate>();
         endDate = endDate.AddDays(1);
 
