@@ -15,14 +15,8 @@ namespace ClientSamgk.Common;
 
 public class CommonSamgkController : CommonCache
 {
-    private readonly RestClient _client;
-
-    protected CommonSamgkController()
-    {
-        _client = new RestClient();
-        Task.Run(() => Task.FromResult(ConfiguringCache())).Wait();
-    }
-
+    private readonly RestClient _client = new RestClient();
+    
     protected async Task<T> SendRequest<T>(string url)
     {
         var options = new RestRequest(url);
@@ -37,7 +31,7 @@ public class CommonSamgkController : CommonCache
         return deserializeObject ?? throw new DeserializationObjectNull($"Ошибка при десерализации {nameof(T)}");
     }
 
-    private async Task ConfiguringCache()
+    protected async Task ConfiguringCache()
     {
         await ConfiguringCacheTeachers();
         await ConfiguringCacheCabs();
@@ -46,8 +40,7 @@ public class CommonSamgkController : CommonCache
 
     private async Task ConfiguringCacheGroups()
     {
-        if (CachesGroups.Count is not 0)
-            return;
+        if (CachesGroups.Count is not 0) return;
         
         CachesGroups = (await SendRequest<IList<SamGkGroupApiResult>>("https://mfc.samgk.ru/api/groups"))
             .Select(x => (IResultOutGroup)new ResultOutGroup
@@ -61,8 +54,7 @@ public class CommonSamgkController : CommonCache
     
     private async Task ConfiguringCacheTeachers()
     {
-        if (CachedIdentities.Count is not 0)
-            return;
+        if (CachedIdentities.Count is not 0) return;
         
         CachedIdentities = (await SendRequest<IList<SamgkTeacherApiResult>>("https://mfc.samgk.ru/api/teachers"))
             .Select(x => (IResultOutIdentity)new ResultOutIdentity
@@ -75,8 +67,7 @@ public class CommonSamgkController : CommonCache
     
     private async Task ConfiguringCacheCabs()
     {
-        if (CachesCabs.Count is not 0)
-            return;
+        if (CachesCabs.Count is not 0) return;
         
         CachesCabs = (await SendRequest<Dictionary<string,string>>("https://mfc.samgk.ru/api/cabs"))
             .Select(x => (IResultOutCab)new ResultOutCab
