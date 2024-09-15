@@ -17,7 +17,7 @@ public class CommonSamgkController : CommonCache
 {
     private DateTime _lastUpdate = default!;
     private readonly RestClient _client = new RestClient();
-    
+
     protected async Task<T> SendRequest<T>(string url)
     {
         var options = new RestRequest(url);
@@ -34,7 +34,7 @@ public class CommonSamgkController : CommonCache
 
     protected async Task ConfiguringCache()
     {
-        if((DateTime.Now - _lastUpdate).Days < 3) return;
+        if (!IsRequiredToFourceUpdateCache()) return;
 
         _lastUpdate = DateTime.Now;
         await ConfiguringCacheTeachers();
@@ -44,40 +44,66 @@ public class CommonSamgkController : CommonCache
 
     private async Task ConfiguringCacheGroups()
     {
-        if (CachesGroups.Count is not 0) return;
-        
-        CachesGroups = (await SendRequest<IList<SamGkGroupApiResult>>("https://mfc.samgk.ru/api/groups"))
-            .Select(x => (IResultOutGroup)new ResultOutGroup
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Currator = CachedIdentities.FirstOrDefault(y=> y.Id == x.Currator),
-            })
-            .ToList();
+        try
+        {
+            CachesGroups = (await SendRequest<IList<SamGkGroupApiResult>>("https://mfc.samgk.ru/api/groups"))
+                .Select(x => (IResultOutGroup)new ResultOutGroup
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Currator = CachedIdentities.FirstOrDefault(y => y.Id == x.Currator),
+                })
+                .ToList();
+        }
+        catch (Exception e)
+        {
+            //
+        }
     }
-    
+
     private async Task ConfiguringCacheTeachers()
     {
-        if (CachedIdentities.Count is not 0) return;
-        
-        CachedIdentities = (await SendRequest<IList<SamgkTeacherApiResult>>("https://mfc.samgk.ru/api/teachers"))
-            .Select(x => (IResultOutIdentity)new ResultOutIdentity
-            {
-                Id = Convert.ToInt64(x.Id),
-                Name = x.Name
-            })
-            .ToList();
+        try
+        {
+            CachedIdentities = (await SendRequest<IList<SamgkTeacherApiResult>>("https://mfc.samgk.ru/api/teachers"))
+                .Select(x => (IResultOutIdentity)new ResultOutIdentity
+                {
+                    Id = Convert.ToInt64(x.Id),
+                    Name = x.Name
+                })
+                .ToList();
+        }
+        catch (Exception e)
+        {
+            // 
+        }
     }
-    
+
     private async Task ConfiguringCacheCabs()
     {
-        if (CachesCabs.Count is not 0) return;
-        
-        CachesCabs = (await SendRequest<Dictionary<string,string>>("https://mfc.samgk.ru/api/cabs"))
-            .Select(x => (IResultOutCab)new ResultOutCab
-            {
-                Adress = x.Value
-            })
-            .ToList();
+        try
+        {
+            CachesCabs = (await SendRequest<Dictionary<string, string>>("https://mfc.samgk.ru/api/cabs"))
+                .Select(x => (IResultOutCab)new ResultOutCab
+                {
+                    Adress = x.Value
+                })
+                .ToList();
+        }
+        catch (Exception e)
+        {
+            // 
+        }
+    }
+
+    private bool IsRequiredToFourceUpdateCache()
+    {
+        if (CachesCabs.Count is 0 || CachesGroups.Count is 0 || CachedIdentities.Count is 0)
+            return true;
+
+        if ((DateTime.Now - _lastUpdate).Days < 3)
+            return false;
+
+        return true;
     }
 }
