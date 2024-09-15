@@ -2,7 +2,7 @@ namespace ClientSamgkApiModelResponse.Groups;
 
 public class SamGkGroupApiResult
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     public string Name { get; set; }
-    public int? Currator { get; set; }
+    public long? Currator { get; set; }
 }

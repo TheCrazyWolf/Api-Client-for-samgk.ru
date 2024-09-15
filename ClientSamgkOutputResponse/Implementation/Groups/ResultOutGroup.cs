@@ -5,7 +5,7 @@ namespace ClientSamgkOutputResponse.Implementation.Groups;
 
 public class ResultOutGroup : IResultOutGroup
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public IResultOutIdentity? Currator { get; set; }
 }

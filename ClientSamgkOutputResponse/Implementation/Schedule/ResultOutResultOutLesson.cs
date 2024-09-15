@@ -14,8 +14,8 @@ public class ResultOutResultOutLesson : IResultOutLesson
     public IResultOutGroup EducationGroup { get; set; } = new ResultOutGroup();
     public IResultOutSubjectItem SubjectDetails { get; set; } = new ResultOutSubject();
     public IList<IResultOutCab> Cabs { get; set; } = new List<IResultOutCab>();
-    public int NumPair { get; set; }
-    public int NumLesson { get; set; }
+    public long NumPair { get; set; }
+    public long NumLesson { get; set; }
     public TimeOnly DurationStart { get; set; } = new TimeOnly(0, 0, 0);
     public TimeOnly DurationEnd { get; set; } = new TimeOnly(0, 0, 0);
 }
