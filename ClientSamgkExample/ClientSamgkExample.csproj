@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ClientSamgkOutputResponse\ClientSamgkOutputResponse.csproj" />
       <ProjectReference Include="..\ClientSamgk\ClientSamgk.csproj" />
     </ItemGroup>
 

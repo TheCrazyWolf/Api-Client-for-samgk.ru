@@ -11,6 +11,8 @@ public interface IResultOutLesson
     public IResultOutGroup EducationGroup { get; set; }
     public IResultOutSubjectItem SubjectDetails { get; set; }
     public IList<IResultOutCab> Cabs { get; set; }
-    public int NumPair { get; set; }
-    public int NumLesson { get; set; }
+    public long NumPair { get; set; }
+    public long NumLesson { get; set; }
+    public TimeOnly DurationStart { get; set; } 
+    public TimeOnly DurationEnd { get; set; } 
 }

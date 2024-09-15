@@ -7,7 +7,7 @@ public interface IResultOutGroup
     /// <summary>
     /// ID группы
     /// </summary>
-    public int Id { get; set; }
+    public long Id { get; set; }
     /// <summary>
     /// Название группы
     /// </summary>

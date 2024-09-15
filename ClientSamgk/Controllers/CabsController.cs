@@ -8,11 +8,23 @@ public class CabsController : CommonSamgkController, ICabController
 {
     public IList<IResultOutCab> GetCabs()
     {
-        return CachesCabs;
+        return GetCabsAsync().GetAwaiter().GetResult();
+    }
+
+    public async Task<IList<IResultOutCab>> GetCabsAsync()
+    {
+        await ConfiguringCache();
+        return CachesCabs.OrderBy(x=> x.Adress).ToList();
     }
 
     public IResultOutCab? GetCab(string cabName)
     {
+        return GetCabAsync(cabName).GetAwaiter().GetResult();
+    }
+
+    public async Task<IResultOutCab?> GetCabAsync(string cabName)
+    {
+        await ConfiguringCache();
         return CachesCabs.FirstOrDefault(x=> x.Adress.Equals(cabName, 
             StringComparison.CurrentCultureIgnoreCase));
     }
