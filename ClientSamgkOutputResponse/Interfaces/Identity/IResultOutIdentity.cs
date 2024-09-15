@@ -11,4 +11,6 @@ public interface IResultOutIdentity
     /// Фио преподавателя
     /// </summary>
     public string Name { get; set; }
+
+    public string GetShortName();
 }
