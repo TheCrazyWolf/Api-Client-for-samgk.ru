@@ -7,7 +7,7 @@ public static class ScheduleUtils
 {
     public static TimeOnly GetStartLessonTime(this ScheduleItem scheduleItem, DateOnly date)
     {
-        if (date.DayOfWeek == DayOfWeek.Monday && date.Month != 06 && date.Month != 07)
+        if (date.DayOfWeek == DayOfWeek.Monday && date.Month != 6 && date.Month != 7)
         {
             return scheduleItem.Pair switch
             {
