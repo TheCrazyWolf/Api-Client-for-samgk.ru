@@ -13,4 +13,6 @@ public interface IResultOutLesson
     public IList<IResultOutCab> Cabs { get; set; }
     public int NumPair { get; set; }
     public int NumLesson { get; set; }
+    public TimeOnly DurationStart { get; set; } 
+    public TimeOnly DurationEnd { get; set; } 
 }

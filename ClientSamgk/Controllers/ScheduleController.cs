@@ -1,6 +1,7 @@
 using ClientSamgk.Common;
 using ClientSamgk.Enums;
 using ClientSamgk.Interfaces.Client;
+using ClientSamgk.Utils;
 using ClientSamgkApiModelResponse.Shedules;
 using ClientSamgkOutputResponse.Implementation.Education;
 using ClientSamgkOutputResponse.Implementation.Schedule;
@@ -103,6 +104,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id)
     {
         await ConfiguringCache();
+        
         var url = type switch
         {
             ScheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&teacher={id}",
@@ -119,29 +121,30 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         try
         {
             var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
-            foreach (var scheduleItem in result.Values)
+            
+            foreach (var array in result.Values)
             {
-                foreach (var resultLessonsApi in scheduleItem)
+                foreach (var arrayScheduleItem in array)
                 {
-                    foreach (var item in resultLessonsApi.Value)
+                    foreach (var scheduleItem in arrayScheduleItem.Value)
                     {
                         var lesson = new ResultOutResultOutLesson
                         {
-                            NumPair = item.Pair,
-                            NumLesson = item.Number,
+                            NumPair = scheduleItem.Pair,
+                            NumLesson = scheduleItem.Number,
+                            DurationStart = scheduleItem.GetStartLessonTime(returenableResult.Date),
+                            DurationEnd = scheduleItem.GetEndLessonTime(returenableResult.Date),
                             SubjectDetails = new ResultOutSubject
                             {
-                                Id = item.DisciplineInfo.Id,
-                                SubjectName =
-                                    $"{item.DisciplineInfo.IndexName}.{item.DisciplineInfo.IndexNum} {item.DisciplineName}"
+                                Id = scheduleItem.DisciplineInfo.Id,
+                                SubjectName = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum} {scheduleItem.DisciplineName}"
                             },
-                            EducationGroup = CachesGroups.First(x => x.Id == item.Group)
+                            EducationGroup = CachesGroups.First(x => x.Id == scheduleItem.Group)
                         };
-
-                        foreach (var idTeacher in item.Teacher)
+                        foreach (var idTeacher in scheduleItem.Teacher)
                             lesson.Identity.Add(CachedIdentities.First(x => x.Id == idTeacher));
 
-                        foreach (var idCab in item.Cab)
+                        foreach (var idCab in scheduleItem.Cab)
                             lesson.Cabs.Add(CachesCabs.First(x => x.Adress == idCab));
 
                         returenableResult.Lessons.Add(lesson);
@@ -150,10 +153,18 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             
             }
 
-            returenableResult.Lessons = returenableResult.Lessons
-                .OrderBy(x => x.NumPair) 
-                .ThenBy(x => x.NumLesson)
-                .ToList();
+            returenableResult.Lessons = returenableResult.Lessons.RemoveDuplicates().SortByLessons();
+            
+            var firstLesson = returenableResult.Lessons.FirstOrDefault();
+
+            // если есть 1 пара (или 1 урок) и это понедельник
+            if (firstLesson is not null 
+                && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 || firstLesson.NumPair is 1 && firstLesson.NumLesson is 0) 
+                && returenableResult.Date.DayOfWeek is DayOfWeek.Monday && returenableResult.Date.Month != 6 && returenableResult.Date.Month != 7)
+            {
+                returenableResult.Lessons = returenableResult.Lessons.AddTalkImportantLesson().SortByLessons();
+            }
+            
         }
         catch 
         {
