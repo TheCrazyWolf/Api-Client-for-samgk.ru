@@ -230,4 +230,9 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
         return result;
     }
+
+    public IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnly date, ScheduleSearchType type, int delay = 700)
+    {
+        return GetAllScheduleAsync(date, type, delay).GetAwaiter().GetResult();
+    }
 }
