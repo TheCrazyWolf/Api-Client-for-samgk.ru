@@ -34,7 +34,7 @@ public class CommonSamgkController : CommonCache
 
     protected async Task ConfiguringCache()
     {
-        if (!IsRequiredToFourceUpdateCache()) return;
+        if (!IsRequiredToForceUpdateCache()) return;
 
         _lastUpdate = DateTime.Now;
         await ConfiguringCacheTeachers();
@@ -96,7 +96,7 @@ public class CommonSamgkController : CommonCache
         }
     }
 
-    private bool IsRequiredToFourceUpdateCache()
+    private bool IsRequiredToForceUpdateCache()
     {
         if (CachesCabs.Count is 0 || CachesGroups.Count is 0 || CachedIdentities.Count is 0)
             return true;
