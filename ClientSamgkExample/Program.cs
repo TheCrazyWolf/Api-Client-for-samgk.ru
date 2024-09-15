@@ -3,29 +3,8 @@
 using ClientSamgk.Enums;
 
 var api = new ClientSamgk.ClientSamgkApi();
-foreach (var group in api.Groups.GetGroups())
-{
-    Console.WriteLine($"#{group.Id} - {group.Name}");
-}
-
-foreach (var cab in api.Cabs.GetCabs())
-{
-    Console.WriteLine($"#{cab.Adress}");
-}
-
-foreach (var rasp in api.Schedule.GetSchedule(new DateOnly(2024, 09, 04), ScheduleSearchType.Cab, "5/512").Lessons)
-{
-    Console.WriteLine($"{rasp.NumPair}.{rasp.NumLesson} {rasp.SubjectDetails.SubjectName}");
-}
 
 
-foreach (var rasp in api.Schedule.GetSchedule(new DateOnly(2024, 09, 04),
-             new DateOnly(2024, 09, 09), ScheduleSearchType.Cab, "5/512"))
-{
-    Console.WriteLine($"#{rasp.Date}");
+var result = await api.Schedule.GetAllScheduleAsync(new DateOnly(2024,09,16), ScheduleSearchType.Group);
 
-    foreach (var lesson in rasp.Lessons)
-    {
-        Console.WriteLine($"{lesson.NumPair} {lesson.SubjectDetails.SubjectName}");
-    }
-}
+Console.WriteLine();

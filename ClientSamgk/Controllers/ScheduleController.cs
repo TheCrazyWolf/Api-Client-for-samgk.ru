@@ -141,6 +141,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                             },
                             EducationGroup = CachesGroups.First(x => x.Id == scheduleItem.Group)
                         };
+                        
                         foreach (var idTeacher in scheduleItem.Teacher)
                             lesson.Identity.Add(CachedIdentities.First(x => x.Id == idTeacher));
 
@@ -195,5 +196,38 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
 
         return resultOutScheduleFromDates;
+    }
+
+    public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type, int delay = 700)
+    {
+        await ConfiguringCache();
+        
+        var result = new List<IResultOutScheduleFromDate>();
+        
+        if(type is ScheduleSearchType.Employee)
+            foreach (var item in CachedIdentities)
+            {
+                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Employee, item.Id.ToString());
+                if (scheduleFromDate.Lessons.Count != 0)
+                    result.Add(scheduleFromDate);
+            }
+        
+        if(type is ScheduleSearchType.Cab)
+            foreach (var item in CachesCabs)
+            {
+                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Cab, item.Adress);
+                if (scheduleFromDate.Lessons.Count != 0)
+                    result.Add(scheduleFromDate);
+            }
+        
+        if(type is ScheduleSearchType.Group)
+            foreach (var item in CachesGroups)
+            {
+                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Group, item.Id.ToString());
+                if (scheduleFromDate.Lessons.Count != 0)
+                    result.Add(scheduleFromDate);
+            }
+
+        return result;
     }
 }
