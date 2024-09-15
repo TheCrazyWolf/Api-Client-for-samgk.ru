@@ -55,7 +55,7 @@ public class CommonSamgkController : CommonCache
                 })
                 .ToList();
         }
-        catch (Exception e)
+        catch 
         {
             //
         }
@@ -73,7 +73,7 @@ public class CommonSamgkController : CommonCache
                 })
                 .ToList();
         }
-        catch (Exception e)
+        catch 
         {
             // 
         }
@@ -90,7 +90,7 @@ public class CommonSamgkController : CommonCache
                 })
                 .ToList();
         }
-        catch (Exception e)
+        catch 
         {
             // 
         }
