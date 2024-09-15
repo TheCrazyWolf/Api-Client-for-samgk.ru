@@ -53,6 +53,7 @@ public class CommonSamgkController : CommonCache
                     Name = x.Name,
                     Currator = CachedIdentities.FirstOrDefault(y => y.Id == x.Currator),
                 })
+                .OrderBy(x=> x.Name)
                 .ToList();
         }
         catch 
@@ -71,6 +72,7 @@ public class CommonSamgkController : CommonCache
                     Id = Convert.ToInt64(x.Id),
                     Name = x.Name
                 })
+                .OrderBy(x=> x.Name)
                 .ToList();
         }
         catch 
@@ -88,6 +90,7 @@ public class CommonSamgkController : CommonCache
                 {
                     Adress = x.Value
                 })
+                .OrderBy(x=> x.Adress)
                 .ToList();
         }
         catch 
