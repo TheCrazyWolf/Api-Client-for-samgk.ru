@@ -34,7 +34,7 @@ public class CommonSamgkController : CommonCache
 
     protected async Task ConfiguringCache()
     {
-        if((_lastUpdate - DateTime.Now).Days < 3) return;
+        if((DateTime.Now - _lastUpdate).Days < 3) return;
 
         _lastUpdate = DateTime.Now;
         await ConfiguringCacheTeachers();
