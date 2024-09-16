@@ -1,5 +1,4 @@
 ﻿using ClientSamgkApiModelResponse.Shedules;
-using ClientSamgkOutputResponse.Interfaces.Schedule;
 
 namespace ClientSamgk.Utils;
 
