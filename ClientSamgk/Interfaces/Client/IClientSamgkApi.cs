@@ -1,6 +1,6 @@
 namespace ClientSamgk.Interfaces.Client;
 
-public interface IMainClient
+public interface IClientSamgkApi
 {
     public IGroupController Groups { get; }
     public ICabController Cabs { get; }
