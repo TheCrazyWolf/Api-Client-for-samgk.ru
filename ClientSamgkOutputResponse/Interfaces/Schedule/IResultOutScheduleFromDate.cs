@@ -1,7 +1,9 @@
+using ClientSamgkOutputResponse.LegacyImplementation;
+
 namespace ClientSamgkOutputResponse.Interfaces.Schedule;
 
 public interface IResultOutScheduleFromDate
 {
-    public DateOnly Date { get; set; }
+    public DateOnlyLegacy Date { get; set; }
     public IList<IResultOutLesson> Lessons { get; set; }
 }

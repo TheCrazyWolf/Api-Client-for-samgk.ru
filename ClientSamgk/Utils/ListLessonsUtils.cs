@@ -11,8 +11,8 @@ public static class ListLessonsUtils
         var newLesson = new ResultOutResultOutLesson
         {
             NumLesson = 0, NumPair = 0, 
-            DurationStart = new TimeOnly(08,25),
-            DurationEnd = new TimeOnly(09,10),
+            DurationStart = new ClientSamgkOutputResponse.LegacyImplementation.TimeOnlyLegacy(08,25),
+            DurationEnd = new ClientSamgkOutputResponse.LegacyImplementation.TimeOnlyLegacy(09,10),
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,
@@ -31,8 +31,8 @@ public static class ListLessonsUtils
         var newLesson = new ResultOutResultOutLesson
         {
             NumLesson = 0, NumPair = 0, 
-            DurationStart = new TimeOnly(08,25),
-            DurationEnd = new TimeOnly(09,10),
+            DurationStart = new ClientSamgkOutputResponse.LegacyImplementation.TimeOnlyLegacy(08,25),
+            DurationEnd = new ClientSamgkOutputResponse.LegacyImplementation.TimeOnlyLegacy(09,10),
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,

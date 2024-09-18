@@ -5,6 +5,7 @@ using ClientSamgkOutputResponse.Interfaces.Education;
 using ClientSamgkOutputResponse.Interfaces.Groups;
 using ClientSamgkOutputResponse.Interfaces.Identity;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
+using ClientSamgkOutputResponse.LegacyImplementation;
 
 namespace ClientSamgkOutputResponse.Implementation.Schedule;
 
@@ -16,6 +17,6 @@ public class ResultOutResultOutLesson : IResultOutLesson
     public IList<IResultOutCab> Cabs { get; set; } = new List<IResultOutCab>();
     public long NumPair { get; set; }
     public long NumLesson { get; set; }
-    public TimeOnly DurationStart { get; set; } = new TimeOnly(0, 0, 0);
-    public TimeOnly DurationEnd { get; set; } = new TimeOnly(0, 0, 0);
+    public TimeOnlyLegacy DurationStart { get; set; } = new TimeOnlyLegacy(0, 0);
+    public TimeOnlyLegacy DurationEnd { get; set; } = new TimeOnlyLegacy(0, 0);
 }

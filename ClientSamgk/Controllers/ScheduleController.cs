@@ -9,107 +9,108 @@ using ClientSamgkOutputResponse.Interfaces.Cabs;
 using ClientSamgkOutputResponse.Interfaces.Groups;
 using ClientSamgkOutputResponse.Interfaces.Identity;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
+using ClientSamgkOutputResponse.LegacyImplementation;
 
 namespace ClientSamgk.Controllers;
 
 public class ScheduleController : CommonSamgkController, ISсheduleController
 {
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutIdentity entity)
+    public IResultOutScheduleFromDate GetSchedule(DateOnlyLegacy date, IResultOutIdentity entity)
     {
         return GetScheduleAsync(date: date, type: ScheduleSearchType.Employee, entity.Id.ToString()).GetAwaiter()
             .GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutIdentity entity)
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnlyLegacy date, IResultOutIdentity entity)
     {
         return await GetScheduleAsync(date: date, type: ScheduleSearchType.Employee, entity.Id.ToString());
     }
 
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutIdentity entity,
+    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnlyLegacy startDate, DateOnlyLegacy endDate, IResultOutIdentity entity,
         int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Employee,
             entity.Id.ToString(), delay: delay).GetAwaiter().GetResult();
     }
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnlyLegacy startDate, DateOnlyLegacy endDate,
         IResultOutIdentity entity, int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Employee,
             entity.Id.ToString(), delay: delay);
     }
 
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutGroup entity)
+    public IResultOutScheduleFromDate GetSchedule(DateOnlyLegacy date, IResultOutGroup entity)
     {
         return GetScheduleAsync(date: date, type: ScheduleSearchType.Group,
             entity.Id.ToString()).GetAwaiter().GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutGroup entity)
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnlyLegacy date, IResultOutGroup entity)
     {
         return await GetScheduleAsync(date: date, type: ScheduleSearchType.Group,
             entity.Id.ToString());
     }
 
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutGroup entity, int delay = 700)
+    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnlyLegacy startDate, DateOnlyLegacy endDate, IResultOutGroup entity, int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Group,
             entity.Id.ToString(), delay: delay).GetAwaiter().GetResult();
     }
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutGroup entity,
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnlyLegacy startDate, DateOnlyLegacy endDate, IResultOutGroup entity,
         int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Group,
             entity.Id.ToString(), delay: delay);
     }
 
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutCab entity)
+    public IResultOutScheduleFromDate GetSchedule(DateOnlyLegacy date, IResultOutCab entity)
     {
         return GetScheduleAsync(date: date, type: ScheduleSearchType.Cab,
             entity.Adress).GetAwaiter().GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutCab entity)
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnlyLegacy date, IResultOutCab entity)
     {
         return await GetScheduleAsync(date: date, type: ScheduleSearchType.Cab,
             entity.Adress);
     }
 
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutCab entity, int delay = 700)
+    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnlyLegacy startDate, DateOnlyLegacy endDate, IResultOutCab entity, int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
             entity.Adress, delay: delay).GetAwaiter().GetResult();
     }
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutCab entity,
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnlyLegacy startDate, DateOnlyLegacy endDate, IResultOutCab entity,
         int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
             entity.Adress, delay: delay);
     }
 
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, string id)
+    public IResultOutScheduleFromDate GetSchedule(DateOnlyLegacy date, ScheduleSearchType type, string id)
     {
         return GetScheduleAsync(date: date, type: type, id: id).GetAwaiter().GetResult();
     }
 
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
+    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnlyLegacy startDate, DateOnlyLegacy endDate, ScheduleSearchType type,
         string id, int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay).GetAwaiter()
             .GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id)
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnlyLegacy date, ScheduleSearchType type, string id)
     {
         await ConfiguringCache();
         
         var url = type switch
         {
-            ScheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&teacher={id}",
-            ScheduleSearchType.Group => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&group={id}",
-            ScheduleSearchType.Cab => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&cab={id}",
+            ScheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.Year}-{date.Month}-{date.Day}&teacher={id}",
+            ScheduleSearchType.Group => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.Year}-{date.Month}-{date.Day}&group={id}",
+            ScheduleSearchType.Cab => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.Year}-{date.Month}-{date.Day}&cab={id}",
             _ => ""
         };
 
@@ -186,11 +187,14 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         return returenableResult;
     }
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnlyLegacy startDate, DateOnlyLegacy endDate,
         ScheduleSearchType type, string id, int delay = 700)
-    
+
     {
-        await ConfiguringCache();
+
+        throw new NotImplementedException("Don use this method");
+        /*
+         * await ConfiguringCache();
         var resultOutScheduleFromDates = new List<IResultOutScheduleFromDate>();
         endDate = endDate.AddDays(1);
 
@@ -207,9 +211,10 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
 
         return resultOutScheduleFromDates;
+         */
     }
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type, int delay = 700)
+    public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnlyLegacy date, ScheduleSearchType type, int delay = 700)
     {
         await ConfiguringCache();
         
@@ -242,7 +247,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         return result;
     }
 
-    public IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnly date, ScheduleSearchType type, int delay = 700)
+    public IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnlyLegacy date, ScheduleSearchType type, int delay = 700)
     {
         return GetAllScheduleAsync(date, type, delay).GetAwaiter().GetResult();
     }

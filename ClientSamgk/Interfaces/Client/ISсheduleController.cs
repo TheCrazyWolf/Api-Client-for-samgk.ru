@@ -3,43 +3,51 @@ using ClientSamgkOutputResponse.Interfaces.Cabs;
 using ClientSamgkOutputResponse.Interfaces.Groups;
 using ClientSamgkOutputResponse.Interfaces.Identity;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
+using ClientSamgkOutputResponse.LegacyImplementation;
 
 namespace ClientSamgk.Interfaces.Client;
 
 public interface ISсheduleController
 {
-    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutIdentity entity);
+    IResultOutScheduleFromDate GetSchedule(DateOnlyLegacy date, IResultOutIdentity entity);
 
-    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutIdentity entity);
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnlyLegacy date, IResultOutIdentity entity);
 
-    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutIdentity entity, int delay = 700);
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnlyLegacy startDate, DateOnlyLegacy endDate, IResultOutIdentity entity,
+        int delay = 700);
 
-    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutIdentity entity, int delay = 700);
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnlyLegacy startDate, DateOnlyLegacy endDate, IResultOutIdentity entity,
+        int delay = 700);
 
-    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutGroup entity);
+    IResultOutScheduleFromDate GetSchedule(DateOnlyLegacy date, IResultOutGroup entity);
 
-    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutGroup entity);
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnlyLegacy date, IResultOutGroup entity);
 
-    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutGroup entity, int delay = 700);
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnlyLegacy startDate, DateOnlyLegacy endDate, IResultOutGroup entity, int delay = 700);
 
-    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutGroup entity, int delay = 700);
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnlyLegacy startDate, DateOnlyLegacy endDate, IResultOutGroup entity,
+        int delay = 700);
 
-    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutCab entity);
+    IResultOutScheduleFromDate GetSchedule(DateOnlyLegacy date, IResultOutCab entity);
 
-    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutCab entity);
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnlyLegacy date, IResultOutCab entity);
 
-    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutCab entity, int delay = 700);
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnlyLegacy startDate, DateOnlyLegacy endDate, IResultOutCab entity, int delay = 700);
 
-    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutCab entity, int delay = 700);
-    
-    IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, string id);
-    
-    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id);
-    
-    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, string id, int delay = 700);
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnlyLegacy startDate, DateOnlyLegacy endDate, IResultOutCab entity,
+        int delay = 700);
 
-    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, string id, int delay = 700);
+    IResultOutScheduleFromDate GetSchedule(DateOnlyLegacy date, ScheduleSearchType type, string id);
 
-    Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type, int delay = 700);
-    IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnly date, ScheduleSearchType type, int delay = 700);
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnlyLegacy date, ScheduleSearchType type, string id);
+
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnlyLegacy startDate, DateOnlyLegacy endDate, ScheduleSearchType type, string id,
+        int delay = 700);
+
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnlyLegacy startDate, DateOnlyLegacy endDate, ScheduleSearchType type,
+        string id, int delay = 700);
+
+    Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnlyLegacy date, ScheduleSearchType type, int delay = 700);
+
+    IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnlyLegacy date, ScheduleSearchType type, int delay = 700);
 }
