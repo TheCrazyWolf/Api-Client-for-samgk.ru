@@ -26,6 +26,26 @@ public static class ListLessonsUtils
         return lesson;
     }
     
+    public static IList<IResultOutLesson> AddRussianMyHorizonTalk(this IList<IResultOutLesson> lesson)
+    {
+        var newLesson = new ResultOutResultOutLesson
+        {
+            NumLesson = 0, NumPair = 0, 
+            DurationStart = new TimeOnly(08,25),
+            DurationEnd = new TimeOnly(09,10),
+            SubjectDetails = new ResultOutSubject
+            {
+                Id = 0,
+                SubjectName = "Классный час «Россия. Мои горизонты»"
+            },
+            Cabs = lesson.First().Cabs, EducationGroup = lesson.First().EducationGroup, 
+            Identity = lesson.First().Identity
+        };
+        
+        lesson.Add(newLesson);
+        return lesson;
+    }
+    
     public static IList<IResultOutLesson> SortByLessons(this IList<IResultOutLesson> lesson)
     {
         return lesson.OrderBy(x => x.NumPair).ThenBy(x => x.NumLesson).ToList();
