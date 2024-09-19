@@ -7,7 +7,7 @@
         <Authors>kulagin</Authors>
         <AssemblyName>ClientSamgk</AssemblyName>
         <RootNamespace>ClientSamgk</RootNamespace>
-        <Version>2.5.4</Version>
+        <Version>2.5.5_netStandart</Version>
         <TargetFramework>netstandard2.1</TargetFramework>
         <LangVersion>12</LangVersion>
     </PropertyGroup>
