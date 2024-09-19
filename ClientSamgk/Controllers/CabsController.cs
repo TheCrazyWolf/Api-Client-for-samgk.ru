@@ -28,4 +28,15 @@ public class CabsController : CommonSamgkController, ICabController
         return CachesCabs.FirstOrDefault(x=> x.Adress.Equals(cabName, 
             StringComparison.CurrentCultureIgnoreCase));
     }
+
+    public async Task<IList<IResultOutCab>> GetCabsAsync(int campusNumber)
+    {
+        await ConfiguringCache();
+        return CachesCabs.Where(x=> x.Campus == campusNumber).ToList();
+    }
+
+    public IList<IResultOutCab> GetCabs(int campusNumber)
+    {
+        return GetCabsAsync(campusNumber).GetAwaiter().GetResult();
+    }
 }
