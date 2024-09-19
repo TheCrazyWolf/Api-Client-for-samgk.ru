@@ -191,10 +191,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         ScheduleSearchType type, string id, int delay = 700)
 
     {
-
-        throw new NotImplementedException("Don use this method");
-        /*
-         * await ConfiguringCache();
+        await ConfiguringCache();
         var resultOutScheduleFromDates = new List<IResultOutScheduleFromDate>();
         endDate = endDate.AddDays(1);
 
@@ -211,7 +208,6 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
 
         return resultOutScheduleFromDates;
-         */
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnlyLegacy date, ScheduleSearchType type, int delay = 700)
