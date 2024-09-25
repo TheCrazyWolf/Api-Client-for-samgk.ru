@@ -1,8 +1,10 @@
+using Newtonsoft.Json;
+
 namespace ClientSamgkApiModelResponse.Groups;
 
 public class SamGkGroupApiResult
 {
-    public long Id { get; set; }
-    public string Name { get; set; }
-    public long? Currator { get; set; }
+    [JsonProperty("id")] public long Id { get; set; }
+    [JsonProperty("name")] public string Name { get; set; }
+    [JsonProperty("currator")] public long? Currator { get; set; }
 }

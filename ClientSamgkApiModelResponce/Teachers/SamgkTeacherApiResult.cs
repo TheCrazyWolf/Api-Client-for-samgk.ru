@@ -1,7 +1,9 @@
+using Newtonsoft.Json;
+
 namespace ClientSamgkApiModelResponse.Teachers;
 
 public class SamgkTeacherApiResult
 {
-    public string Id { get; set; }
-    public string Name { get; set; }
+    [JsonProperty("id")] public string Id { get; set; }
+    [JsonProperty("name")] public string Name { get; set; }
 }
