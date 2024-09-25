@@ -11,4 +11,9 @@ public interface IResultOutSubjectItem
     /// Название дисциплины
     /// </summary>
     public string SubjectName { get; set; }
+    
+    /// <summary>
+    /// Зачёт или нет
+    /// </summary>
+    public bool IsAttestation { get; set; }
 }

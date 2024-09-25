@@ -6,4 +6,5 @@ public class ResultOutSubject : IResultOutSubjectItem
 {
     public long Id { get; set; } 
     public string SubjectName { get; set; } = string.Empty;
+    public bool IsAttestation { get; set; } 
 }
