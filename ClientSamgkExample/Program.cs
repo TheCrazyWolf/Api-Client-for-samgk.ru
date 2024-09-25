@@ -13,7 +13,7 @@ var groupsTeachers = await api.Accounts.GetTeachersAsync();
 
 // Получение расписание за день
 DateOnly dateOnly = new DateOnly(2024,09,16);
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(dateOnly, ScheduleSearchType.Employee, "31669");
+var scheduleFromDate = await api.Schedule.GetScheduleAsync(dateOnly, ScheduleSearchType.Employee, "2294");
 
 // или с использованием объектов реализующих интерфейсы
 // IOutResultIdentity, IOutResultCab, IOutResultGroup
