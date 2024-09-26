@@ -29,13 +29,13 @@ public class CabsController : CommonSamgkController, ICabController
             StringComparison.CurrentCultureIgnoreCase));
     }
 
-    public async Task<IList<IResultOutCab>> GetCabsAsync(int campusNumber)
+    public async Task<IList<IResultOutCab>> GetCabsAsync(string campusNumber)
     {
         await ConfiguringCache();
         return CachesCabs.Where(x=> x.Campus == campusNumber).ToList();
     }
 
-    public IList<IResultOutCab> GetCabs(int campusNumber)
+    public IList<IResultOutCab> GetCabs(string campusNumber)
     {
         return GetCabsAsync(campusNumber).GetAwaiter().GetResult();
     }

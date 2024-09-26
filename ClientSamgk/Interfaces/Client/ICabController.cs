@@ -8,6 +8,6 @@ public interface ICabController
     Task<IList<IResultOutCab>> GetCabsAsync();
     IResultOutCab? GetCab(string cabName);
     Task<IResultOutCab?> GetCabAsync(string cabName);
-    Task<IList<IResultOutCab>> GetCabsAsync(int campusNumber);
-    IList<IResultOutCab> GetCabs(int campusNumber);
+    Task<IList<IResultOutCab>> GetCabsAsync(string campusNumber);
+    IList<IResultOutCab> GetCabs(string campusNumber);
 }

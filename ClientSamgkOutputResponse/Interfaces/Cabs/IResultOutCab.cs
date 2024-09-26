@@ -10,7 +10,7 @@ public interface IResultOutCab
     /// <summary>
     /// № Учебного корпуса
     /// </summary>
-    public int Campus { get;}
+    public string Campus { get;}
 
     /// <summary>
     /// Номер кабинета
