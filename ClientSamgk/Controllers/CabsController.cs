@@ -39,4 +39,27 @@ public class CabsController : CommonSamgkController, ICabController
     {
         return GetCabsAsync(campusNumber).GetAwaiter().GetResult();
     }
+
+    public IList<string> GetCampuses()
+    {
+        return GetCampusesAsync().GetAwaiter().GetResult();
+    }
+    
+    public async Task<IList<string>> GetCampusesAsync()
+    {
+        await ConfiguringCache();
+        return CachesCabs.Select(x => x.Campus).Distinct().ToList();
+    }
+    
+    public async Task<IList<IResultOutCab>> GetCabsFromCampusAsync(string campusName)
+    {
+        await ConfiguringCache();
+        return CachesCabs.Where(x => string.Equals(x.Campus, campusName, 
+            StringComparison.CurrentCultureIgnoreCase)).ToList();
+    }
+
+    public IList<IResultOutCab> GetCabsFromCampus(string campusName)
+    {
+        return GetCabsFromCampusAsync(campusName).GetAwaiter().GetResult();
+    }
 }
