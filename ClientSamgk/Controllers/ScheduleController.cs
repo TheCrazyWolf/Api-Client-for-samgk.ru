@@ -137,7 +137,9 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                             SubjectDetails = new ResultOutSubject
                             {
                                 Id = scheduleItem.DisciplineInfo.Id,
-                                SubjectName = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum} {scheduleItem.DisciplineName}",
+                                SubjectName = scheduleItem.DisciplineName,
+                                Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
+                                FullSubjectName = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum} {scheduleItem.DisciplineName}",
                                 IsAttestation = bool.TryParse(scheduleItem.Zachet.ToString(), out var value) && value,
                             },
                             EducationGroup = CachesGroups.First(x => x.Id == scheduleItem.Group)

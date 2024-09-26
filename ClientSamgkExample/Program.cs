@@ -39,6 +39,6 @@ var resultScheduleCollectionFromDateAll = await api.Schedule
 
 foreach (var item in scheduleFromDate.Lessons)
 {
-    Console.WriteLine($"{item.NumPair}.{item.NumLesson} - {item.SubjectDetails.SubjectName}");
+    Console.WriteLine($"{item.NumPair}.{item.NumLesson} - {item.SubjectDetails.FullSubjectName}");
 }
     
