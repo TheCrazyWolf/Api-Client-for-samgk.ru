@@ -1,6 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ClientSamgk.Enums;
 
 public enum ScheduleSearchType
 {
-    Employee, Group, Cab
+    [Display(Name = "Преподаватели")]
+    Employee, 
+    [Display(Name = "Группа")]
+    Group, 
+    [Display(Name = "Кабинет")]
+    Cab
 }
