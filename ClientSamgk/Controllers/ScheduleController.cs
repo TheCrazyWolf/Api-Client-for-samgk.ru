@@ -171,9 +171,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             
             // если 1 пара по четвергам
             // и это первый курс добавляем россия мои горизонты
-            if (firstLesson is not null 
-                && firstLesson.EducationGroup.Course is 1
-                && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 || firstLesson.NumPair is 1 && firstLesson.NumLesson is 0) 
+            if (firstLesson?.EducationGroup.Course is 1
+                && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 || firstLesson.NumPair is 1 && firstLesson.NumLesson is 0)
                 && returenableResult.Date.DayOfWeek is DayOfWeek.Thursday && returenableResult.Date.Month != 6 && returenableResult.Date.Month != 7)
             {
                 returenableResult.Lessons = returenableResult.Lessons.AddRussianMyHorizonTalk().SortByLessons();

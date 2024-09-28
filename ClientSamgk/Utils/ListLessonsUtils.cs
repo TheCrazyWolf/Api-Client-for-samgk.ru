@@ -56,7 +56,9 @@ public static class ListLessonsUtils
         return lesson.GroupBy(l => new {
                 l.NumPair,
                 l.NumLesson,
-                SubjectName = l.SubjectDetails.FullSubjectName }).Select(g => g.First()).ToList();
+                SubjectName = l.SubjectDetails.FullSubjectName })
+            .Select(g => g.First())
+            .ToList();
     }
 
 }
