@@ -16,7 +16,8 @@ public static class ListLessonsUtils
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,
-                FullSubjectName = "Классный час «Разговоры о важном»"
+                Index = "ДОП.00",
+                SubjectName = "Классный час «Разговоры о важном»"
             },
             Cabs = lesson.First().Cabs, EducationGroup = lesson.First().EducationGroup, 
             Identity = lesson.First().Identity
@@ -36,7 +37,8 @@ public static class ListLessonsUtils
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,
-                FullSubjectName = "Классный час «Россия. Мои горизонты»"
+                Index = "ДОП.00",
+                SubjectName = "Классный час «Россия. Мои горизонты»"
             },
             Cabs = lesson.First().Cabs, EducationGroup = lesson.First().EducationGroup, 
             Identity = lesson.First().Identity
