@@ -22,6 +22,17 @@ public class AccountController : CommonSamgkController, IIdentityController
         return GetTeacherAsync(teacherName).GetAwaiter().GetResult();
     }
 
+    public IResultOutIdentity? GetTeacher(long id)
+    {
+        return GetTeacherAsync(id).GetAwaiter().GetResult();
+    }
+
+    public async Task<IResultOutIdentity?> GetTeacherAsync(long id)
+    {
+        await ConfiguringCache();
+        return CachedIdentities.FirstOrDefault(x=> x.Id == id);
+    }
+
     public async Task<IResultOutIdentity?> GetTeacherAsync(string teacherName)
     {
         await ConfiguringCache();
