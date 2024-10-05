@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <AssemblyName>ClientSamgkExample</AssemblyName>
         <RootNamespace>ClientSamgkExample</RootNamespace>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
