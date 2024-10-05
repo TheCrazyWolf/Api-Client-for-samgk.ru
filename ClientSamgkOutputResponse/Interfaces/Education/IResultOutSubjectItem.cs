@@ -19,7 +19,7 @@ public interface IResultOutSubjectItem
     /// <summary>
     /// Название дисциплины Полностью
     /// </summary>
-    public string FullSubjectName { get; set; }
+    public string FullSubjectName { get; }
     
     /// <summary>
     /// Зачёт или нет

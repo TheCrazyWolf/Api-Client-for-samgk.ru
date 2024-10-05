@@ -94,8 +94,24 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         return GetScheduleAsync(date: date, type: type, id: id).GetAwaiter().GetResult();
     }
 
+    public IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, long id)
+    {
+        return GetScheduleAsync(date: date, type: type, id: id.ToString()).GetAwaiter().GetResult();
+    }
+
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, long id)
+    {
+        return await GetScheduleAsync(date: date, type: type, id: id.ToString());
+    }
+
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
         string id, int delay = 700)
+    {
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay).GetAwaiter()
+            .GetResult();
+    }
+
+    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, long id, int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay).GetAwaiter()
             .GetResult();
@@ -139,7 +155,6 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                                 Id = scheduleItem.DisciplineInfo.Id,
                                 SubjectName = scheduleItem.DisciplineName,
                                 Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
-                                FullSubjectName = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum} {scheduleItem.DisciplineName}",
                                 IsAttestation = scheduleItem.Zachet is 1,
                             },
                             EducationGroup = CachesGroups.First(x => x.Id == scheduleItem.Group)
@@ -171,9 +186,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             
             // если 1 пара по четвергам
             // и это первый курс добавляем россия мои горизонты
-            if (firstLesson is not null 
-                && firstLesson.EducationGroup.Course is 1
-                && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 || firstLesson.NumPair is 1 && firstLesson.NumLesson is 0) 
+            if (firstLesson?.EducationGroup.Course is 1
+                && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 || firstLesson.NumPair is 1 && firstLesson.NumLesson is 0)
                 && returenableResult.Date.DayOfWeek is DayOfWeek.Thursday && returenableResult.Date.Month != 6 && returenableResult.Date.Month != 7)
             {
                 returenableResult.Lessons = returenableResult.Lessons.AddRussianMyHorizonTalk().SortByLessons();
@@ -210,6 +224,11 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
 
         return resultOutScheduleFromDates;
+    }
+
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, long id, int delay = 700)
+    {
+        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id.ToString(), delay: delay);
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type, int delay = 700)

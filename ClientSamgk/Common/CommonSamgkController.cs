@@ -15,7 +15,7 @@ namespace ClientSamgk.Common;
 
 public class CommonSamgkController : CommonCache
 {
-    private DateTime _lastUpdate = default!;
+    private DateTime _lastUpdate;
     private readonly RestClient _client = new RestClient();
 
     protected async Task<T> SendRequest<T>(string url)
@@ -54,6 +54,7 @@ public class CommonSamgkController : CommonCache
                     Currator = CachedIdentities.FirstOrDefault(y => y.Id == x.Currator),
                 })
                 .OrderBy(x=> x.Name)
+                .Where(x=> x.Course <= 5)
                 .ToList();
         }
         catch 
@@ -101,12 +102,7 @@ public class CommonSamgkController : CommonCache
 
     private bool IsRequiredToForceUpdateCache()
     {
-        if (CachesCabs.Count is 0 || CachesGroups.Count is 0 || CachedIdentities.Count is 0)
-            return true;
-
-        if ((DateTime.Now - _lastUpdate).Days < 3)
-            return false;
-
-        return true;
+        if (CachesCabs.Count is 0 || CachesGroups.Count is 0 || CachedIdentities.Count is 0) return true;
+        return (DateTime.Now - _lastUpdate).Days >= 3;
     }
 }

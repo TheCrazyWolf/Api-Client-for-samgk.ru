@@ -17,12 +17,12 @@ public class GroupsController : CommonSamgkController, IGroupController
         return CachesGroups.OrderBy(x=> x.Name).ToList();
     }
 
-    public IResultOutGroup? GetGroup(int idGroup)
+    public IResultOutGroup? GetGroup(long idGroup)
     {
         return GetGroupAsync(idGroup).GetAwaiter().GetResult();
     }
 
-    public async Task<IResultOutGroup?> GetGroupAsync(int idGroup)
+    public async Task<IResultOutGroup?> GetGroupAsync(long idGroup)
     {
         await ConfiguringCache();
         return CachesGroups.FirstOrDefault(x=> x.Id == idGroup);

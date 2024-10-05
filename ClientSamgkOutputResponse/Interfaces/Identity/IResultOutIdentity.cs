@@ -11,6 +11,10 @@ public interface IResultOutIdentity
     /// Фио преподавателя
     /// </summary>
     public string Name { get; set; }
-
-    public string GetShortName();
+    
+    /// <summary>
+    /// Короткое имя в формате Фамилия И.О.
+    /// </summary>
+    public string ShortName { get; }
+    
 }

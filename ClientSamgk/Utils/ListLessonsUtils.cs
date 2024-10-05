@@ -16,7 +16,8 @@ public static class ListLessonsUtils
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,
-                FullSubjectName = "Классный час «Разговоры о важном»"
+                Index = "КЧ.01",
+                SubjectName = "Классный час «Разговоры о важном»"
             },
             Cabs = lesson.First().Cabs, EducationGroup = lesson.First().EducationGroup, 
             Identity = lesson.First().Identity
@@ -36,7 +37,8 @@ public static class ListLessonsUtils
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,
-                FullSubjectName = "Классный час «Россия. Мои горизонты»"
+                Index = "КЧ.02",
+                SubjectName = "Классный час «Россия. Мои горизонты»"
             },
             Cabs = lesson.First().Cabs, EducationGroup = lesson.First().EducationGroup, 
             Identity = lesson.First().Identity
@@ -56,7 +58,9 @@ public static class ListLessonsUtils
         return lesson.GroupBy(l => new {
                 l.NumPair,
                 l.NumLesson,
-                SubjectName = l.SubjectDetails.FullSubjectName }).Select(g => g.First()).ToList();
+                SubjectName = l.SubjectDetails.FullSubjectName })
+            .Select(g => g.First())
+            .ToList();
     }
 
 }
