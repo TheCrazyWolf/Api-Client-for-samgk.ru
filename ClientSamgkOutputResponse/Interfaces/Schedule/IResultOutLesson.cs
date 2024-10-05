@@ -34,9 +34,9 @@ public interface IResultOutLesson
     /// <summary>
     /// Дата и время начала урока
     /// </summary>
-    public TimeOnly DurationStart { get; set; } 
+    public DateTime DurationStart { get; set; } 
     /// <summary>
     /// Дата и время конец урока
     /// </summary>
-    public TimeOnly DurationEnd { get; set; } 
+    public DateTime DurationEnd { get; set; } 
 }

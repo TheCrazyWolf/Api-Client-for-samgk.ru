@@ -16,6 +16,6 @@ public class ResultOutResultOutLesson : IResultOutLesson
     public IList<IResultOutCab> Cabs { get; set; } = new List<IResultOutCab>();
     public long NumPair { get; set; }
     public long NumLesson { get; set; }
-    public TimeOnly DurationStart { get; set; } = new TimeOnly(0, 0, 0);
-    public TimeOnly DurationEnd { get; set; } = new TimeOnly(0, 0, 0);
+    public DateTime DurationStart { get; set; }
+    public DateTime DurationEnd { get; set; } 
 }

@@ -5,7 +5,7 @@ public interface IResultOutScheduleFromDate
     /// <summary>
     /// Дата
     /// </summary>
-    public DateOnly Date { get; set; }
+    public DateTime Date { get; set; }
     /// <summary>
     /// Коллекция занятия
     /// </summary>

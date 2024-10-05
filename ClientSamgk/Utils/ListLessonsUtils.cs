@@ -6,13 +6,13 @@ namespace ClientSamgk.Utils;
 
 public static class ListLessonsUtils
 {
-    public static IList<IResultOutLesson> AddTalkImportantLesson(this IList<IResultOutLesson> lesson)
+    public static IList<IResultOutLesson> AddTalkImportantLesson(this IList<IResultOutLesson> lesson, DateTime date)
     {
         var newLesson = new ResultOutResultOutLesson
         {
             NumLesson = 0, NumPair = 0, 
-            DurationStart = new TimeOnly(08,25),
-            DurationEnd = new TimeOnly(09,10),
+            DurationStart = new DateTime(date.Year, date.Month, date.Day, 08,25, 00),
+            DurationEnd = new DateTime(date.Year, date.Month, date.Day, 09,10, 00),
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,
@@ -27,13 +27,13 @@ public static class ListLessonsUtils
         return lesson;
     }
     
-    public static IList<IResultOutLesson> AddRussianMyHorizonTalk(this IList<IResultOutLesson> lesson)
+    public static IList<IResultOutLesson> AddRussianMyHorizonTalk(this IList<IResultOutLesson> lesson, DateTime date)
     {
         var newLesson = new ResultOutResultOutLesson
         {
             NumLesson = 0, NumPair = 0, 
-            DurationStart = new TimeOnly(08,25),
-            DurationEnd = new TimeOnly(09,10),
+            DurationStart = new DateTime(date.Year, date.Month, date.Day, 08,25, 00),
+            DurationEnd = new DateTime(date.Year, date.Month, date.Day, 09,10, 00),
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,
