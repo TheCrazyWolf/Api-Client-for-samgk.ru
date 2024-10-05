@@ -19,13 +19,13 @@ public interface IGroupController
     /// </summary>
     /// <param name="idGroup">ID группы</param>
     /// <returns>Объект реализующий интерфейс IResultOutGroup, null - если ничего не нашлось</returns>
-    IResultOutGroup? GetGroup(int idGroup);
+    IResultOutGroup? GetGroup(long idGroup);
     /// <summary>
     /// Получить группу по ID
     /// </summary>
     /// <param name="idGroup">ID группы</param>
     /// <returns>Объект реализующий интерфейс IResultOutGroup, null - если ничего не нашлось</returns>
-    Task<IResultOutGroup?> GetGroupAsync(int idGroup);
+    Task<IResultOutGroup?> GetGroupAsync(long idGroup);
     /// <summary>
     /// Поиск группы по Названию
     /// </summary>
