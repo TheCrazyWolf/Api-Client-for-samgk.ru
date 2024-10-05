@@ -94,8 +94,24 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         return GetScheduleAsync(date: date, type: type, id: id).GetAwaiter().GetResult();
     }
 
+    public IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, long id)
+    {
+        return GetScheduleAsync(date: date, type: type, id: id.ToString()).GetAwaiter().GetResult();
+    }
+
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, long id)
+    {
+        return await GetScheduleAsync(date: date, type: type, id: id.ToString());
+    }
+
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
         string id, int delay = 700)
+    {
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay).GetAwaiter()
+            .GetResult();
+    }
+
+    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, long id, int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay).GetAwaiter()
             .GetResult();
@@ -208,6 +224,11 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
 
         return resultOutScheduleFromDates;
+    }
+
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, long id, int delay = 700)
+    {
+        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id.ToString(), delay: delay);
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type, int delay = 700)
