@@ -54,6 +54,7 @@ public class CommonSamgkController : CommonCache
                     Currator = CachedIdentities.FirstOrDefault(y => y.Id == x.Currator),
                 })
                 .OrderBy(x=> x.Name)
+                .Where(x=> x.Course <= 5)
                 .ToList();
         }
         catch 
