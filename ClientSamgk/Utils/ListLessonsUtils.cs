@@ -58,6 +58,7 @@ public static class ListLessonsUtils
         return lesson.GroupBy(l => new {
                 l.NumPair,
                 l.NumLesson,
+                l.EducationGroup.Id,
                 SubjectName = l.SubjectDetails.FullSubjectName })
             .Select(g => g.First())
             .ToList();
