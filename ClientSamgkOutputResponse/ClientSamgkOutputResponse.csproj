@@ -4,6 +4,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
 </Project>
