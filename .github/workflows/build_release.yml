@@ -24,12 +24,12 @@ jobs:
       - name: Upload NuGet package as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: nuget-package
-          path: ./output/*.nupkg  
+          name: ClientSamgk_${{ github.ref_name }}
+          path: ./output/*.nupkg
       - name: Push to GitHub Packages
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: dotnet nuget push ./output/*.nupkg --api-key $NUGET_AUTH_TOKEN --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+        run: dotnet nuget push ./output/*.nupkg --api-key $NUGET_AUTH_TOKEN --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -40,12 +40,11 @@ jobs:
           release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-      - name: Upload artifact to release
-        uses: actions/upload-release-asset@v1
+      - name: Create Release
+        uses: AButler/upload-release-assets@v3.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./output/*.nupkg
-          asset_name: ClientSamgk-${{ github.ref_name }}.nupkg
-          asset_content_type: application/octet-stream
+          files: "./output/*.nupkg"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: ${{ github.ref_name }}
