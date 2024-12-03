@@ -1,4 +1,3 @@
-using ClientSamgk.Exceptions;
 using ClientSamgk.Utils;
 using ClientSamgkApiModelResponse.Groups;
 using ClientSamgkApiModelResponse.Teachers;
@@ -16,22 +15,29 @@ namespace ClientSamgk.Common;
 public class CommonSamgkController : CommonCache
 {
     private DateTime _lastUpdate;
-    private readonly RestClient _client = new RestClient();
+    private readonly RestClient _client = new ();
 
-    protected async Task<T> SendRequest<T>(string url)
+    private async Task<RestResponse?> SendRequestAndGetResponse(string url, Method method = Method.Get, object? body = null)
     {
         var options = new RestRequest(url);
         options.ConfigureAntiGreedHeaders();
-        var restResponse = await _client.ExecuteAsync(options);
-
-        if (!restResponse.IsSuccessStatusCode || restResponse.Content == null)
-            throw new UnsuccessResponse("Пустой ответ или сервер вернул неуспешный код");
-
-        var deserializeObject = JsonConvert.DeserializeObject<T>(restResponse.Content);
-
-        return deserializeObject ?? throw new DeserializationObjectNull($"Ошибка при десерализации {nameof(T)}");
+        // add body
+        return await _client.ExecuteAsync(options, method);
     }
-
+    
+    
+    protected async Task<T?> SendRequest<T>(string url, Method method = Method.Get, object? body = null)
+    {
+        var restResponse = await SendRequestAndGetResponse(url, method, body);
+        if (restResponse is null || !restResponse.IsSuccessStatusCode || restResponse.Content == null) return default;
+        return JsonConvert.DeserializeObject<T>(restResponse.Content);
+    }
+    
+    protected async Task SendRequest(string url, Method method = Method.Get, object? body = null)
+    {
+        await SendRequestAndGetResponse(url, method, body);
+    }
+    
     protected async Task ConfiguringCache()
     {
         if (!IsRequiredToForceUpdateCache()) return;
@@ -44,60 +50,51 @@ public class CommonSamgkController : CommonCache
 
     private async Task ConfiguringCacheGroups()
     {
-        try
-        {
-            CachesGroups = (await SendRequest<IList<SamGkGroupApiResult>>("https://mfc.samgk.ru/api/groups"))
-                .Select(x => (IResultOutGroup)new ResultOutGroup
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Currator = CachedIdentities.FirstOrDefault(y => y.Id == x.Currator),
-                })
-                .OrderBy(x=> x.Name)
-                .Where(x=> x.Course <= 5)
-                .ToList();
-        }
-        catch 
-        {
-            //
-        }
+        var resultApiGroups = await SendRequest<IList<SamGkGroupApiResult>>("https://mfc.samgk.ru/api/groups");
+        
+        if(resultApiGroups == null) return;
+        
+        CachesGroups = resultApiGroups
+            .Select(IResultOutGroup (x) => new ResultOutGroup
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Currator = CachedIdentities.FirstOrDefault(y => y.Id == x.Currator),
+            })
+            .OrderBy(x=> x.Name)
+            .Where(x=> x.Course <= 5)
+            .ToList(); 
     }
 
     private async Task ConfiguringCacheTeachers()
     {
-        try
-        {
-            CachedIdentities = (await SendRequest<IList<SamgkTeacherApiResult>>("https://mfc.samgk.ru/api/teachers"))
-                .Select(x => (IResultOutIdentity)new ResultOutIdentity
-                {
-                    Id = Convert.ToInt64(x.Id),
-                    Name = x.Name
-                })
-                .OrderBy(x=> x.Name)
-                .ToList();
-        }
-        catch 
-        {
-            // 
-        }
+        var resultApiTeachers = await SendRequest<IList<SamgkTeacherApiResult>>("https://mfc.samgk.ru/api/teachers");
+
+        if (resultApiTeachers == null) return;
+        
+        CachedIdentities = resultApiTeachers
+            .Select(IResultOutIdentity (x) => new ResultOutIdentity
+            {
+                Id = Convert.ToInt64(x.Id),
+                Name = x.Name
+            })
+            .OrderBy(x=> x.Name)
+            .ToList();
     }
 
     private async Task ConfiguringCacheCabs()
     {
-        try
-        {
-            CachesCabs = (await SendRequest<Dictionary<string, string>>("https://mfc.samgk.ru/api/cabs"))
-                .Select(x => (IResultOutCab)new ResultOutCab
-                {
-                    Adress = x.Value
-                })
-                .OrderBy(x=> x.Adress)
-                .ToList();
-        }
-        catch 
-        {
-            // 
-        }
+        var resultApiCabs = await SendRequest<Dictionary<string, string>>("https://mfc.samgk.ru/api/cabs");
+        
+        if (resultApiCabs == null) return;
+        
+        CachesCabs = resultApiCabs
+            .Select(IResultOutCab (x) => new ResultOutCab
+            {
+                Adress = x.Value
+            })
+            .OrderBy(x=> x.Adress)
+            .ToList();
     }
 
     private bool IsRequiredToForceUpdateCache()
