@@ -7,10 +7,12 @@
 2. RestSharp.dll
 3. RestSharp.Serializers.NewtonsoftJson.dll
 
-### Установка
-1. Скачайте или соберите пакет
-2. Положите nuget пакет в Offline Nuget Packages, не меняя названия файла
-3. Установите
+### Установка из nuget
+1. Имя пакета ClientSamgk
+2. или вручную
+``
+dotnet add package ClientSamgk 
+``
 
 # Пример работы с библиотекой
 

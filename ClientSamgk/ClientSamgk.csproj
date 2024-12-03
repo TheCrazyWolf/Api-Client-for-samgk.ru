@@ -11,7 +11,9 @@
         <Description>Client for Samara State College REST api</Description>
         <PackageId>ClientSamgk</PackageId>
         <Authors>kulagin</Authors>
-        <Version>2.6.2</Version>
+        <AssemblyName>ClientSamgk</AssemblyName>
+        <RootNamespace>ClientSamgk</RootNamespace>
+        <Version>2.6.2.1</Version>>
         <PackageTags>samgk api client</PackageTags>
     </PropertyGroup>
 
