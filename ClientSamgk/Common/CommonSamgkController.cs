@@ -30,9 +30,21 @@ public class CommonSamgkController : CommonCache
     {
         var restResponse = await SendRequestAndGetResponse(url, method, body);
         if (restResponse is null || !restResponse.IsSuccessStatusCode || restResponse.Content == null) return default;
-        return JsonConvert.DeserializeObject<T>(restResponse.Content);
+        return TryDeserializeObject<T>(restResponse.Content);
     }
-    
+
+    private T? TryDeserializeObject<T>(string restResponseContent)
+    {
+        try
+        {
+            return JsonConvert.DeserializeObject<T>(restResponseContent);
+        }
+        catch
+        {
+            return Activator.CreateInstance<T?>();
+        }
+    }
+
     protected async Task SendRequest(string url, Method method = Method.Get, object? body = null)
     {
         await SendRequestAndGetResponse(url, method, body);
