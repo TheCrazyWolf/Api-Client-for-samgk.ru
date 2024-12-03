@@ -166,14 +166,18 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                             Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
                             IsAttestation = scheduleItem.Zachet is 1,
                         },
-                        EducationGroup = CachesGroups.First(x => x.Id == scheduleItem.Group)
+                        EducationGroup = CachesGroups.FirstOrDefault(x => x.Id == scheduleItem.Group)
                     };
 
-                    foreach (var idTeacher in scheduleItem.Teacher)
-                        lesson.Identity.Add(CachedIdentities.First(x => x.Id == idTeacher));
+                    foreach (var itemTeacher in scheduleItem.Teacher
+                                 .Select(idTeacher => CachedIdentities.FirstOrDefault(x => x.Id == idTeacher))
+                                 .OfType<IResultOutIdentity>())
+                        lesson.Identity.Add(itemTeacher);
 
-                    foreach (var idCab in scheduleItem.Cab)
-                        lesson.Cabs.Add(CachesCabs.First(x => x.Adress == idCab));
+                    foreach (var itemCab in scheduleItem.Cab
+                                 .Select(idCab => CachesCabs.FirstOrDefault(x => x.Adress == idCab))
+                                 .OfType<IResultOutCab>())
+                        lesson.Cabs.Add(itemCab);
 
                     returnableResult.Lessons.Add(lesson);
                 }
@@ -196,7 +200,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
         // если 1 пара по четвергам
         // и это первый курс добавляем россия мои горизонты
-        if (firstLesson?.EducationGroup.Course is 1
+        if (firstLesson?.EducationGroup?.Course is 1
             && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 ||
                 firstLesson.NumPair is 1 && firstLesson.NumLesson is 0)
             && returnableResult.Date.DayOfWeek is DayOfWeek.Thursday && returnableResult.Date.Month != 6 &&

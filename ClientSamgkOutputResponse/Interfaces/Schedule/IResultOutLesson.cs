@@ -14,7 +14,7 @@ public interface IResultOutLesson
     /// <summary>
     /// Информация о группеы
     /// </summary>
-    public IResultOutGroup EducationGroup { get; set; }
+    public IResultOutGroup? EducationGroup { get; set; }
     /// <summary>
     /// Информация о предмете
     /// </summary>
