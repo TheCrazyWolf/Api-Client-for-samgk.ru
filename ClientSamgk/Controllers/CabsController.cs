@@ -13,7 +13,7 @@ public class CabsController : CommonSamgkController, ICabController
 
     public async Task<IList<IResultOutCab>> GetCabsAsync()
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
         return CachesCabs.OrderBy(x=> x.Adress).ToList();
     }
 
@@ -24,14 +24,14 @@ public class CabsController : CommonSamgkController, ICabController
 
     public async Task<IResultOutCab?> GetCabAsync(string cabName)
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
         return CachesCabs.FirstOrDefault(x=> x.Adress.Equals(cabName, 
             StringComparison.CurrentCultureIgnoreCase));
     }
 
     public async Task<IList<IResultOutCab>> GetCabsAsync(string campusNumber)
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
         return CachesCabs.Where(x=> x.Campus == campusNumber).ToList();
     }
 
@@ -47,13 +47,13 @@ public class CabsController : CommonSamgkController, ICabController
     
     public async Task<IList<string>> GetCampusesAsync()
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
         return CachesCabs.Select(x => x.Campus).Distinct().ToList();
     }
     
     public async Task<IList<IResultOutCab>> GetCabsFromCampusAsync(string campusName)
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
         return CachesCabs.Where(x => string.Equals(x.Campus, campusName, 
             StringComparison.CurrentCultureIgnoreCase)).ToList();
     }

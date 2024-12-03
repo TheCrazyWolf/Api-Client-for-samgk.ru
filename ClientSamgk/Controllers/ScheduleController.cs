@@ -125,7 +125,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
     public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id)
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
 
         var url = type switch
         {
@@ -213,7 +213,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         ScheduleSearchType type, string id, int delay = 700)
 
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
         var resultOutScheduleFromDates = new List<IResultOutScheduleFromDate>();
         endDate = endDate.AddDays(1);
 
@@ -242,7 +242,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type,
         int delay = 700)
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
 
         var result = new List<IResultOutScheduleFromDate>();
 

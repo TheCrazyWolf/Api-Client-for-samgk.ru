@@ -50,7 +50,7 @@ public class CommonSamgkController : CommonCache
         await SendRequestAndGetResponse(url, method, body);
     }
     
-    protected async Task ConfiguringCache()
+    protected async Task UpdateIfCacheIsOutdated()
     {
         if (!IsRequiredToForceUpdateCache()) return;
 
