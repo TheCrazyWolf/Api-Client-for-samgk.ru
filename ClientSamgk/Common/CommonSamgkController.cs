@@ -21,7 +21,7 @@ public class CommonSamgkController : CommonCache
     {
         var options = new RestRequest(url);
         options.ConfigureAntiGreedHeaders();
-        // add body
+        if (body is not null && method is Method.Post or Method.Put) options.AddBody(body);
         return await _client.ExecuteAsync(options, method);
     }
     
