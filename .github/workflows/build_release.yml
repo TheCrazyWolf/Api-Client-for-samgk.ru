@@ -1,0 +1,50 @@
+name: Build and publish release
+
+on:
+  push:
+    tags:
+      - "*"
+
+env:
+  DOTNET_VERSION: "9.0.x"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --output ./output
+      - name: Upload NuGet package as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ClientSamgk_${{ github.ref_name }}
+          path: ./output/*.nupkg
+      - name: Push to GitHub Packages
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet nuget push ./output/*.nupkg --api-key $NUGET_AUTH_TOKEN --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+      - name: Create Release
+        uses: AButler/upload-release-assets@v3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: "./output/*.nupkg"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: ${{ github.ref_name }}

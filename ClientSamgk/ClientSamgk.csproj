@@ -1,14 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <AssemblyName>ClientSamgk</AssemblyName>
+        <RootNamespace>ClientSamgk</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+        <Title>Samgk Api Client</Title>
+        <Description>Client for Samara State College REST api</Description>
+        <PackageId>ClientSamgk</PackageId>
         <Authors>kulagin</Authors>
         <AssemblyName>ClientSamgk</AssemblyName>
         <RootNamespace>ClientSamgk</RootNamespace>
-        <Version>2.6.2.1</Version>
+        <Version>2.6.2.1</Version>>
+        <PackageTags>samgk api client</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
