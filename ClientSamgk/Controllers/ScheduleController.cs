@@ -25,7 +25,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         return await GetScheduleAsync(date: date, type: ScheduleSearchType.Employee, entity.Id.ToString());
     }
 
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutIdentity entity,
+    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate,
+        IResultOutIdentity entity,
         int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Employee,
@@ -51,13 +52,15 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             entity.Id.ToString());
     }
 
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutGroup entity, int delay = 700)
+    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutGroup entity,
+        int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Group,
             entity.Id.ToString(), delay: delay).GetAwaiter().GetResult();
     }
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutGroup entity,
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
+        IResultOutGroup entity,
         int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Group,
@@ -76,13 +79,15 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             entity.Adress);
     }
 
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutCab entity, int delay = 700)
+    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutCab entity,
+        int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
             entity.Adress, delay: delay).GetAwaiter().GetResult();
     }
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutCab entity,
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
+        IResultOutCab entity,
         int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
@@ -111,7 +116,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             .GetResult();
     }
 
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, long id, int delay = 700)
+    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
+        long id, int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay).GetAwaiter()
             .GetResult();
@@ -119,95 +125,99 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
     public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id)
     {
-        await ConfiguringCache();
-        
+        await UpdateIfCacheIsOutdated();
+
         var url = type switch
         {
-            ScheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&teacher={id}",
-            ScheduleSearchType.Group => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&group={id}",
-            ScheduleSearchType.Cab => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&cab={id}",
+            ScheduleSearchType.Employee =>
+                $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&teacher={id}",
+            ScheduleSearchType.Group =>
+                $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&group={id}",
+            ScheduleSearchType.Cab =>
+                $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&cab={id}",
             _ => ""
         };
 
-        var returenableResult = new ResultOutResultOutScheduleFromDate
+        var returnableResult = new ResultOutResultOutScheduleFromDate
         {
             Date = date
         };
+
+        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
+
+        if (result is null) return returnableResult;
         
-        try
+        foreach (var array in result.Values)
         {
-            var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
-            
-            foreach (var array in result.Values)
+            foreach (var arrayScheduleItem in array)
             {
-                foreach (var arrayScheduleItem in array)
+                foreach (var scheduleItem in arrayScheduleItem.Value)
                 {
-                    foreach (var scheduleItem in arrayScheduleItem.Value)
+                    var lesson = new ResultOutResultOutLesson
                     {
-                        var lesson = new ResultOutResultOutLesson
+                        NumPair = scheduleItem.Pair,
+                        NumLesson = scheduleItem.Number,
+                        DurationStart = scheduleItem.GetStartLessonTime(returnableResult.Date),
+                        DurationEnd = scheduleItem.GetEndLessonTime(returnableResult.Date),
+                        SubjectDetails = new ResultOutSubject
                         {
-                            NumPair = scheduleItem.Pair,
-                            NumLesson = scheduleItem.Number,
-                            DurationStart = scheduleItem.GetStartLessonTime(returenableResult.Date),
-                            DurationEnd = scheduleItem.GetEndLessonTime(returenableResult.Date),
-                            SubjectDetails = new ResultOutSubject
-                            {
-                                Id = scheduleItem.DisciplineInfo.Id,
-                                SubjectName = scheduleItem.DisciplineName,
-                                Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
-                                IsAttestation = scheduleItem.Zachet is 1,
-                            },
-                            EducationGroup = CachesGroups.First(x => x.Id == scheduleItem.Group)
-                        };
-                        
-                        foreach (var idTeacher in scheduleItem.Teacher)
-                            lesson.Identity.Add(CachedIdentities.First(x => x.Id == idTeacher));
+                            Id = scheduleItem.DisciplineInfo.Id,
+                            SubjectName = scheduleItem.DisciplineName,
+                            Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
+                            IsAttestation = scheduleItem.Zachet is 1,
+                        },
+                        EducationGroup = CachesGroups.FirstOrDefault(x => x.Id == scheduleItem.Group)
+                    };
 
-                        foreach (var idCab in scheduleItem.Cab)
-                            lesson.Cabs.Add(CachesCabs.First(x => x.Adress == idCab));
+                    foreach (var itemTeacher in scheduleItem.Teacher
+                                 .Select(idTeacher => CachedIdentities.FirstOrDefault(x => x.Id == idTeacher))
+                                 .OfType<IResultOutIdentity>())
+                        lesson.Identity.Add(itemTeacher);
 
-                        returenableResult.Lessons.Add(lesson);
-                    }
+                    foreach (var itemCab in scheduleItem.Cab
+                                 .Select(idCab => CachesCabs.FirstOrDefault(x => x.Adress == idCab))
+                                 .OfType<IResultOutCab>())
+                        lesson.Cabs.Add(itemCab);
+
+                    returnableResult.Lessons.Add(lesson);
                 }
-            
             }
-
-            returenableResult.Lessons = returenableResult.Lessons.RemoveDuplicates().SortByLessons();
-            
-            var firstLesson = returenableResult.Lessons.FirstOrDefault();
-
-            // если есть 1 пара (или 1 урок) и это понедельник
-            if (firstLesson is not null 
-                && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 || firstLesson.NumPair is 1 && firstLesson.NumLesson is 0) 
-                && returenableResult.Date.DayOfWeek is DayOfWeek.Monday && returenableResult.Date.Month != 6 && returenableResult.Date.Month != 7)
-            {
-                returenableResult.Lessons = returenableResult.Lessons.AddTalkImportantLesson().SortByLessons();
-            }
-            
-            // если 1 пара по четвергам
-            // и это первый курс добавляем россия мои горизонты
-            if (firstLesson?.EducationGroup.Course is 1
-                && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 || firstLesson.NumPair is 1 && firstLesson.NumLesson is 0)
-                && returenableResult.Date.DayOfWeek is DayOfWeek.Thursday && returenableResult.Date.Month != 6 && returenableResult.Date.Month != 7)
-            {
-                returenableResult.Lessons = returenableResult.Lessons.AddRussianMyHorizonTalk().SortByLessons();
-            }
-
-            
         }
-        catch 
+
+        returnableResult.Lessons = returnableResult.Lessons.RemoveDuplicates().SortByLessons();
+
+        var firstLesson = returnableResult.Lessons.FirstOrDefault();
+
+        // если есть 1 пара (или 1 урок) и это понедельник
+        if (firstLesson is not null
+            && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 ||
+                firstLesson.NumPair is 1 && firstLesson.NumLesson is 0)
+            && returnableResult.Date.DayOfWeek is DayOfWeek.Monday && returnableResult.Date.Month != 6 &&
+            returnableResult.Date.Month != 7)
         {
-            return returenableResult;
+            returnableResult.Lessons = returnableResult.Lessons.AddTalkImportantLesson().SortByLessons();
         }
-        
-        return returenableResult;
+
+        // если 1 пара по четвергам
+        // и это первый курс добавляем россия мои горизонты
+        if (firstLesson?.EducationGroup?.Course is 1
+            && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 ||
+                firstLesson.NumPair is 1 && firstLesson.NumLesson is 0)
+            && returnableResult.Date.DayOfWeek is DayOfWeek.Thursday && returnableResult.Date.Month != 6 &&
+            returnableResult.Date.Month != 7)
+        {
+            returnableResult.Lessons = returnableResult.Lessons.AddRussianMyHorizonTalk().SortByLessons();
+        }
+
+
+        return returnableResult;
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
         ScheduleSearchType type, string id, int delay = 700)
-    
+
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
         var resultOutScheduleFromDates = new List<IResultOutScheduleFromDate>();
         endDate = endDate.AddDays(1);
 
@@ -226,34 +236,37 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         return resultOutScheduleFromDates;
     }
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, long id, int delay = 700)
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
+        ScheduleSearchType type, long id, int delay = 700)
     {
-        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id.ToString(), delay: delay);
+        return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id.ToString(),
+            delay: delay);
     }
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type, int delay = 700)
+    public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type,
+        int delay = 700)
     {
-        await ConfiguringCache();
-        
+        await UpdateIfCacheIsOutdated();
+
         var result = new List<IResultOutScheduleFromDate>();
-        
-        if(type is ScheduleSearchType.Employee)
+
+        if (type is ScheduleSearchType.Employee)
             foreach (var item in CachedIdentities)
             {
                 var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Employee, item.Id.ToString());
                 if (scheduleFromDate.Lessons.Count != 0)
                     result.Add(scheduleFromDate);
             }
-        
-        if(type is ScheduleSearchType.Cab)
+
+        if (type is ScheduleSearchType.Cab)
             foreach (var item in CachesCabs)
             {
                 var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Cab, item.Adress);
                 if (scheduleFromDate.Lessons.Count != 0)
                     result.Add(scheduleFromDate);
             }
-        
-        if(type is ScheduleSearchType.Group)
+
+        if (type is ScheduleSearchType.Group)
             foreach (var item in CachesGroups)
             {
                 var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Group, item.Id.ToString());

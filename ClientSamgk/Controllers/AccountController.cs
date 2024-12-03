@@ -13,7 +13,7 @@ public class AccountController : CommonSamgkController, IIdentityController
 
     public async Task<IList<IResultOutIdentity>> GetTeachersAsync()
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
         return CachedIdentities.OrderBy(x=> x.Name).ToList();
     }
 
@@ -29,13 +29,13 @@ public class AccountController : CommonSamgkController, IIdentityController
 
     public async Task<IResultOutIdentity?> GetTeacherAsync(long id)
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
         return CachedIdentities.FirstOrDefault(x=> x.Id == id);
     }
 
     public async Task<IResultOutIdentity?> GetTeacherAsync(string teacherName)
     {
-        await ConfiguringCache();
+        await UpdateIfCacheIsOutdated();
         return CachedIdentities.FirstOrDefault(x=> string.Equals(x.Name, teacherName, 
             StringComparison.CurrentCultureIgnoreCase));
     }
