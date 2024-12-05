@@ -13,6 +13,7 @@ public static class ListLessonsUtils
             NumLesson = 0, NumPair = 0, 
             DurationStart = new TimeOnly(08,25),
             DurationEnd = new TimeOnly(09,10),
+            Durations = new List<DurationLessonDetails>() {new DurationLessonDetails(new TimeOnly(08,25),new TimeOnly(09,10))},
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,
@@ -34,6 +35,7 @@ public static class ListLessonsUtils
             NumLesson = 0, NumPair = 0, 
             DurationStart = new TimeOnly(08,25),
             DurationEnd = new TimeOnly(09,10),
+            Durations = new List<DurationLessonDetails>() {new DurationLessonDetails(new TimeOnly(08,25),new TimeOnly(09,10))},
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,

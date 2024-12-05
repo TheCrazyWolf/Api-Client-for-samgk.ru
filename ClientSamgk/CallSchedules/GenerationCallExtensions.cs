@@ -12,7 +12,7 @@ public static class GenerationCallExtensions
     
     public static IList<DurationLessonDetails> GetDurationsFromScheduleItem(this ScheduleItem scheduleItem, DateOnly date)
     {
-        bool isMondayOrTuesday = (date.DayOfWeek == DayOfWeek.Monday || date.DayOfWeek == DayOfWeek.Tuesday) &&
+        bool isMondayOrTuesday = (date.DayOfWeek == DayOfWeek.Monday || date.DayOfWeek == DayOfWeek.Thursday) &&
                                  (date.Month != 6 && date.Month != 7);
         
         return isMondayOrTuesday ? scheduleItem.GenerateDefaultScheduleCallsForMondayAndThuesday() 
@@ -26,11 +26,6 @@ public static class GenerationCallExtensions
         
         for (int currentPair = 0; currentPair <= scheduleItem.Pair; currentPair++)
         {
-            if (currentPair is 5)
-            {
-                Console.WriteLine();
-            }
-            
             if (currentPair == scheduleItem.Pair)
             {
                 switch (scheduleItem.Number)
@@ -74,13 +69,13 @@ public static class GenerationCallExtensions
                     }
                 }
             }
-            
+
             if (currentPair == 0)
             {
                 beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute);
                 beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute);
             }
-
+            
             if (currentPair <= 0) continue;
             
             beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute); 
@@ -102,11 +97,9 @@ public static class GenerationCallExtensions
     {
         IList<DurationLessonDetails> durationlessons = new List<DurationLessonDetails>();
         TimeOnly beginTime = DefaultFirstTimeOnly;
-
-        // Генерация расписания для всех пар
+        
         for (int currentPair = 0; currentPair <= scheduleItem.Pair; currentPair++)
         {
-            // Если текущая пара совпадает с номером пары, для которой генерируется время, рассчитываем время начала и окончания
             if (currentPair == scheduleItem.Pair)
             {
                 switch (scheduleItem.Number)
@@ -147,18 +140,12 @@ public static class GenerationCallExtensions
                     }
                 }
             }
-            
-            /*if (currentPair == 0 && isMondayOrTuesday)
-            {
-                beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute);
-                beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute);
-            }*/
 
             if (currentPair <= 0) continue;
             
-            beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute); // конец текущей пары
-            beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute); // перемена
-            beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute); // конец текущей пары
+            beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute); 
+            beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute); 
+            beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute); 
             
             if(currentPair is 2)
             {
