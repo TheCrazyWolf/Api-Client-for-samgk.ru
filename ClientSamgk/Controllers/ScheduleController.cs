@@ -1,3 +1,4 @@
+using ClientSamgk.CallSchedules;
 using ClientSamgk.Common;
 using ClientSamgk.Enums;
 using ClientSamgk.Interfaces.Client;
@@ -123,96 +124,6 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             .GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id)
-    {
-        await UpdateIfCacheIsOutdated();
-
-        var url = type switch
-        {
-            ScheduleSearchType.Employee =>
-                $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&teacher={id}",
-            ScheduleSearchType.Group =>
-                $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&group={id}",
-            ScheduleSearchType.Cab =>
-                $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date.ToString("yyyy-MM-dd")}&cab={id}",
-            _ => ""
-        };
-
-        var returnableResult = new ResultOutResultOutScheduleFromDate
-        {
-            Date = date
-        };
-
-        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
-
-        if (result is null) return returnableResult;
-        
-        foreach (var array in result.Values)
-        {
-            foreach (var arrayScheduleItem in array)
-            {
-                foreach (var scheduleItem in arrayScheduleItem.Value)
-                {
-                    var lesson = new ResultOutResultOutLesson
-                    {
-                        NumPair = scheduleItem.Pair,
-                        NumLesson = scheduleItem.Number,
-                        DurationStart = scheduleItem.GetStartLessonTime(returnableResult.Date),
-                        DurationEnd = scheduleItem.GetEndLessonTime(returnableResult.Date),
-                        SubjectDetails = new ResultOutSubject
-                        {
-                            Id = scheduleItem.DisciplineInfo.Id,
-                            SubjectName = scheduleItem.DisciplineName,
-                            Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
-                            IsAttestation = scheduleItem.Zachet is 1,
-                        },
-                        EducationGroup = CachesGroups.FirstOrDefault(x => x.Id == scheduleItem.Group)
-                    };
-
-                    foreach (var itemTeacher in scheduleItem.Teacher
-                                 .Select(idTeacher => CachedIdentities.FirstOrDefault(x => x.Id == idTeacher))
-                                 .OfType<IResultOutIdentity>())
-                        lesson.Identity.Add(itemTeacher);
-
-                    foreach (var itemCab in scheduleItem.Cab
-                                 .Select(idCab => CachesCabs.FirstOrDefault(x => x.Adress == idCab))
-                                 .OfType<IResultOutCab>())
-                        lesson.Cabs.Add(itemCab);
-
-                    returnableResult.Lessons.Add(lesson);
-                }
-            }
-        }
-
-        returnableResult.Lessons = returnableResult.Lessons.RemoveDuplicates().SortByLessons();
-
-        var firstLesson = returnableResult.Lessons.FirstOrDefault();
-
-        // если есть 1 пара (или 1 урок) и это понедельник
-        if (firstLesson is not null
-            && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 ||
-                firstLesson.NumPair is 1 && firstLesson.NumLesson is 0)
-            && returnableResult.Date.DayOfWeek is DayOfWeek.Monday && returnableResult.Date.Month != 6 &&
-            returnableResult.Date.Month != 7)
-        {
-            returnableResult.Lessons = returnableResult.Lessons.AddTalkImportantLesson().SortByLessons();
-        }
-
-        // если 1 пара по четвергам
-        // и это первый курс добавляем россия мои горизонты
-        if (firstLesson?.EducationGroup?.Course is 1
-            && (firstLesson.NumPair is 1 && firstLesson.NumLesson is 1 ||
-                firstLesson.NumPair is 1 && firstLesson.NumLesson is 0)
-            && returnableResult.Date.DayOfWeek is DayOfWeek.Thursday && returnableResult.Date.Month != 6 &&
-            returnableResult.Date.Month != 7)
-        {
-            returnableResult.Lessons = returnableResult.Lessons.AddRussianMyHorizonTalk().SortByLessons();
-        }
-
-
-        return returnableResult;
-    }
-
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
         ScheduleSearchType type, string id, int delay = 700)
 
@@ -224,12 +135,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         while (startDate != endDate)
         {
             var outScheduleFromDate = await GetScheduleAsync(date: startDate, type: type, id: id);
-
-            if (outScheduleFromDate.Lessons.Any())
-                resultOutScheduleFromDates.Add(outScheduleFromDate);
-
+            if (outScheduleFromDate.Lessons.Any()) resultOutScheduleFromDates.Add(outScheduleFromDate);
             startDate = startDate.AddDays(1);
-
             await Task.Delay(delay);
         }
 
@@ -280,5 +187,109 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     public IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnly date, ScheduleSearchType type, int delay = 700)
     {
         return GetAllScheduleAsync(date, type, delay).GetAwaiter().GetResult();
+    }
+
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id)
+    {
+        await UpdateIfCacheIsOutdated();
+        var url = GetScheduleUrl(date, type, id);
+        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
+        return ParseScheduleResult(date, result);
+    }
+
+    private string GetScheduleUrl(DateOnly date, ScheduleSearchType type, string id)
+    {
+        return type switch
+        {
+            ScheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&teacher={id}",
+            ScheduleSearchType.Group => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&group={id}",
+            ScheduleSearchType.Cab => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&cab={id}",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    private IResultOutScheduleFromDate ParseScheduleResult(DateOnly date,
+        Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result)
+    {
+        var returnableResult = new ResultOutResultOutScheduleFromDate { Date = date };
+        if (result is null || result.Count == 0) return returnableResult;
+
+        foreach (var array in result.Values)
+        {
+            foreach (var arrayScheduleItem in array)
+            {
+                foreach (var scheduleItem in arrayScheduleItem.Value)
+                {
+                    var lesson = new ResultOutResultOutLesson
+                    {
+                        NumPair = scheduleItem.Pair,
+                        NumLesson = scheduleItem.Number,
+                        Durations = scheduleItem.GetDurationsFromScheduleItem(date),
+                        DurationStart = scheduleItem.GetStartLessonTime(date),
+                        DurationEnd = scheduleItem.GetEndLessonTime(date),
+                        SubjectDetails = new ResultOutSubject
+                        {
+                            Id = scheduleItem.DisciplineInfo.Id,
+                            SubjectName = scheduleItem.DisciplineName,
+                            Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
+                            IsAttestation = scheduleItem.Zachet == 1,
+                        },
+                        EducationGroup = CachesGroups.FirstOrDefault(x => x.Id == scheduleItem.Group)
+                    };
+
+                    AddTeachersToLesson(scheduleItem, lesson);
+                    AddCabsToLesson(scheduleItem, lesson);
+
+                    returnableResult.Lessons.Add(lesson);
+                }
+            }
+        }
+
+        returnableResult.Lessons = returnableResult.Lessons.RemoveDuplicates().SortByLessons();
+        return AddCustomLessons(date, returnableResult);
+    }
+
+    private void AddTeachersToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
+    {
+        foreach (var itemTeacher in scheduleItem.Teacher
+                     .Select(idTeacher => CachedIdentities.FirstOrDefault(x => x.Id == idTeacher))
+                     .OfType<IResultOutIdentity>())
+        {
+            lesson.Identity.Add(itemTeacher);
+        }
+    }
+
+    private void AddCabsToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
+    {
+        foreach (var itemCab in scheduleItem.Cab
+                     .Select(idCab => CachesCabs.FirstOrDefault(x => x.Adress == idCab))
+                     .OfType<IResultOutCab>())
+        {
+            lesson.Cabs.Add(itemCab);
+        }
+    }
+
+    private IResultOutScheduleFromDate AddCustomLessons(DateOnly date, IResultOutScheduleFromDate returnableResult)
+    {
+        var firstLesson = returnableResult.Lessons.FirstOrDefault();
+
+        // Разговоры о важном
+        if (firstLesson != null && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
+                                    firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
+                                && date.DayOfWeek == DayOfWeek.Monday && date.Month != 6 && date.Month != 7)
+        {
+            returnableResult.Lessons = returnableResult.Lessons.AddTalkImportantLesson().SortByLessons();
+        }
+
+        // россия мои горизонты
+        if (firstLesson?.EducationGroup?.Course == 1
+            && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
+                firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
+            && date.DayOfWeek == DayOfWeek.Thursday && date.Month != 6 && date.Month != 7)
+        {
+            returnableResult.Lessons = returnableResult.Lessons.AddRussianMyHorizonTalk().SortByLessons();
+        }
+
+        return returnableResult;
     }
 }
