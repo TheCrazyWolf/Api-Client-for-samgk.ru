@@ -1,3 +1,4 @@
+using ClientSamgkOutputResponse.Implementation.Schedule;
 using ClientSamgkOutputResponse.Interfaces.Cabs;
 using ClientSamgkOutputResponse.Interfaces.Education;
 using ClientSamgkOutputResponse.Interfaces.Groups;
@@ -31,6 +32,10 @@ public interface IResultOutLesson
     /// Номер урока
     /// </summary>
     public long NumLesson { get; set; }
+    /// <summary>
+    /// Информация о длительности занятий
+    /// </summary>
+    public IList<DurationLessonDetails> Durations { get; set; }
     /// <summary>
     /// Дата и время начала урока
     /// </summary>
