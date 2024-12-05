@@ -10,8 +10,7 @@ public static class GenerationCallExtensions
     public const int DefaultBigChillTimeInMinute = 30;
     public static readonly TimeOnly DefaultFirstTimeOnly = new TimeOnly(8, 25);
     
-    public static IList<DurationLessonDetails> GetDurationsFromScheduleItem(this ScheduleItem scheduleItem, DateOnly date,
-        bool shortable = false)
+    public static IList<DurationLessonDetails> GetDurationsFromScheduleItem(this ScheduleItem scheduleItem, DateOnly date)
     {
      
         bool isMondayOrTuesday = date.DayOfWeek == DayOfWeek.Monday || date.DayOfWeek == DayOfWeek.Tuesday;
