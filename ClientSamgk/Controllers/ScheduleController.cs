@@ -1,3 +1,4 @@
+using ClientSamgk.CallSchedules;
 using ClientSamgk.Common;
 using ClientSamgk.Enums;
 using ClientSamgk.Interfaces.Client;
@@ -223,6 +224,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                     {
                         NumPair = scheduleItem.Pair,
                         NumLesson = scheduleItem.Number,
+                        Durations = scheduleItem.GetDurationsFromScheduleItem(date),
                         DurationStart = scheduleItem.GetStartLessonTime(date),
                         DurationEnd = scheduleItem.GetEndLessonTime(date),
                         SubjectDetails = new ResultOutSubject
