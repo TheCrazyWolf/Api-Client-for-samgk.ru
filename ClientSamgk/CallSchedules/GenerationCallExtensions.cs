@@ -12,9 +12,9 @@ public static class GenerationCallExtensions
     
     public static IList<DurationLessonDetails> GetDurationsFromScheduleItem(this ScheduleItem scheduleItem, DateOnly date)
     {
-     
-        bool isMondayOrTuesday = date.DayOfWeek == DayOfWeek.Monday || date.DayOfWeek == DayOfWeek.Tuesday;
-
+        bool isMondayOrTuesday = (date.DayOfWeek == DayOfWeek.Monday || date.DayOfWeek == DayOfWeek.Tuesday) &&
+                                 (date.Month != 6 && date.Month != 7);
+        
         return isMondayOrTuesday ? scheduleItem.GenerateDefaultScheduleCallsForMondayAndThuesday() 
             : scheduleItem.GenerateDefaultScheduleCalls();
     }
