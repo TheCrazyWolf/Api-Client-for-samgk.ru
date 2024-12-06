@@ -19,80 +19,103 @@ public static class GenerationCallExtensions
             : scheduleItem.GenerateDefaultScheduleCalls();
     }
     
-    private static IList<DurationLessonDetails> GenerateDefaultScheduleCallsForMondayAndThuesday(this ScheduleItem scheduleItem)
+ private static IList<DurationLessonDetails> GenerateDefaultScheduleCallsForMondayAndThuesday(this ScheduleItem scheduleItem)
+{
+    IList<DurationLessonDetails> durationlessons = new List<DurationLessonDetails>();
+    TimeOnly beginTime = DefaultFirstTimeOnly;
+
+    bool isFirst2polPari = true;
+    bool isSkippedObed = false;
+
+    // Обрабатываем пары
+    for (int currentPair = 0; currentPair <= scheduleItem.Pair; currentPair++)
     {
-        IList<DurationLessonDetails> durationlessons = new List<DurationLessonDetails>();
-        TimeOnly beginTime = DefaultFirstTimeOnly;
-        
-        for (int currentPair = 0; currentPair <= scheduleItem.Pair; currentPair++)
+        // Обрабатываем номер пары для данного scheduleItem
+        if (currentPair == scheduleItem.Pair)
         {
-            if (currentPair == scheduleItem.Pair)
+            // Обработка для каждого конкретного случая (0, 1, 2)
+            switch (scheduleItem.Number)
             {
-                switch (scheduleItem.Number)
-                {
-                    case 0:
-                    {
-                        for (int i = 0; i < 2; i++)
-                        {
-                            var start = beginTime;
-                            var endTime = beginTime.AddMinutes(DefaultDurationLessonInMinute);
-                            beginTime = endTime;
-                            durationlessons.Add(new DurationLessonDetails(start, endTime));
-                            if (currentPair >= 5 && i is 0) beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute + DefaultChillTimeInMinute);
-                            if(currentPair >= 5 && i is 1) beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute);
-                        }
-                        return durationlessons;
-                    }
-                    case 1:
+                case 0:
+                    // Обработка для пары 0
+                    for (int i = 0; i < 2; i++)
                     {
                         var start = beginTime;
                         var endTime = beginTime.AddMinutes(DefaultDurationLessonInMinute);
                         beginTime = endTime;
-                        durationlessons.Add(new DurationLessonDetails(start, endTime)); 
-                        if (currentPair >= 5) beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute + DefaultChillTimeInMinute);
-                        else beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute);
-                        return durationlessons;
-                    }
-                    case 2:
-                    {
-                        for (int i = 0; i < 2; i++)
+                        durationlessons.Add(new DurationLessonDetails(start, endTime));
+                        
+                        // После первого урока добавляем два перерыва
+                        if (i == 0) 
                         {
-                            if(i is 0) continue;
-                            var start = beginTime;
-                            var endTime = beginTime.AddMinutes(DefaultDurationLessonInMinute);
-                            beginTime = endTime;
-                            durationlessons.Add(new DurationLessonDetails(start, endTime));
-                            if(currentPair >= 5 && i is 1) beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute);
-                            else beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute);
+                            beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute * 2); // Два перерыва
                         }
-                        return durationlessons;
+                        else 
+                        {
+                            beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute); // Один перерыв
+                        }
                     }
-                }
-            }
+                    return durationlessons;
 
-            if (currentPair == 0)
-            {
-                beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute);
-                beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute);
+                case 1:
+                    // Обработка для пары 1
+                    var start1 = beginTime;
+                    var end1 = beginTime.AddMinutes(DefaultDurationLessonInMinute);
+                    beginTime = end1;
+                    durationlessons.Add(new DurationLessonDetails(start1, end1));
+                    beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute * 2); // Два перерыва
+                    return durationlessons;
+
+                case 2:
+                    // Обработка для пары 2
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if (i == 0) continue; // Пропускаем первый шаг
+                        var start2 = beginTime;
+                        var end2 = beginTime.AddMinutes(DefaultDurationLessonInMinute);
+                        beginTime = end2;
+                        durationlessons.Add(new DurationLessonDetails(start2, end2));
+                        beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute); // Один перерыв
+                    }
+                    return durationlessons;
             }
-            
-            if (currentPair <= 0) continue;
-            
-            beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute); 
-            beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute);
-            beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute);
-            
-            if(currentPair is 2)
-            {
-                beginTime = beginTime.AddMinutes(DefaultBigChillTimeInMinute);
-                continue;
-            }
-            beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute); 
-            beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute);
         }
 
-        return durationlessons;
+        // Если это не последняя пара, добавляем стандартное время для урока и перерыва
+        if (currentPair == 0)
+        {
+            beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute); // Урок
+            beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute); // Перерыв
+        }
+
+        if (currentPair > 0)
+        {
+            beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute); // Урок
+
+            if (currentPair == 2)
+            {
+                // Специфическая логика для 2 пары
+                if (isFirst2polPari)
+                {
+                    beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute); // Дополнительный перерыв
+                    beginTime = beginTime.AddMinutes(DefaultDurationLessonInMinute); // Урок
+                    isFirst2polPari = false;
+                }
+
+                beginTime = beginTime.AddMinutes(isSkippedObed ? 5 : DefaultBigChillTimeInMinute); // Перерыв для обеда
+                isSkippedObed = true;
+            }
+            else
+            {
+                beginTime = beginTime.AddMinutes(DefaultChillTimeInMinute * 2); // Два перерыва между парами
+            }
+        }
     }
+
+    return durationlessons;
+}
+
+    
     private static IList<DurationLessonDetails> GenerateDefaultScheduleCalls(this ScheduleItem scheduleItem)
     {
         IList<DurationLessonDetails> durationlessons = new List<DurationLessonDetails>();
