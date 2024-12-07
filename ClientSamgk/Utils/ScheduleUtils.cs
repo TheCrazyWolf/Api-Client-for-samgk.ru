@@ -1,14 +1,8 @@
 ﻿using ClientSamgkApiModelResponse.Shedules;
+using ClientSamgkOutputResponse.Enums;
 using ClientSamgkOutputResponse.Implementation.Schedule;
 
 namespace ClientSamgk.Utils;
-
-public enum ScheduleCallType
-{
-    Standart,
-    StandartWithShift
-}
-
 public static class ScheduleUtils
 {
     public static TimeOnly GetStartLessonTime(this ScheduleItem scheduleItem, DateOnly date)
