@@ -175,9 +175,19 @@ public static class ScheduleUtils
             _ => []
         };
 
-        var startIndex = scheduleItem.Number > 0 ? scheduleItem.Number - 1 : 0;
-        var endIndex = scheduleItem.Number > 0 ? startIndex : scheduleCalls.Count - 1;
-        return scheduleCalls[startIndex..endIndex];
+        if (!scheduleCalls.Any()) return [];
+
+        if (scheduleCalls.Count < 2) return [];
+        switch (scheduleItem.Number)
+        {
+            case 0:
+                return scheduleCalls;
+            case 1:
+                return [scheduleCalls[0]];
+            case 2:
+                return [scheduleCalls[1]];
+        }
+        return [];
     }
 
     private static IList<DurationLessonDetails> GetDurationLessonDetailsStandartWithShift(ScheduleItem scheduleItem)
@@ -223,8 +233,18 @@ public static class ScheduleUtils
             _ => []
         };
 
-        var startIndex = scheduleItem.Number > 0 ? scheduleItem.Number - 1 : 0;
-        var endIndex = scheduleItem.Number > 0 ? startIndex : scheduleCalls.Count - 1;
-        return scheduleCalls[startIndex..endIndex];
+        if (!scheduleCalls.Any()) return [];
+
+        if (scheduleCalls.Count < 2) return [];
+        switch (scheduleItem.Number)
+        {
+            case 0:
+                return scheduleCalls;
+            case 1:
+                return [scheduleCalls[0]];
+            case 2:
+                return [scheduleCalls[1]];
+        }
+        return [];
     }
 }
