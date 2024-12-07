@@ -128,8 +128,9 @@ public static class ScheduleUtils
         return callsType switch
         {
             ScheduleCallType.Standart => GetDurationLessonDetailsStandart(scheduleItem),
-            ScheduleCallType.StandartWithShift => GetDurationLessonDetailsStandartWithShift(scheduleItem),
             ScheduleCallType.StandartShort => GetDurationLessonDetailsStandartShort(scheduleItem),
+            ScheduleCallType.StandartSuperShort => GetDurationLessonDetailsStandartSuperShort(scheduleItem),
+            ScheduleCallType.StandartWithShift => GetDurationLessonDetailsStandartWithShift(scheduleItem),
             ScheduleCallType.StandartWithShiftShort => GetDurationLessonDetailsSuperShortWithShift(scheduleItem),
             _ => GetDurationLessonDetailsStandart(scheduleItem)
         };
