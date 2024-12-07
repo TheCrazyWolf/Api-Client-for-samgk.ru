@@ -3,6 +3,7 @@ using ClientSamgkOutputResponse.Enums;
 using ClientSamgkOutputResponse.Implementation.Schedule;
 
 namespace ClientSamgk.Utils;
+
 public static class ScheduleUtils
 {
     public static TimeOnly GetStartLessonTime(this ScheduleItem scheduleItem, DateOnly date)
@@ -128,7 +129,8 @@ public static class ScheduleUtils
         {
             ScheduleCallType.Standart => GetDurationLessonDetailsStandart(scheduleItem),
             ScheduleCallType.StandartWithShift => GetDurationLessonDetailsStandartWithShift(scheduleItem),
-            _ => throw new ArgumentOutOfRangeException(nameof(callsType), callsType, null)
+            ScheduleCallType.StandartShort => GetDurationLessonDetailsStandartShort(scheduleItem),
+            _ => GetDurationLessonDetailsStandart(scheduleItem)
         };
     }
 
@@ -187,7 +189,86 @@ public static class ScheduleUtils
             case 2:
                 return [scheduleCalls[1]];
         }
+
         return [];
+    }
+
+    private static IList<DurationLessonDetails> GetDurationLessonDetailsStandartShort(ScheduleItem scheduleItem)
+    {
+        List<DurationLessonDetails> scheduleCalls = scheduleItem.Pair switch
+        {
+            1 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("08:25"), TimeOnly.Parse("09:25")),
+            ],
+            2 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("09:35"), TimeOnly.Parse("10:35")),
+            ],
+            3 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("10:45"), TimeOnly.Parse("11:45")),
+            ],
+            4 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("11:55"), TimeOnly.Parse("12:55")),
+            ],
+            5 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("13:00"), TimeOnly.Parse("14:00")),
+            ],
+            6 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("14:10"), TimeOnly.Parse("15:10")),
+            ],
+            7 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("15:15"), TimeOnly.Parse("16:16")),
+            ],
+
+            _ => []
+        };
+
+        return scheduleCalls;
+    }
+    
+    private static IList<DurationLessonDetails> GetDurationLessonDetailsStandartSuperShort(ScheduleItem scheduleItem)
+    {
+        List<DurationLessonDetails> scheduleCalls = scheduleItem.Pair switch
+        {
+            1 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("08:25"), TimeOnly.Parse("08:55")),
+            ],
+            2 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("09:00"), TimeOnly.Parse("09:30")),
+            ],
+            3 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("09:35"), TimeOnly.Parse("10:05")),
+            ],
+            4 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("10:10"), TimeOnly.Parse("10:40")),
+            ],
+            5 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("10:45"), TimeOnly.Parse("11:15")),
+            ],
+            6 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("11:20"), TimeOnly.Parse("11:50")),
+            ],
+            7 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("11:55"), TimeOnly.Parse("12:25")),
+            ],
+
+            _ => []
+        };
+
+        return scheduleCalls;
     }
 
     private static IList<DurationLessonDetails> GetDurationLessonDetailsStandartWithShift(ScheduleItem scheduleItem)
@@ -245,6 +326,7 @@ public static class ScheduleUtils
             case 2:
                 return [scheduleCalls[1]];
         }
+
         return [];
     }
 }
