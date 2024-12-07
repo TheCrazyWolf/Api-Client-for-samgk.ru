@@ -130,6 +130,7 @@ public static class ScheduleUtils
             ScheduleCallType.Standart => GetDurationLessonDetailsStandart(scheduleItem),
             ScheduleCallType.StandartWithShift => GetDurationLessonDetailsStandartWithShift(scheduleItem),
             ScheduleCallType.StandartShort => GetDurationLessonDetailsStandartShort(scheduleItem),
+            ScheduleCallType.StandartWithShiftShort => GetDurationLessonDetailsSuperShortWithShift(scheduleItem),
             _ => GetDurationLessonDetailsStandart(scheduleItem)
         };
     }
@@ -231,7 +232,7 @@ public static class ScheduleUtils
 
         return scheduleCalls;
     }
-    
+
     private static IList<DurationLessonDetails> GetDurationLessonDetailsStandartSuperShort(ScheduleItem scheduleItem)
     {
         List<DurationLessonDetails> scheduleCalls = scheduleItem.Pair switch
@@ -328,5 +329,44 @@ public static class ScheduleUtils
         }
 
         return [];
+    }
+
+    private static IList<DurationLessonDetails> GetDurationLessonDetailsSuperShortWithShift(ScheduleItem scheduleItem)
+    {
+        List<DurationLessonDetails> scheduleCalls = scheduleItem.Pair switch
+        {
+            1 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("09:15"), TimeOnly.Parse("09:55")),
+            ],
+            2 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("10:05"), TimeOnly.Parse("10:45")),
+            ],
+            3 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("10:55"), TimeOnly.Parse("11:35")),
+            ],
+            4 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("11:45"), TimeOnly.Parse("12:25")),
+            ],
+            5 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("12:35"), TimeOnly.Parse("13:15")),
+            ],
+            6 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("13:25"), TimeOnly.Parse("14:05")),
+            ],
+            7 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("14:15"), TimeOnly.Parse("14:55")),
+            ],
+
+            _ => []
+        };
+
+        return scheduleCalls;
     }
 }

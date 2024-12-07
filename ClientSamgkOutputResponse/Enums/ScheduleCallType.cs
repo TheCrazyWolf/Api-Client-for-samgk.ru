@@ -5,5 +5,6 @@ public enum ScheduleCallType
     Standart,
     StandartShort,
     StandartSuperShort,
-    StandartWithShift
+    StandartWithShift,
+    StandartWithShiftShort
 }
