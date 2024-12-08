@@ -225,7 +225,7 @@ public static class ScheduleUtils
             ],
             7 =>
             [
-                new DurationLessonDetails(TimeOnly.Parse("15:15"), TimeOnly.Parse("16:16")),
+                new DurationLessonDetails(TimeOnly.Parse("15:15"), TimeOnly.Parse("16:15")),
             ],
 
             _ => []

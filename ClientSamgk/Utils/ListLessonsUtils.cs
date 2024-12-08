@@ -45,7 +45,7 @@ public static class ListLessonsUtils
                 SubjectName = "Классный час «Россия. Мои горизонты»"
             },
             //Cabs = lesson.First().Cabs, EducationGroup = lesson.First().EducationGroup, 
-            Identity = new List<IResultOutIdentity>(){ new ResultOutIdentity() { Name = "Видинеев Дмитрий Юрьевич"}}
+            Identity = new List<IResultOutIdentity>(){ new ResultOutIdentity() { Id = 1923, Name = "Видинеев Дмитрий Юрьевич"}}
         };
         
         lesson.Add(newLesson);
