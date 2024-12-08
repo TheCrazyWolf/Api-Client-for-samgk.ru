@@ -9,6 +9,8 @@ namespace ClientSamgk.Common;
 
 public class CommonCache 
 {
+    protected DateTime _lastUpdate;
+    
     protected IList<IResultOutCab> CachesCabs = new List<IResultOutCab>();
     protected IList<IResultOutGroup> CachesGroups = new List<IResultOutGroup>();
     protected IList<IResultOutIdentity> CachedIdentities = new List<IResultOutIdentity>();
@@ -34,5 +36,10 @@ public class CommonCache
     {
         foreach (var item in ScheduleCache.Where(x => x.DateTimeCanBeDeleted <= DateTime.Now).ToList()) ScheduleCache.Remove(item);
     }
-    
+
+    protected bool IsRequiredToForceUpdateCache()
+    {
+        if (CachesCabs.Count is 0 || CachesGroups.Count is 0 || CachedIdentities.Count is 0) return true;
+        return (DateTime.Now - _lastUpdate).Days >= 3;
+    }
 }

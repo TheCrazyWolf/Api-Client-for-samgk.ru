@@ -14,7 +14,6 @@ namespace ClientSamgk.Common;
 
 public class CommonSamgkController : CommonCache
 {
-    private DateTime _lastUpdate;
     private readonly RestClient _client = new ();
 
     private async Task<RestResponse?> SendRequestAndGetResponse(string url, Method method = Method.Get, object? body = null)
@@ -108,10 +107,5 @@ public class CommonSamgkController : CommonCache
             .OrderBy(x=> x.Adress)
             .ToList();
     }
-
-    private bool IsRequiredToForceUpdateCache()
-    {
-        if (CachesCabs.Count is 0 || CachesGroups.Count is 0 || CachedIdentities.Count is 0) return true;
-        return (DateTime.Now - _lastUpdate).Days >= 3;
-    }
+    
 }
