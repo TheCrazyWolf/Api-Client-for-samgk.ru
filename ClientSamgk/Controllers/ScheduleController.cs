@@ -85,7 +85,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Group,
-            entity.Id.ToString(), delay: delay);
+            entity.Id.ToString(), delay: delay, scheduleCallType: scheduleCallType,
+            showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
     }
 
     public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutCab entity,
@@ -93,7 +94,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         return GetScheduleAsync(date: date, type: ScheduleSearchType.Cab,
-                entity.Adress)
+                entity.Adress, scheduleCallType: scheduleCallType,
+                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson)
             .GetAwaiter()
             .GetResult();
     }
@@ -103,7 +105,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         return await GetScheduleAsync(date: date, type: ScheduleSearchType.Cab,
-            entity.Adress);
+            entity.Adress, scheduleCallType: scheduleCallType,
+            showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
     }
 
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutCab entity,
@@ -112,7 +115,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
-                entity.Adress, delay: delay)
+                entity.Adress, delay: delay, scheduleCallType: scheduleCallType,
+                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson)
             .GetAwaiter()
             .GetResult();
     }
@@ -123,14 +127,16 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
-            entity.Adress, delay: delay);
+            entity.Adress, delay: delay, scheduleCallType: scheduleCallType,
+            showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
     }
 
     public IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, string id,
         ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
-        return GetScheduleAsync(date: date, type: type, id: id)
+        return GetScheduleAsync(date: date, type: type, id: id, scheduleCallType: scheduleCallType,
+                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson)
             .GetAwaiter()
             .GetResult();
     }
@@ -139,7 +145,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
-        return GetScheduleAsync(date: date, type: type, id: id.ToString())
+        return GetScheduleAsync(date: date, type: type, id: id.ToString(), scheduleCallType: scheduleCallType,
+                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson)
             .GetAwaiter()
             .GetResult();
     }
@@ -148,14 +155,16 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
-        return await GetScheduleAsync(date: date, type: type, id: id.ToString());
+        return await GetScheduleAsync(date: date, type: type, id: id.ToString(), scheduleCallType: scheduleCallType,
+            showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
     }
 
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
         string id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay)
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay, scheduleCallType: scheduleCallType,
+                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson)
             .GetAwaiter()
             .GetResult();
     }
@@ -164,7 +173,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         long id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay)
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay,scheduleCallType: scheduleCallType,
+                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson)
             .GetAwaiter()
             .GetResult();
     }
@@ -180,7 +190,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
         while (startDate != endDate)
         {
-            var outScheduleFromDate = await GetScheduleAsync(date: startDate, type: type, id: id);
+            var outScheduleFromDate = await GetScheduleAsync(date: startDate, type: type, id: id, scheduleCallType: scheduleCallType,
+                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
             if (outScheduleFromDate.Lessons.Any()) resultOutScheduleFromDates.Add(outScheduleFromDate);
             startDate = startDate.AddDays(1);
             await Task.Delay(delay);
@@ -194,7 +205,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id.ToString(),
-            delay: delay);
+            delay: delay, scheduleCallType: scheduleCallType,
+            showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type,
@@ -209,7 +221,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         if (type is ScheduleSearchType.Employee)
             foreach (var item in CachedIdentities)
             {
-                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Employee, item.Id.ToString());
+                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Employee, item.Id.ToString(), scheduleCallType: scheduleCallType,
+                    showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
                 if (scheduleFromDate.Lessons.Count != 0)
                     result.Add(scheduleFromDate);
             }
@@ -217,7 +230,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         if (type is ScheduleSearchType.Cab)
             foreach (var item in CachesCabs)
             {
-                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Cab, item.Adress);
+                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Cab, item.Adress, scheduleCallType: scheduleCallType,
+                    showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
                 if (scheduleFromDate.Lessons.Count != 0)
                     result.Add(scheduleFromDate);
             }
@@ -225,7 +239,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         if (type is ScheduleSearchType.Group)
             foreach (var item in CachesGroups)
             {
-                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Group, item.Id.ToString());
+                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Group, item.Id.ToString(), scheduleCallType: scheduleCallType,
+                    showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
                 if (scheduleFromDate.Lessons.Count != 0)
                     result.Add(scheduleFromDate);
             }
@@ -237,7 +252,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
     {
-        return GetAllScheduleAsync(date, type, ScheduleCallType.Standart, showImportantLessons, showRussianHorizonLesson, delay)
+        return GetAllScheduleAsync(date, type, ScheduleCallType.Standart, showImportantLessons,
+                showRussianHorizonLesson, delay)
             .GetAwaiter()
             .GetResult();
     }
