@@ -293,6 +293,9 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         var returnableResult = new ResultOutResultOutScheduleFromDate { Date = date };
         if (result is null || result.Count == 0) return returnableResult;
 
+        if ((showImportantLessons || showRussianHorizonLesson) && scheduleCallType == ScheduleCallType.Standart)
+            scheduleCallType = ScheduleCallType.StandartWithShift;
+        
         foreach (var array in result.Values)
         {
             foreach (var arrayScheduleItem in array)
