@@ -1,3 +1,4 @@
+using ClientSamgk.Models;
 using ClientSamgk.Utils;
 using ClientSamgkApiModelResponse.Groups;
 using ClientSamgkApiModelResponse.Teachers;
@@ -14,17 +15,18 @@ namespace ClientSamgk.Common;
 
 public class CommonSamgkController : CommonCache
 {
-    private readonly RestClient _client = new ();
+    private readonly RestClient _client = new();
 
-    private async Task<RestResponse?> SendRequestAndGetResponse(string url, Method method = Method.Get, object? body = null)
+    private async Task<RestResponse?> SendRequestAndGetResponse(string url, Method method = Method.Get,
+        object? body = null)
     {
         var options = new RestRequest(url);
         options.ConfigureAntiGreedHeaders();
         if (body is not null && method is Method.Post or Method.Put) options.AddBody(body);
         return await _client.ExecuteAsync(options, method);
     }
-    
-    
+
+
     protected async Task<T?> SendRequest<T>(string url, Method method = Method.Get, object? body = null)
     {
         var restResponse = await SendRequestAndGetResponse(url, method, body);
@@ -48,12 +50,11 @@ public class CommonSamgkController : CommonCache
     {
         await SendRequestAndGetResponse(url, method, body);
     }
-    
+
     protected async Task UpdateIfCacheIsOutdated()
     {
         if (!IsRequiredToForceUpdateCache()) return;
 
-        _lastUpdate = DateTime.Now;
         await ConfiguringCacheTeachers();
         await ConfiguringCacheCabs();
         await ConfiguringCacheGroups();
@@ -62,50 +63,61 @@ public class CommonSamgkController : CommonCache
     private async Task ConfiguringCacheGroups()
     {
         var resultApiGroups = await SendRequest<IList<SamGkGroupApiResult>>("https://mfc.samgk.ru/api/groups");
+
+        if (resultApiGroups == null || !resultApiGroups.Any()) return;
+
+        GroupsCache = new List<LifeTimeMemory<IResultOutGroup>>();
         
-        if(resultApiGroups == null) return;
-        
-        CachesGroups = resultApiGroups
+        var items = resultApiGroups
             .Select(IResultOutGroup (x) => new ResultOutGroup
             {
                 Id = x.Id,
                 Name = x.Name,
                 Currator = CachedIdentities.FirstOrDefault(y => y.Id == x.Currator),
             })
-            .OrderBy(x=> x.Name)
-            .Where(x=> x.Course <= 5)
-            .ToList(); 
+            .OrderBy(x => x.Name)
+            .Where(x => x.Course <= 5)
+            .ToList();
+        
+        foreach (var item in items) SaveToCache(item, 120);
     }
 
     private async Task ConfiguringCacheTeachers()
     {
         var resultApiTeachers = await SendRequest<IList<SamgkTeacherApiResult>>("https://mfc.samgk.ru/api/teachers");
 
-        if (resultApiTeachers == null) return;
+        if (resultApiTeachers == null || !resultApiTeachers.Any()) return;
+
+        IdentityCache = new List<LifeTimeMemory<IResultOutIdentity>>();
         
-        CachedIdentities = resultApiTeachers
+        var items = resultApiTeachers
             .Select(IResultOutIdentity (x) => new ResultOutIdentity
-            {
-                Id = Convert.ToInt64(x.Id),
-                Name = x.Name
-            })
-            .OrderBy(x=> x.Name)
-            .ToList();
+                        {
+                            Id = Convert.ToInt64(x.Id),
+                            Name = x.Name
+                        })
+                        .OrderBy(x => x.Name)
+                        .ToList();
+        
+        foreach (var item in items) SaveToCache(item, 120);
     }
 
     private async Task ConfiguringCacheCabs()
     {
         var resultApiCabs = await SendRequest<Dictionary<string, string>>("https://mfc.samgk.ru/api/cabs");
-        
-        if (resultApiCabs == null) return;
-        
-        CachesCabs = resultApiCabs
+
+        if (resultApiCabs == null || !resultApiCabs.Any()) return;
+
+        CabsCache = new List<LifeTimeMemory<IResultOutCab>>();
+
+        var items = resultApiCabs
             .Select(IResultOutCab (x) => new ResultOutCab
             {
                 Adress = x.Value
             })
-            .OrderBy(x=> x.Adress)
+            .OrderBy(x => x.Adress)
             .ToList();
+        
+        foreach (var item in items) SaveToCache(item, 120);
     }
-    
 }
