@@ -16,7 +16,9 @@ namespace ClientSamgk.Common;
 public class CommonSamgkController : CommonCache
 {
     private readonly RestClient _client = new();
-
+    protected int DefaultLifeTimeInMinutesForCommon = 2880; // 2 дня
+    protected int DefaultLifeTimeInMinutesLong = 43200; // 1 месяц
+    protected int DefaultLifeTimeInMinutesShort = 10; // 10минут
     private async Task<RestResponse?> SendRequestAndGetResponse(string url, Method method = Method.Get,
         object? body = null)
     {
@@ -79,7 +81,7 @@ public class CommonSamgkController : CommonCache
             .Where(x => x.Course <= 5)
             .ToList();
         
-        foreach (var item in items) SaveToCache(item, 120);
+        foreach (var item in items) SaveToCache(item, DefaultLifeTimeInMinutesForCommon);
     }
 
     private async Task ConfiguringCacheTeachers()
@@ -99,7 +101,7 @@ public class CommonSamgkController : CommonCache
                         .OrderBy(x => x.Name)
                         .ToList();
         
-        foreach (var item in items) SaveToCache(item, 120);
+        foreach (var item in items) SaveToCache(item, DefaultLifeTimeInMinutesForCommon);
     }
 
     private async Task ConfiguringCacheCabs()
@@ -118,6 +120,6 @@ public class CommonSamgkController : CommonCache
             .OrderBy(x => x.Adress)
             .ToList();
         
-        foreach (var item in items) SaveToCache(item, 120);
+        foreach (var item in items) SaveToCache(item, DefaultLifeTimeInMinutesForCommon);
     }
 }
