@@ -93,8 +93,13 @@ public class CommonCache
 
     protected bool IsRequiredToForceUpdateCache()
     {
-        return CabsCache.Any(x => x.DateTimeCanBeDeleted <= DateTime.Now) ||
-               IdentityCache.Any(x => x.DateTimeCanBeDeleted <= DateTime.Now) ||
-               GroupsCache.Any(x => x.DateTimeCanBeDeleted <= DateTime.Now);
+        if (CabsCache.Any(x => x.DateTimeCanBeDeleted <= DateTime.Now) || !CabsCache.Any())
+            return true;
+        if (IdentityCache.Any(x => x.DateTimeCanBeDeleted <= DateTime.Now) || !IdentityCache.Any())
+            return true;
+        if (GroupsCache.Any(x => x.DateTimeCanBeDeleted <= DateTime.Now) || !GroupsCache.Any())
+            return true;
+
+        return false;
     }
 }
