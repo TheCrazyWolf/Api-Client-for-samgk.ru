@@ -295,7 +295,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
         if ((showImportantLessons || showRussianHorizonLesson) && 
             scheduleCallType == ScheduleCallType.Standart && (date.DayOfWeek == DayOfWeek.Monday ||
-                                                              date.DayOfWeek == DayOfWeek.Thursday && date.Month != 6 && date.Month != 7))
+                                                              date.DayOfWeek == DayOfWeek.Thursday && 
+                                                              date.Month != 6 && date.Month != 7))
         {
             scheduleCallType = ScheduleCallType.StandartWithShift;
         }
@@ -332,7 +333,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
 
         returnableResult.Lessons = returnableResult.Lessons.RemoveDuplicates().SortByLessons();
-        return AddCustomLessons(date, returnableResult, showImportantLessons, showRussianHorizonLesson);
+        return AddAdditionalLessons(date, returnableResult, showImportantLessons, showRussianHorizonLesson);
     }
 
     private void AddTeachersToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
@@ -355,7 +356,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
     }
 
-    private IResultOutScheduleFromDate AddCustomLessons(DateOnly date, IResultOutScheduleFromDate returnableResult,
+    private IResultOutScheduleFromDate AddAdditionalLessons(DateOnly date, IResultOutScheduleFromDate returnableResult,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         var firstLesson = returnableResult.Lessons.FirstOrDefault();
