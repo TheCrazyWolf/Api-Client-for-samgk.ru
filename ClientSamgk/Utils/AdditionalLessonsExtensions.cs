@@ -6,7 +6,7 @@ using ClientSamgkOutputResponse.Interfaces.Schedule;
 
 namespace ClientSamgk.Utils;
 
-public static class ListLessonsUtils
+public static class AdditionalLessonsExtensions
 {
     public static IList<IResultOutLesson> AddTalkImportantLesson(this IList<IResultOutLesson> lesson)
     {
