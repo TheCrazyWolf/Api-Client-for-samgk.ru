@@ -1,5 +1,4 @@
 using ClientSamgk.Common;
-using ClientSamgk.Enums;
 using ClientSamgk.Interfaces.Client;
 using ClientSamgk.Utils;
 using ClientSamgkApiModelResponse.Shedules;
@@ -269,9 +268,16 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         await UpdateIfCacheIsOutdated();
+        ClearCacheIfOutDate();
+        var cachedItem = ExtractFromCache(date, type, id);
+
+        if (cachedItem != null) return cachedItem;
+        
         var url = GetScheduleUrl(date, type, id);
         var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
-        return ParseScheduleResult(date, result, scheduleCallType, showImportantLessons, showRussianHorizonLesson);
+        var newSchedule = ParseScheduleResult(date, result, type, id, scheduleCallType, showImportantLessons, showRussianHorizonLesson);
+        SaveToCache(newSchedule, (newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date) ? 60 : 4));
+        return newSchedule;
     }
 
     private string GetScheduleUrl(DateOnly date, ScheduleSearchType type, string id)
@@ -286,11 +292,11 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     }
 
     private IResultOutScheduleFromDate ParseScheduleResult(DateOnly date,
-        Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result,
+        Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result, ScheduleSearchType searchType, string id,
         ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
-        var returnableResult = new ResultOutResultOutScheduleFromDate { Date = date };
+        var returnableResult = new ResultOutResultOutScheduleFromDate { Date = date, SearchType =searchType, IdValue = id};
         if (result is null || result.Count == 0) return returnableResult;
 
         if ((showImportantLessons || showRussianHorizonLesson) && 

@@ -26,6 +26,10 @@
       <ProjectReference PrivateAssets="all" Include="..\ClientSamgkOutputResponse\ClientSamgkOutputResponse.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Enums\" />
+    </ItemGroup>
+
     <PropertyGroup>
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     </PropertyGroup>

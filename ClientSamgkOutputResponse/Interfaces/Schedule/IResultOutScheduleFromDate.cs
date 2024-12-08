@@ -1,3 +1,5 @@
+using ClientSamgkOutputResponse.Enums;
+
 namespace ClientSamgkOutputResponse.Interfaces.Schedule;
 
 public interface IResultOutScheduleFromDate
@@ -10,4 +12,12 @@ public interface IResultOutScheduleFromDate
     /// Коллекция занятия
     /// </summary>
     public IList<IResultOutLesson> Lessons { get; set; }
+    /// <summary>
+    /// Тип поиска
+    /// </summary>
+    public ScheduleSearchType SearchType { get; set; }
+    /// <summary>
+    /// Что ищем
+    /// </summary>
+    public string IdValue { get; set; }
 }
