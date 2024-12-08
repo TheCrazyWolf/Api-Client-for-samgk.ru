@@ -163,7 +163,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         string id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay, scheduleCallType: scheduleCallType,
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay,
+                scheduleCallType: scheduleCallType,
                 showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson)
             .GetAwaiter()
             .GetResult();
@@ -173,7 +174,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         long id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay,scheduleCallType: scheduleCallType,
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay,
+                scheduleCallType: scheduleCallType,
                 showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson)
             .GetAwaiter()
             .GetResult();
@@ -190,7 +192,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
         while (startDate != endDate)
         {
-            var outScheduleFromDate = await GetScheduleAsync(date: startDate, type: type, id: id, scheduleCallType: scheduleCallType,
+            var outScheduleFromDate = await GetScheduleAsync(date: startDate, type: type, id: id,
+                scheduleCallType: scheduleCallType,
                 showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
             if (outScheduleFromDate.Lessons.Any()) resultOutScheduleFromDates.Add(outScheduleFromDate);
             startDate = startDate.AddDays(1);
@@ -221,7 +224,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         if (type is ScheduleSearchType.Employee)
             foreach (var item in CachedIdentities)
             {
-                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Employee, item.Id.ToString(), scheduleCallType: scheduleCallType,
+                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Employee, item.Id.ToString(),
+                    scheduleCallType: scheduleCallType,
                     showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
                 if (scheduleFromDate.Lessons.Count != 0)
                     result.Add(scheduleFromDate);
@@ -230,7 +234,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         if (type is ScheduleSearchType.Cab)
             foreach (var item in CachesCabs)
             {
-                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Cab, item.Adress, scheduleCallType: scheduleCallType,
+                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Cab, item.Adress,
+                    scheduleCallType: scheduleCallType,
                     showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
                 if (scheduleFromDate.Lessons.Count != 0)
                     result.Add(scheduleFromDate);
@@ -239,7 +244,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         if (type is ScheduleSearchType.Group)
             foreach (var item in CachesGroups)
             {
-                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Group, item.Id.ToString(), scheduleCallType: scheduleCallType,
+                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Group, item.Id.ToString(),
+                    scheduleCallType: scheduleCallType,
                     showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson);
                 if (scheduleFromDate.Lessons.Count != 0)
                     result.Add(scheduleFromDate);
@@ -265,15 +271,14 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         await UpdateIfCacheIsOutdated();
         var url = GetScheduleUrl(date, type, id);
         var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
-        return ParseScheduleResult(date, result);
+        return ParseScheduleResult(date, result, scheduleCallType, showImportantLessons, showRussianHorizonLesson);
     }
 
     private string GetScheduleUrl(DateOnly date, ScheduleSearchType type, string id)
     {
         return type switch
         {
-            ScheduleSearchType.Employee =>
-                $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&teacher={id}",
+            ScheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&teacher={id}",
             ScheduleSearchType.Group => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&group={id}",
             ScheduleSearchType.Cab => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&cab={id}",
             _ => throw new ArgumentOutOfRangeException()
@@ -281,7 +286,9 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     }
 
     private IResultOutScheduleFromDate ParseScheduleResult(DateOnly date,
-        Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result)
+        Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         var returnableResult = new ResultOutResultOutScheduleFromDate { Date = date };
         if (result is null || result.Count == 0) return returnableResult;
@@ -296,7 +303,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                     {
                         NumPair = scheduleItem.Pair,
                         NumLesson = scheduleItem.Number,
-                        Durations = scheduleItem.GetDurationLessonDetails(),
+                        Durations = scheduleItem.GetDurationLessonDetails(scheduleCallType),
                         DurationStart = scheduleItem.GetStartLessonTime(date),
                         DurationEnd = scheduleItem.GetEndLessonTime(date),
                         SubjectDetails = new ResultOutSubject
@@ -318,7 +325,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
 
         returnableResult.Lessons = returnableResult.Lessons.RemoveDuplicates().SortByLessons();
-        return AddCustomLessons(date, returnableResult);
+        return AddCustomLessons(date, returnableResult, showImportantLessons, showRussianHorizonLesson);
     }
 
     private void AddTeachersToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
@@ -341,23 +348,25 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
     }
 
-    private IResultOutScheduleFromDate AddCustomLessons(DateOnly date, IResultOutScheduleFromDate returnableResult)
+    private IResultOutScheduleFromDate AddCustomLessons(DateOnly date, IResultOutScheduleFromDate returnableResult,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         var firstLesson = returnableResult.Lessons.FirstOrDefault();
 
         // Разговоры о важном
-        if (firstLesson != null && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
-                                    firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
-                                && date.DayOfWeek == DayOfWeek.Monday && date.Month != 6 && date.Month != 7)
+        if (showImportantLessons && (firstLesson != null && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
+                                                             firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
+                                                         && date.DayOfWeek == DayOfWeek.Monday && date.Month != 6 &&
+                                                         date.Month != 7))
         {
             returnableResult.Lessons = returnableResult.Lessons.AddTalkImportantLesson().SortByLessons();
         }
 
         // россия мои горизонты
-        if (firstLesson?.EducationGroup?.Course == 1
-            && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
-                firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
-            && date.DayOfWeek == DayOfWeek.Thursday && date.Month != 6 && date.Month != 7)
+        if (showRussianHorizonLesson && (firstLesson?.EducationGroup?.Course == 1
+                                         && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
+                                             firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
+                                         && date.DayOfWeek == DayOfWeek.Thursday && date.Month != 6 && date.Month != 7))
         {
             returnableResult.Lessons = returnableResult.Lessons.AddRussianMyHorizonTalk().SortByLessons();
         }
