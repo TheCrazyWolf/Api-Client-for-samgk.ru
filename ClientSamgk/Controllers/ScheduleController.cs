@@ -221,7 +221,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         var result = new List<IResultOutScheduleFromDate>();
 
         if (type is ScheduleSearchType.Employee)
-            foreach (var item in CachedIdentities)
+            foreach (var item in IdentityCache.Select(x=> x.Object))
             {
                 var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Employee, item.Id.ToString(),
                     scheduleCallType: scheduleCallType,
@@ -231,7 +231,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             }
 
         if (type is ScheduleSearchType.Cab)
-            foreach (var item in CachesCabs)
+            foreach (var item in CabsCache.Select(x=> x.Object))
             {
                 var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Cab, item.Adress,
                     scheduleCallType: scheduleCallType,
@@ -241,7 +241,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             }
 
         if (type is ScheduleSearchType.Group)
-            foreach (var item in CachesGroups)
+            foreach (var item in GroupsCache.Select(x=> x.Object))
             {
                 var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Group, item.Id.ToString(),
                     scheduleCallType: scheduleCallType,
@@ -326,7 +326,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                             Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
                             IsAttestation = scheduleItem.Zachet == 1,
                         },
-                        EducationGroup = CachesGroups.FirstOrDefault(x => x.Id == scheduleItem.Group)
+                        EducationGroup = ExtractGroupFromCache(scheduleItem.Group)
                     };
 
                     AddTeachersToLesson(scheduleItem, lesson);
@@ -344,7 +344,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     private void AddTeachersToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
     {
         foreach (var itemTeacher in scheduleItem.Teacher
-                     .Select(idTeacher => CachedIdentities.FirstOrDefault(x => x.Id == idTeacher))
+                     .Select(idTeacher => IdentityCache.Select(x=> x.Object).FirstOrDefault(x => x.Id == idTeacher))
                      .OfType<IResultOutIdentity>())
         {
             lesson.Identity.Add(itemTeacher);
@@ -354,7 +354,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     private void AddCabsToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
     {
         foreach (var itemCab in scheduleItem.Cab
-                     .Select(idCab => CachesCabs.FirstOrDefault(x => x.Adress == idCab))
+                     .Select(idCab => CabsCache.Select(x=> x.Object).FirstOrDefault(x => x.Adress == idCab))
                      .OfType<IResultOutCab>())
         {
             lesson.Cabs.Add(itemCab);

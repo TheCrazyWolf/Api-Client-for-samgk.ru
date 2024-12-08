@@ -73,7 +73,7 @@ public class CommonSamgkController : CommonCache
             {
                 Id = x.Id,
                 Name = x.Name,
-                Currator = CachedIdentities.FirstOrDefault(y => y.Id == x.Currator),
+                Currator = ExtractIdentityFromCache(x.Currator),
             })
             .OrderBy(x => x.Name)
             .Where(x => x.Course <= 5)

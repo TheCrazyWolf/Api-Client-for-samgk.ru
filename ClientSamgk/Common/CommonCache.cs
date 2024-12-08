@@ -9,35 +9,31 @@ namespace ClientSamgk.Common;
 
 public class CommonCache 
 {
-   
-    protected IList<IResultOutCab> CachesCabs = new List<IResultOutCab>();
-    protected IList<IResultOutGroup> CachesGroups = new List<IResultOutGroup>();
-    protected IList<IResultOutIdentity> CachedIdentities = new List<IResultOutIdentity>();
     
     protected IList<LifeTimeMemory<IResultOutScheduleFromDate>> ScheduleCache = new List<LifeTimeMemory<IResultOutScheduleFromDate>>();
     protected IList<LifeTimeMemory<IResultOutCab>> CabsCache = new List<LifeTimeMemory<IResultOutCab>>();
     protected IList<LifeTimeMemory<IResultOutGroup>> GroupsCache = new List<LifeTimeMemory<IResultOutGroup>>();
     protected IList<LifeTimeMemory<IResultOutIdentity>> IdentityCache = new List<LifeTimeMemory<IResultOutIdentity>>();
     
-    public IResultOutScheduleFromDate? ExtractFromCache(DateOnly date, ScheduleSearchType type, string id)
+    public IResultOutScheduleFromDate? ExtractFromCache(DateOnly date, ScheduleSearchType type, string? id)
     {
         ClearCacheIfOutDate();
         return ScheduleCache.FirstOrDefault(x => x.Object.Date == date && x.Object.SearchType == type && x.Object.IdValue == id)?.Object;
     }
     
-    public IResultOutCab? ExtractCabFromCache(string id)
+    public IResultOutCab? ExtractCabFromCache(string? id)
     {
         ClearCacheIfOutDate();
         return CabsCache.FirstOrDefault(x => x.Object.Adress == id)?.Object;
     }
     
-    public IResultOutGroup? ExtractCabFromCache(long id)
+    public IResultOutGroup? ExtractGroupFromCache(long? id)
     {
         ClearCacheIfOutDate();
         return GroupsCache.FirstOrDefault(x => x.Object.Id == id)?.Object;
     }
     
-    public IResultOutIdentity? ExtractIdentityFromCache(long id)
+    public IResultOutIdentity? ExtractIdentityFromCache(long? id)
     {
         ClearCacheIfOutDate();
         return IdentityCache.FirstOrDefault(x => x.Object.Id == id)?.Object;

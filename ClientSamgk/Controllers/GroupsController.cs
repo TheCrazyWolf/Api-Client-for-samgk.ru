@@ -14,7 +14,7 @@ public class GroupsController : CommonSamgkController, IGroupController
     public async Task<IList<IResultOutGroup>> GetGroupsAsync()
     {
         await UpdateIfCacheIsOutdated();
-        return CachesGroups.OrderBy(x=> x.Name).ToList();
+        return GroupsCache.Select(x=> x.Object).OrderBy(x=> x.Name).ToList();
     }
 
     public IResultOutGroup? GetGroup(long idGroup)
@@ -25,7 +25,7 @@ public class GroupsController : CommonSamgkController, IGroupController
     public async Task<IResultOutGroup?> GetGroupAsync(long idGroup)
     {
         await UpdateIfCacheIsOutdated();
-        return CachesGroups.FirstOrDefault(x=> x.Id == idGroup);
+        return GroupsCache.Select(x=> x.Object).FirstOrDefault(x=> x.Id == idGroup);
     }
 
     public IResultOutGroup? GetGroup(string searchGroup)
@@ -36,7 +36,6 @@ public class GroupsController : CommonSamgkController, IGroupController
     public async Task<IResultOutGroup?> GetGroupAsync(string searchGroup)
     {
         await UpdateIfCacheIsOutdated();
-        return CachesGroups.FirstOrDefault(x=> string.Equals(x.Name, searchGroup, 
-            StringComparison.CurrentCultureIgnoreCase));
+        return GroupsCache.Select(x=> x.Object).FirstOrDefault(x=> string.Equals(x.Name, searchGroup, StringComparison.CurrentCultureIgnoreCase));
     }
 }
