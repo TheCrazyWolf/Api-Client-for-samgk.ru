@@ -3,6 +3,7 @@ using ClientSamgk.Enums;
 using ClientSamgk.Interfaces.Client;
 using ClientSamgk.Utils;
 using ClientSamgkApiModelResponse.Shedules;
+using ClientSamgkOutputResponse.Enums;
 using ClientSamgkOutputResponse.Implementation.Education;
 using ClientSamgkOutputResponse.Implementation.Schedule;
 using ClientSamgkOutputResponse.Interfaces.Cabs;
@@ -14,117 +15,163 @@ namespace ClientSamgk.Controllers;
 
 public class ScheduleController : CommonSamgkController, ISсheduleController
 {
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutIdentity entity)
+    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutIdentity entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
-        return GetScheduleAsync(date: date, type: ScheduleSearchType.Employee, entity.Id.ToString()).GetAwaiter()
+        return GetScheduleAsync(date: date, type: ScheduleSearchType.Employee, entity.Id.ToString())
+            .GetAwaiter()
             .GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutIdentity entity)
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutIdentity entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         return await GetScheduleAsync(date: date, type: ScheduleSearchType.Employee, entity.Id.ToString());
     }
 
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate,
-        IResultOutIdentity entity,
+        IResultOutIdentity entity, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true,
         int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Employee,
-            entity.Id.ToString(), delay: delay).GetAwaiter().GetResult();
+                entity.Id.ToString(), delay: delay)
+            .GetAwaiter()
+            .GetResult();
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
-        IResultOutIdentity entity, int delay = 700)
+        IResultOutIdentity entity, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Employee,
             entity.Id.ToString(), delay: delay);
     }
 
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutGroup entity)
+    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutGroup entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         return GetScheduleAsync(date: date, type: ScheduleSearchType.Group,
-            entity.Id.ToString()).GetAwaiter().GetResult();
+                entity.Id.ToString())
+            .GetAwaiter()
+            .GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutGroup entity)
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutGroup entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         return await GetScheduleAsync(date: date, type: ScheduleSearchType.Group,
             entity.Id.ToString());
     }
 
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutGroup entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true,
         int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Group,
-            entity.Id.ToString(), delay: delay).GetAwaiter().GetResult();
+                entity.Id.ToString(), delay: delay)
+            .GetAwaiter()
+            .GetResult();
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
-        IResultOutGroup entity,
+        IResultOutGroup entity, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true,
         int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Group,
             entity.Id.ToString(), delay: delay);
     }
 
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutCab entity)
+    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutCab entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         return GetScheduleAsync(date: date, type: ScheduleSearchType.Cab,
-            entity.Adress).GetAwaiter().GetResult();
+                entity.Adress)
+            .GetAwaiter()
+            .GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutCab entity)
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutCab entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         return await GetScheduleAsync(date: date, type: ScheduleSearchType.Cab,
             entity.Adress);
     }
 
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutCab entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true,
         int delay = 700)
     {
         return GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
-            entity.Adress, delay: delay).GetAwaiter().GetResult();
+                entity.Adress, delay: delay)
+            .GetAwaiter()
+            .GetResult();
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
-        IResultOutCab entity,
+        IResultOutCab entity, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true,
         int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
             entity.Adress, delay: delay);
     }
 
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, string id)
+    public IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, string id,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
-        return GetScheduleAsync(date: date, type: type, id: id).GetAwaiter().GetResult();
+        return GetScheduleAsync(date: date, type: type, id: id)
+            .GetAwaiter()
+            .GetResult();
     }
 
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, long id)
+    public IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, long id,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
-        return GetScheduleAsync(date: date, type: type, id: id.ToString()).GetAwaiter().GetResult();
+        return GetScheduleAsync(date: date, type: type, id: id.ToString())
+            .GetAwaiter()
+            .GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, long id)
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, long id,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         return await GetScheduleAsync(date: date, type: type, id: id.ToString());
     }
 
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
-        string id, int delay = 700)
+        string id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay).GetAwaiter()
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay)
+            .GetAwaiter()
             .GetResult();
     }
 
     public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
-        long id, int delay = 700)
+        long id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay).GetAwaiter()
+        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay)
+            .GetAwaiter()
             .GetResult();
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
-        ScheduleSearchType type, string id, int delay = 700)
+        ScheduleSearchType type, string id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
 
     {
         await UpdateIfCacheIsOutdated();
@@ -143,13 +190,16 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
-        ScheduleSearchType type, long id, int delay = 700)
+        ScheduleSearchType type, long id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
     {
         return await GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id.ToString(),
             delay: delay);
     }
 
     public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true,
         int delay = 700)
     {
         await UpdateIfCacheIsOutdated();
@@ -183,12 +233,18 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         return result;
     }
 
-    public IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnly date, ScheduleSearchType type, int delay = 700)
+    public IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnly date, ScheduleSearchType type,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700)
     {
-        return GetAllScheduleAsync(date, type, delay).GetAwaiter().GetResult();
+        return GetAllScheduleAsync(date, type, ScheduleCallType.Standart, showImportantLessons, showRussianHorizonLesson, delay)
+            .GetAwaiter()
+            .GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id)
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         await UpdateIfCacheIsOutdated();
         var url = GetScheduleUrl(date, type, id);
@@ -200,7 +256,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     {
         return type switch
         {
-            ScheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&teacher={id}",
+            ScheduleSearchType.Employee =>
+                $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&teacher={id}",
             ScheduleSearchType.Group => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&group={id}",
             ScheduleSearchType.Cab => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&cab={id}",
             _ => throw new ArgumentOutOfRangeException()
