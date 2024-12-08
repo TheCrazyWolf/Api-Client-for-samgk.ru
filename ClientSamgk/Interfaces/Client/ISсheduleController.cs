@@ -1,4 +1,5 @@
 using ClientSamgk.Enums;
+using ClientSamgkOutputResponse.Enums;
 using ClientSamgkOutputResponse.Interfaces.Cabs;
 using ClientSamgkOutputResponse.Interfaces.Groups;
 using ClientSamgkOutputResponse.Interfaces.Identity;
@@ -8,42 +9,96 @@ namespace ClientSamgk.Interfaces.Client;
 
 public interface ISсheduleController
 {
-    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutIdentity entity);
+    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutIdentity entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true);
 
-    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutIdentity entity);
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutIdentity entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true);
 
-    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutIdentity entity, int delay = 700);
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutIdentity entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true,
+        int delay = 700);
 
-    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutIdentity entity, int delay = 700);
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
+        IResultOutIdentity entity, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700);
 
-    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutGroup entity);
+    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutGroup entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true);
 
-    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutGroup entity);
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutGroup entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true);
 
-    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutGroup entity, int delay = 700);
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutGroup entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true,
+        int delay = 700);
 
-    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutGroup entity, int delay = 700);
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
+        IResultOutGroup entity, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700);
 
-    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutCab entity);
+    IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutCab entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true);
 
-    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutCab entity);
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutCab entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true);
 
-    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutCab entity, int delay = 700);
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutCab entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true,
+        int delay = 700);
 
-    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutCab entity, int delay = 700);
-    
-    IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, string id);
-    IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, long id);
-    
-    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id);
-    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, long id);
-    
-    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, string id, int delay = 700);
-    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, long id, int delay = 700);
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, IResultOutCab entity,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true,
+        int delay = 700);
 
-    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, string id, int delay = 700);
-    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate, ScheduleSearchType type, long id, int delay = 700);
+    IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, string id,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true);
 
-    Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type, int delay = 700);
-    IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnly date, ScheduleSearchType type, int delay = 700);
+    IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, long id,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true);
+
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true);
+
+    Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, long id,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true);
+
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
+        string id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700);
+
+    IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
+        long id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700);
+
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
+        ScheduleSearchType type, string id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700);
+
+    Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
+        ScheduleSearchType type, long id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700);
+
+    Task<IList<IResultOutScheduleFromDate>>
+        GetAllScheduleAsync(DateOnly date, ScheduleSearchType type,
+            ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+            bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700);
+
+    IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnly date, ScheduleSearchType type,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700);
 }

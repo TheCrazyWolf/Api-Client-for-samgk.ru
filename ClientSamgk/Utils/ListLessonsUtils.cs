@@ -1,5 +1,7 @@
 ﻿using ClientSamgkOutputResponse.Implementation.Education;
+using ClientSamgkOutputResponse.Implementation.Identity;
 using ClientSamgkOutputResponse.Implementation.Schedule;
+using ClientSamgkOutputResponse.Interfaces.Identity;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
 
 namespace ClientSamgk.Utils;
@@ -13,6 +15,7 @@ public static class ListLessonsUtils
             NumLesson = 0, NumPair = 0, 
             DurationStart = new TimeOnly(08,25),
             DurationEnd = new TimeOnly(09,10),
+            Durations = new List<DurationLessonDetails>() {new DurationLessonDetails(new TimeOnly(08,25),new TimeOnly(09,10))},
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,
@@ -34,14 +37,15 @@ public static class ListLessonsUtils
             NumLesson = 0, NumPair = 0, 
             DurationStart = new TimeOnly(08,25),
             DurationEnd = new TimeOnly(09,10),
+            Durations = new List<DurationLessonDetails>() {new DurationLessonDetails(new TimeOnly(08,25),new TimeOnly(09,10))},
             SubjectDetails = new ResultOutSubject
             {
                 Id = 0,
                 Index = "КЧ.02",
                 SubjectName = "Классный час «Россия. Мои горизонты»"
             },
-            Cabs = lesson.First().Cabs, EducationGroup = lesson.First().EducationGroup, 
-            Identity = lesson.First().Identity
+            //Cabs = lesson.First().Cabs, EducationGroup = lesson.First().EducationGroup, 
+            Identity = new List<IResultOutIdentity>(){ new ResultOutIdentity() { Name = "Видинеев Дмитрий Юрьевич"}}
         };
         
         lesson.Add(newLesson);

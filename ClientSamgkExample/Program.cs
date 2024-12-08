@@ -33,7 +33,7 @@ var resultScheduleCollection = await api.Schedule
 // Получение расписание за день по преподавателям, кабинету или группам
 // долгая выгрузка
 var resultScheduleCollectionFromDateAll = await api.Schedule
-    .GetAllScheduleAsync(dateOnlyStart, ScheduleSearchType.Employee, 1000);
+    .GetAllScheduleAsync(dateOnlyStart, ScheduleSearchType.Employee, delay: 1000);
     
 // пример вывода расписания
 
