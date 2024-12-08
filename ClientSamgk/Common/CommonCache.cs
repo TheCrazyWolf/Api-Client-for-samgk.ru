@@ -9,6 +9,9 @@ namespace ClientSamgk.Common;
 
 public class CommonCache 
 {
+    protected int DefaultLifeTimeInMinutesForCommon = 2880; // 2 дня
+    protected int DefaultLifeTimeInMinutesLong = 43200; // 1 месяц
+    protected int DefaultLifeTimeInMinutesShort = 10; // 10минут
     
     protected IList<LifeTimeMemory<IResultOutScheduleFromDate>> ScheduleCache = new List<LifeTimeMemory<IResultOutScheduleFromDate>>();
     protected IList<LifeTimeMemory<IResultOutCab>> CabsCache = new List<LifeTimeMemory<IResultOutCab>>();
