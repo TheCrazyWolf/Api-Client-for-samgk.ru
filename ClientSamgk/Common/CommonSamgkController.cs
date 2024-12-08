@@ -30,10 +30,10 @@ public class CommonSamgkController : CommonCache
     {
         var restResponse = await SendRequestAndGetResponse(url, method, body);
         if (restResponse is null || !restResponse.IsSuccessStatusCode || restResponse.Content == null) return default;
-        return TryDeserializeObject<T>(restResponse.Content);
+        return TryDeserializeObjectOrGetDefault<T>(restResponse.Content);
     }
 
-    private T? TryDeserializeObject<T>(string restResponseContent)
+    private T? TryDeserializeObjectOrGetDefault<T>(string restResponseContent)
     {
         try
         {
