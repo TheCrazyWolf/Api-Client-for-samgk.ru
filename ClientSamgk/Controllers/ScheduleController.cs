@@ -315,6 +315,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         var returnableResult = new ResultOutResultOutScheduleFromDate { Date = date, SearchType =searchType, IdValue = id};
         if (result is null || result.Count == 0) return returnableResult;
 
+        // костыль чтобы по умолчанию включены внеурочка, тогда юзаем сдвигаем расписание
         if ((showImportantLessons || showRussianHorizonLesson) && 
             scheduleCallType == ScheduleCallType.Standart && (date.DayOfWeek == DayOfWeek.Monday ||
                                                               date.DayOfWeek == DayOfWeek.Thursday && 
