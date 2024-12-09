@@ -313,8 +313,6 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         bool showImportantLessons = true, bool showRussianHorizonLesson = true)
     {
         var returnableResult = new ResultOutResultOutScheduleFromDate { Date = date, SearchType =searchType, IdValue = id};
-        if (result is null || result.Count == 0) return returnableResult;
-
         // костыль чтобы по умолчанию включены внеурочка, тогда юзаем сдвигаем расписание
         if ((showImportantLessons || showRussianHorizonLesson) && 
             scheduleCallType == ScheduleCallType.Standart && (date.DayOfWeek == DayOfWeek.Monday ||
@@ -323,6 +321,9 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         {
             scheduleCallType = ScheduleCallType.StandartWithShift;
         }
+        returnableResult.CallType = scheduleCallType;
+        
+        if (result is null || result.Count == 0) return returnableResult;
         
         foreach (var array in result.Values)
         {

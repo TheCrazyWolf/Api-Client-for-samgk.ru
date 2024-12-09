@@ -9,4 +9,5 @@ public class ResultOutResultOutScheduleFromDate : IResultOutScheduleFromDate
     public IList<IResultOutLesson> Lessons { get; set; } = new List<IResultOutLesson>();
     public ScheduleSearchType SearchType { get; set; }
     public string IdValue { get; set; } = string.Empty;
+    public ScheduleCallType CallType { get; set; }
 }
