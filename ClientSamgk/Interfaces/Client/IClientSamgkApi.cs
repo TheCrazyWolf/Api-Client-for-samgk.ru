@@ -18,4 +18,8 @@ public interface IClientSamgkApi
     /// Методы с преподавателями
     /// </summary>
     public IIdentityController Accounts { get; }
+    /// <summary>
+    /// Методы для работы с кешем
+    /// </summary>
+    public IMemoryCacheController Cache { get;  } 
 }
