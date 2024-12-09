@@ -101,3 +101,37 @@ var scheduleFromDates = await api.Schedule.GetScheduleAsync(dateOnlyStart, dateO
 DateOnly dateOnly = new DateOnly(2024,09,16);
 var resultScheduleCollectionFromDateAll = await api.Schedule.GetAllScheduleAsync(dateOnly, ScheduleSearchType.Employee, 1000);
 ```
+
+
+### Установка расписания звонков/ скрытие разговоров о важном/мои горизонты
+Метод GetScheduleAsync принимает параметры как перечисление ScheduleCallType, showImportantLessons и showRussianHorizonLesson
+Пример получение сокращенного расписания
+```csharp
+DateOnly dateOnly = new DateOnly(2024,09,16);
+var result = await api.Schedule.GetScheduleAsync(date: dateOnly, type: ScheduleSearchType.Employee, id: 2288, 
+    scheduleCallType: ScheduleCallType.StandartShort, showRussianHorizonLesson: true, showImportantLessons: true);
+```
+
+### Отказ от кеширования расписания
+Метод GetScheduleAsync по умолчанию кеширует расписание в область оперативной памяти с разными сроком жизни, 
+для того чтобы не обращаться к серверам повторно. По умолчанию, прошедшие даты кешируется с длительностью 1 месяц, сегодняшние
+и последующие в 5-10 минут. Кеширование производится в рамках одного экземпляра класса.
+
+Отказ от кеширования производится параметром overrideCache
+```csharp
+DateOnly dateOnly = new DateOnly(2024,09,16);
+var result = await api.Schedule.GetScheduleAsync(date: dateOnly, type: ScheduleSearchType.Employee, id: 2288, 
+    scheduleCallType: ScheduleCallType.StandartShort, overrideCache: true);
+```
+
+
+### Принудительная очистка кеша или устаревших данных
+По умолчанию при вызове любых методов из библиотеки запускается процесс очистки
+устаревших данных, но вы можете сделать это вручную или очистить полностью все данные
+```csharp
+// Очистка устаревших данных
+await api.Cache.ClearIfOutDate();
+
+// Очистка всего
+api.Cache.Clear();
+```

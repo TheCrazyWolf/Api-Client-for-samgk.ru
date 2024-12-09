@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ClientSamgk;
-using ClientSamgk.Enums;
 using ClientSamgk.Interfaces.Client;
+using ClientSamgkOutputResponse.Enums;
 
 IClientSamgkApi api = new ClientSamgkApi();
 

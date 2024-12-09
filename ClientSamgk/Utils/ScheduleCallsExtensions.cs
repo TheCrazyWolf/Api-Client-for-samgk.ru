@@ -4,7 +4,7 @@ using ClientSamgkOutputResponse.Implementation.Schedule;
 
 namespace ClientSamgk.Utils;
 
-public static class ScheduleUtils
+public static class ScheduleCallsExtensions
 {
     public static TimeOnly GetStartLessonTime(this ScheduleItem scheduleItem, DateOnly date)
     {

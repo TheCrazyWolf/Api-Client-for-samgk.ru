@@ -4,11 +4,6 @@ namespace ClientSamgk.Utils;
 
 public static class HeadersUtils
 {
-    /// <summary>
-    /// Лекарство от жадности
-    /// </summary>
-    /// <returns></returns>
-    /// 
     public static void ConfigureAntiGreedHeaders(this RestRequest request)
     {
         request.AddOrUpdateHeaders(GetHeaders());
