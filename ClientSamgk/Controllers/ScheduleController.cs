@@ -220,35 +220,48 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
         var result = new List<IResultOutScheduleFromDate>();
 
-        if (type is ScheduleSearchType.Employee)
-            foreach (var item in IdentityCache.Select(x=> x.Object))
+        switch (type)
+        {
+            case ScheduleSearchType.Employee:
             {
-                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Employee, item.Id.ToString(),
-                    scheduleCallType: scheduleCallType,
-                    showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-                if (scheduleFromDate.Lessons.Count != 0)
-                    result.Add(scheduleFromDate);
-            }
+                foreach (var item in IdentityCache.Select(x=> x.Object))
+                {
+                    var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Employee, item.Id.ToString(),
+                        scheduleCallType: scheduleCallType,
+                        showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
+                    if (scheduleFromDate.Lessons.Count != 0)
+                        result.Add(scheduleFromDate);
+                }
 
-        if (type is ScheduleSearchType.Cab)
-            foreach (var item in CabsCache.Select(x=> x.Object))
-            {
-                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Cab, item.Adress,
-                    scheduleCallType: scheduleCallType,
-                    showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-                if (scheduleFromDate.Lessons.Count != 0)
-                    result.Add(scheduleFromDate);
+                break;
             }
+            case ScheduleSearchType.Cab:
+            {
+                foreach (var item in CabsCache.Select(x=> x.Object))
+                {
+                    var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Cab, item.Adress,
+                        scheduleCallType: scheduleCallType,
+                        showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
+                    if (scheduleFromDate.Lessons.Count != 0)
+                        result.Add(scheduleFromDate);
+                }
 
-        if (type is ScheduleSearchType.Group)
-            foreach (var item in GroupsCache.Select(x=> x.Object))
-            {
-                var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Group, item.Id.ToString(),
-                    scheduleCallType: scheduleCallType,
-                    showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-                if (scheduleFromDate.Lessons.Count != 0)
-                    result.Add(scheduleFromDate);
+                break;
             }
+            case ScheduleSearchType.Group:
+            {
+                foreach (var item in GroupsCache.Select(x=> x.Object))
+                {
+                    var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Group, item.Id.ToString(),
+                        scheduleCallType: scheduleCallType,
+                        showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
+                    if (scheduleFromDate.Lessons.Count != 0)
+                        result.Add(scheduleFromDate);
+                }
+
+                break;
+            }
+        }
 
         return result;
     }
