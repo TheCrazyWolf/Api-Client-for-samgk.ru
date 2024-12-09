@@ -10,10 +10,15 @@ namespace ClientSamgk.Controllers;
 
 public class MemoryCacheController : CommonSamgkController, IMemoryCacheController
 {
-    public async Task ClearIfOutDate()
+    public async Task ClearIfOutDateAsync()
     {
         await UpdateIfCacheIsOutdated();
         ClearCacheIfOutDate();
+    }
+
+    public void ClearIfOutDate()
+    {
+        ClearIfOutDateAsync().GetAwaiter().GetResult();
     }
 
     public void Clear()
