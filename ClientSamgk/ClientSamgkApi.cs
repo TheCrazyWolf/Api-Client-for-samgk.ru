@@ -9,4 +9,5 @@ public class ClientSamgkApi : IClientSamgkApi
     public IIdentityController Accounts { get; protected set; } = new AccountController();
     public IGroupController Groups { get; protected set; } = new GroupsController();
     public ICabController Cabs { get; protected set; } = new CabsController();
+    public IMemoryCacheController Cache { get; protected set; } = new MemoryCacheController();
 }
