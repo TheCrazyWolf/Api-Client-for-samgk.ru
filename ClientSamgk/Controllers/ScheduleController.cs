@@ -268,14 +268,18 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false)
     {
         await UpdateIfCacheIsOutdated();
-        
-        var cachedItem = ExtractFromCache(date, type, id);
-        if (cachedItem != null) return cachedItem;
+
+        if (!overrideCache)
+        {
+            var cachedItem = ExtractFromCache(date, type, id);
+            if (cachedItem != null) return cachedItem;
+        }
         
         var url = GetScheduleUrl(date, type, id);
         var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
         var newSchedule = ParseScheduleResult(date, result, type, id, scheduleCallType, showImportantLessons, showRussianHorizonLesson);
-        if(newSchedule.Lessons.Count != 0)  SaveToCache(newSchedule, (newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date) ? DefaultLifeTimeInMinutesLong : DefaultLifeTimeInMinutesShort));
+        if (newSchedule.Lessons.Count == 0) return newSchedule;
+        if(!overrideCache) SaveToCache(newSchedule, (newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date) ? DefaultLifeTimeInMinutesLong : DefaultLifeTimeInMinutesShort));
         return newSchedule;
     }
 
