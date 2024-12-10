@@ -20,4 +20,8 @@ public interface IResultOutScheduleFromDate
     /// Что ищем
     /// </summary>
     public string IdValue { get; set; }
+    /// <summary>
+    /// Типы звонков
+    /// </summary>
+    public ScheduleCallType CallType { get; set; }
 }

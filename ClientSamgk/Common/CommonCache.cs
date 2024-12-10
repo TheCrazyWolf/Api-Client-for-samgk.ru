@@ -88,10 +88,24 @@ public class CommonCache
 
     protected void ClearCacheIfOutDate()
     {
-        foreach (var item in ScheduleCache.Where(x => x.DateTimeCanBeDeleted <= DateTime.Now).ToList()) ScheduleCache.Remove(item);
-        foreach (var item in CabsCache.Where(x => x.DateTimeCanBeDeleted <= DateTime.Now).ToList()) CabsCache.Remove(item);
-        foreach (var item in GroupsCache.Where(x => x.DateTimeCanBeDeleted <= DateTime.Now).ToList()) GroupsCache.Remove(item);
-        foreach (var item in IdentityCache.Where(x => x.DateTimeCanBeDeleted <= DateTime.Now).ToList()) IdentityCache.Remove(item);
+        foreach (var item in ScheduleCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
+        {
+            ScheduleCache.Remove(item);
+        }
+        
+        foreach (var item in CabsCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
+        {
+            CabsCache.Remove(item);
+        }
+        
+        foreach (var item in GroupsCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
+        {
+            GroupsCache.Remove(item);
+        }
+        foreach (var item in IdentityCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
+        {
+            IdentityCache.Remove(item);
+        }
     }
 
     protected bool IsRequiredToForceUpdateCache()
