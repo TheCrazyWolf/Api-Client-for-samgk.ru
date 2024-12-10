@@ -291,7 +291,6 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         var url = GetScheduleUrl(date, type, id);
         var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
         var newSchedule = ParseScheduleResult(date, result, type, id, scheduleCallType, showImportantLessons, showRussianHorizonLesson);
-        if (newSchedule.Lessons.Count == 0) return newSchedule;
         if(!overrideCache) SaveToCache(newSchedule, (newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date) ? DefaultLifeTimeInMinutesLong : DefaultLifeTimeInMinutesShort));
         return newSchedule;
     }
