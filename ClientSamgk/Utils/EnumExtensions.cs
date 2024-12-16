@@ -6,7 +6,7 @@ namespace ClientSamgk.Utils;
 
 public static class EnumExtensions
 {
-    public static string GetDisplayName(this ScheduleSearchType value)
+    public static string GetDisplayName(this Enum value)
     {
         return value.GetType()
             .GetMember(value.ToString())
