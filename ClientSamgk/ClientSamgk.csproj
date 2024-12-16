@@ -20,12 +20,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="112.1.0" />
+      <ProjectReference PrivateAssets="all" Include="..\ClientSamgkApiModelResponce\ClientSamgkApiModelResponce.csproj" />
+      <ProjectReference PrivateAssets="all" Include="..\ClientSamgkOutputResponse\ClientSamgkOutputResponse.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference PrivateAssets="all" Include="..\ClientSamgkApiModelResponce\ClientSamgkApiModelResponce.csproj" />
-      <ProjectReference PrivateAssets="all" Include="..\ClientSamgkOutputResponse\ClientSamgkOutputResponse.csproj" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
     <PropertyGroup>

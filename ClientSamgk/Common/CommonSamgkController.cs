@@ -1,3 +1,4 @@
+using System.Text;
 using ClientSamgk.Models;
 using ClientSamgk.Utils;
 using ClientSamgkApiModelResponse.Groups;
@@ -9,44 +10,67 @@ using ClientSamgkOutputResponse.Interfaces.Cabs;
 using ClientSamgkOutputResponse.Interfaces.Groups;
 using ClientSamgkOutputResponse.Interfaces.Identity;
 using Newtonsoft.Json;
-using RestSharp;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ClientSamgk.Common;
 
 public class CommonSamgkController : CommonCache
 {
-    private readonly RestClient _client = new();
+    private readonly HttpClient _client = new();
 
-    private async Task<RestResponse?> SendRequestAndGetResponse(string url, Method method = Method.Get,
+    private async Task<HttpResponseMessage?> SendRequestAndGetResponse(string url, HttpMethod method,
         object? body = null)
     {
-        var options = new RestRequest(url);
-        options.ConfigureAntiGreedHeaders();
-        if (body is not null && method is Method.Post or Method.Put) options.AddBody(body);
-        return await _client.ExecuteAsync(options, method);
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(url),
+            Method = method
+        };
+        
+        if (body != null)
+        {
+            var json = JsonSerializer.Serialize(body); request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+        }
+
+        foreach (var header in HeadersUtils.GetHeaders())
+            request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+        try
+        {
+            return await _client.SendAsync(request);
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Console.WriteLine(ex.Message);   
+#endif
+            return default;
+        }
     }
 
 
-    protected async Task<T?> SendRequest<T>(string url, Method method = Method.Get, object? body = null)
+    protected async Task<T?> SendRequest<T>(string url, HttpMethod method, object? body = null)
     {
         var restResponse = await SendRequestAndGetResponse(url, method, body);
-        if (restResponse is null || !restResponse.IsSuccessStatusCode || restResponse.Content == null) return default;
-        return TryDeserializeObjectOrGetDefault<T>(restResponse.Content);
+        if (restResponse is null || !restResponse.IsSuccessStatusCode) return default;
+        return TryDeserializeObjectOrGetDefault<T>(await restResponse.Content.ReadAsStringAsync());
     }
 
-    private T? TryDeserializeObjectOrGetDefault<T>(string restResponseContent)
+    private T? TryDeserializeObjectOrGetDefault<T>(string json)
     {
         try
         {
-            return JsonConvert.DeserializeObject<T>(restResponseContent);
+            return JsonConvert.DeserializeObject<T>(json);
         }
-        catch
+        catch(Exception ex)
         {
-            return Activator.CreateInstance<T?>();
+#if DEBUG
+            Console.WriteLine(ex.Message);   
+#endif
+            return default;
         }
     }
-
-    protected async Task SendRequest(string url, Method method = Method.Get, object? body = null)
+    
+    protected async Task SendRequest(string url, HttpMethod method, object? body = null)
     {
         await SendRequestAndGetResponse(url, method, body);
     }
@@ -62,7 +86,7 @@ public class CommonSamgkController : CommonCache
 
     private async Task ConfiguringCacheGroups()
     {
-        var resultApiGroups = await SendRequest<IList<SamGkGroupApiResult>>("https://mfc.samgk.ru/api/groups");
+        var resultApiGroups = await SendRequest<IList<SamGkGroupApiResult>>("https://mfc.samgk.ru/api/groups", HttpMethod.Get);
 
         if (resultApiGroups == null || !resultApiGroups.Any()) return;
 
@@ -84,7 +108,7 @@ public class CommonSamgkController : CommonCache
 
     private async Task ConfiguringCacheTeachers()
     {
-        var resultApiTeachers = await SendRequest<IList<SamgkTeacherApiResult>>("https://mfc.samgk.ru/api/teachers");
+        var resultApiTeachers = await SendRequest<IList<SamgkTeacherApiResult>>("https://mfc.samgk.ru/api/teachers", HttpMethod.Get);
 
         if (resultApiTeachers == null || !resultApiTeachers.Any()) return;
 
@@ -104,7 +128,7 @@ public class CommonSamgkController : CommonCache
 
     private async Task ConfiguringCacheCabs()
     {
-        var resultApiCabs = await SendRequest<Dictionary<string, string>>("https://mfc.samgk.ru/api/cabs");
+        var resultApiCabs = await SendRequest<Dictionary<string, string>>("https://mfc.samgk.ru/api/cabs", HttpMethod.Get);
 
         if (resultApiCabs == null || !resultApiCabs.Any()) return;
 

@@ -1,15 +1,9 @@
-using RestSharp;
-
 namespace ClientSamgk.Utils;
 
 public static class HeadersUtils
 {
-    public static void ConfigureAntiGreedHeaders(this RestRequest request)
-    {
-        request.AddOrUpdateHeaders(GetHeaders());
-    }
 
-    private static ICollection<KeyValuePair<string,string>> GetHeaders()
+    public static ICollection<KeyValuePair<string,string>> GetHeaders()
     {
         var dickPick = new List<KeyValuePair<string, string>>()
         {
