@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using ClientSamgkApiModelResponse.Education;
 using Newtonsoft.Json;
 
@@ -5,13 +6,13 @@ namespace ClientSamgkApiModelResponse.Shedules;
 
 public class ScheduleItem
 {
-    [JsonProperty("id")] public int Id { get; set; }
-    [JsonProperty("group")] public int Group { get; set; }
+    [JsonProperty("id")] public long Id { get; set; }
+    [JsonProperty("group")] public long Group { get; set; }
     [JsonProperty("groupName")] public string GroupName { get; set; }
-    [JsonProperty("discipline")] public int Discipline { get; set; }
+    [JsonProperty("discipline")] public long Discipline { get; set; }
     [JsonProperty("disciplineInfo")] public DisciplineInfo DisciplineInfo { get; set; }
     [JsonProperty("disciplineName")] public string DisciplineName { get; set; }
-    [JsonProperty("teacher")] public List<int> Teacher { get; set; }
+    [JsonProperty("teacher")] public List<long> Teacher { get; set; }
     [JsonProperty("teacherName")] public List<string> TeacherName { get; set; }
     [JsonProperty("cab")] public List<string> Cab { get; set; }
     [JsonProperty("pair")] public int Pair { get; set; }
