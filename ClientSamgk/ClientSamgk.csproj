@@ -13,7 +13,7 @@
         <Authors>kulagin</Authors>
         <AssemblyName>ClientSamgk</AssemblyName>
         <RootNamespace>ClientSamgk</RootNamespace>
-        <Version>2.7.2</Version>
+        <Version>2.7.3</Version>
         <PackageTags>samgk api client</PackageTags>
         <PackageProjectUrl>samgk.ru</PackageProjectUrl>
         <RepositoryUrl>https://github.com/TheCrazyWolf/Api-Client-for-samgk.ru</RepositoryUrl>
