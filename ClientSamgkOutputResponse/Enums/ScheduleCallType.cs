@@ -9,7 +9,7 @@ public enum ScheduleCallType
     [Display(Name = "Обычное сокращенное")]
     StandartShort,
     [Display(Name = "Сокращенное (занятие менее 1ч.)")]
-    StandartSuperShort,
+    SuperShort,
     [Display(Name = "Обычное со сдвигом")]
     StandartWithShift,
     [Display(Name = "Сокращенное (занятие менее 1ч.) со сдвигом")]

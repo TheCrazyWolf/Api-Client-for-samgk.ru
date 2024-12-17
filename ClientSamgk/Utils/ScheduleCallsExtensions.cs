@@ -129,7 +129,7 @@ public static class ScheduleCallsExtensions
         {
             ScheduleCallType.Standart => GetDurationLessonDetailsStandart(scheduleItem),
             ScheduleCallType.StandartShort => GetDurationLessonDetailsStandartShort(scheduleItem),
-            ScheduleCallType.StandartSuperShort => GetDurationLessonDetailsStandartSuperShort(scheduleItem),
+            ScheduleCallType.SuperShort => GetDurationLessonDetailsStandartSuperShort(scheduleItem),
             ScheduleCallType.StandartWithShift => GetDurationLessonDetailsStandartWithShift(scheduleItem),
             ScheduleCallType.SuperShortWithShift => GetDurationLessonDetailsSuperShortWithShift(scheduleItem),
             _ => GetDurationLessonDetailsStandart(scheduleItem)
