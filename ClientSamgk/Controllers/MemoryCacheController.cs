@@ -12,7 +12,7 @@ public class MemoryCacheController : CommonSamgkController, IMemoryCacheControll
 {
     public async Task ClearIfOutDateAsync()
     {
-        await UpdateIfCacheIsOutdated();
+        await UpdateIfCacheIsOutdated().ConfigureAwait(false);
         ClearCacheIfOutDate();
     }
 

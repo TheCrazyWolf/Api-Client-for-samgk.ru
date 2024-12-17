@@ -185,7 +185,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false, int delay = 700)
 
     {
-        await UpdateIfCacheIsOutdated();
+        await UpdateIfCacheIsOutdated().ConfigureAwait(false);
         var resultOutScheduleFromDates = new List<IResultOutScheduleFromDate>();
         endDate = endDate.AddDays(1);
 
@@ -216,7 +216,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false,
         int delay = 700)
     {
-        await UpdateIfCacheIsOutdated();
+        await UpdateIfCacheIsOutdated().ConfigureAwait(false);
 
         var result = new List<IResultOutScheduleFromDate>();
 
@@ -280,7 +280,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false)
     {
-        await UpdateIfCacheIsOutdated();
+        await UpdateIfCacheIsOutdated().ConfigureAwait(false);
 
         if (!overrideCache)
         {
