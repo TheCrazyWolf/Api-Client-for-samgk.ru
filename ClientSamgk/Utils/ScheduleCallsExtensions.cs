@@ -132,8 +132,48 @@ public static class ScheduleCallsExtensions
             ScheduleCallType.SuperShort => GetDurationLessonDetailsStandartSuperShort(scheduleItem),
             ScheduleCallType.StandartWithShift => GetDurationLessonDetailsStandartWithShift(scheduleItem),
             ScheduleCallType.SuperShortWithShift => GetDurationLessonDetailsSuperShortWithShift(scheduleItem),
+            ScheduleCallType.ShortWithShift => GetDurationLessonsDetailsShortWithShift(scheduleItem),
             _ => GetDurationLessonDetailsStandart(scheduleItem)
         };
+    }
+
+    private static IList<DurationLessonDetails> GetDurationLessonsDetailsShortWithShift(ScheduleItem scheduleItem)
+    {
+        List<DurationLessonDetails> scheduleCalls = scheduleItem.Pair switch
+        {
+            1 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("09:15"), TimeOnly.Parse("10:15")),
+            ],
+            2 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("10:25"), TimeOnly.Parse("11:25")),
+            ],
+            3 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("11:35"), TimeOnly.Parse("12:35")),
+            ],
+            4 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("12:45"), TimeOnly.Parse("13:45")),
+            ],
+            5 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("13:55"), TimeOnly.Parse("14:55")),
+            ],
+            6 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("15:05"), TimeOnly.Parse("16:05")),
+            ],
+            7 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("16:15"), TimeOnly.Parse("17:15")),
+            ],
+
+            _ => []
+        };
+
+        return scheduleCalls;
     }
 
     private static IList<DurationLessonDetails> GetDurationLessonDetailsStandart(ScheduleItem scheduleItem)
