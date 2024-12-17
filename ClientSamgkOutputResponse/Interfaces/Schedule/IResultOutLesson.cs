@@ -36,14 +36,4 @@ public interface IResultOutLesson
     /// Информация о длительности занятий
     /// </summary>
     public IList<DurationLessonDetails> Durations { get; set; }
-    /// <summary>
-    /// Дата и время начала урока
-    /// </summary>
-    [Obsolete("Свойство устарело и будет удалено в ближайшем обновлении. Используйте свойство Durations")]
-    public TimeOnly DurationStart { get; set; } 
-    /// <summary>
-    /// Дата и время конец урока
-    /// </summary>
-    [Obsolete("Свойство устарело и будет удалено в ближайшем обновлении. Используйте свойство Durations")]
-    public TimeOnly DurationEnd { get; set; } 
 }
