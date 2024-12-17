@@ -55,9 +55,9 @@ public class CommonSamgkController : CommonCache
     {
         if (!IsRequiredToForceUpdateCache()) return;
 
-        await ConfiguringCacheTeachers();
-        await ConfiguringCacheCabs();
-        await ConfiguringCacheGroups();
+        await ConfiguringCacheTeachers().ConfigureAwait(false);
+        await ConfiguringCacheCabs().ConfigureAwait(false);
+        await ConfiguringCacheGroups().ConfigureAwait(false);
     }
 
     private async Task ConfiguringCacheGroups()
