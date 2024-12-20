@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using ClientSamgkOutputResponse.Enums;
 
 namespace ClientSamgk.Utils;
 

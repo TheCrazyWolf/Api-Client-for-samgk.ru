@@ -180,27 +180,42 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             .GetResult();
     }
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
-        ScheduleSearchType type, string id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false, int delay = 700)
-
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(
+        DateOnly startDate,
+        DateOnly endDate,
+        ScheduleSearchType type,
+        string id,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true,
+        bool showRussianHorizonLesson = true,
+        bool overrideCache = false,
+        int delay = 700)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        var resultOutScheduleFromDates = new List<IResultOutScheduleFromDate>();
-        endDate = endDate.AddDays(1);
 
-        while (startDate != endDate)
+        List<IResultOutScheduleFromDate> resultOutScheduleFromDates = [];
+        var currentDate = startDate;
+
+        while (currentDate <= endDate)
         {
-            var outScheduleFromDate = await GetScheduleAsync(date: startDate, type: type, id: id,
-                scheduleCallType: scheduleCallType,
-                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-            if (outScheduleFromDate.Lessons.Any()) resultOutScheduleFromDates.Add(outScheduleFromDate);
-            startDate = startDate.AddDays(1);
-            await Task.Delay(delay);
+            var schedule = await GetScheduleAsync(currentDate, type, id, scheduleCallType, showImportantLessons, showRussianHorizonLesson, overrideCache);
+
+            if (schedule.Lessons.Any())
+            {
+                resultOutScheduleFromDates.Add(schedule);
+            }
+
+            currentDate = currentDate.AddDays(1);
+
+            if (delay > 0)
+            {
+                await Task.Delay(delay).ConfigureAwait(false);
+            }
         }
 
         return resultOutScheduleFromDates;
     }
+
 
     public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
         ScheduleSearchType type, long id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
@@ -211,193 +226,348 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
     }
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(DateOnly date, ScheduleSearchType type,
+    public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(
+        DateOnly date,
+        ScheduleSearchType type,
         ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false,
+        bool showImportantLessons = true,
+        bool showRussianHorizonLesson = true,
+        bool overrideCache = false,
         int delay = 700)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
 
-        var result = new List<IResultOutScheduleFromDate>();
+        var cache = getCacheByType(type);
 
-        switch (type)
+        List<IResultOutScheduleFromDate> result = [];
+
+        foreach (var item in cache)
         {
-            case ScheduleSearchType.Employee:
-            {
-                foreach (var item in IdentityCache.Select(x=> x.Object))
-                {
-                    var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Employee, item.Id.ToString(),
-                        scheduleCallType: scheduleCallType,
-                        showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-                    if (scheduleFromDate.Lessons.Count != 0)
-                        result.Add(scheduleFromDate);
-                }
+            var id = getIdByType(type, item);
+            var scheduleFromDate = await GetScheduleAsync(date, type, id,
+                scheduleCallType: scheduleCallType,
+                showImportantLessons: showImportantLessons,
+                showRussianHorizonLesson: showRussianHorizonLesson,
+                overrideCache: overrideCache);
 
-                break;
-            }
-            case ScheduleSearchType.Cab:
+            if (scheduleFromDate.Lessons.Count > 0)
             {
-                foreach (var item in CabsCache.Select(x=> x.Object))
-                {
-                    var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Cab, item.Adress,
-                        scheduleCallType: scheduleCallType,
-                        showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-                    if (scheduleFromDate.Lessons.Count != 0)
-                        result.Add(scheduleFromDate);
-                }
-
-                break;
-            }
-            case ScheduleSearchType.Group:
-            {
-                foreach (var item in GroupsCache.Select(x=> x.Object))
-                {
-                    var scheduleFromDate = await GetScheduleAsync(date, ScheduleSearchType.Group, item.Id.ToString(),
-                        scheduleCallType: scheduleCallType,
-                        showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-                    if (scheduleFromDate.Lessons.Count != 0)
-                        result.Add(scheduleFromDate);
-                }
-
-                break;
+                result.Add(scheduleFromDate);
             }
         }
 
         return result;
     }
 
+    // Возвращает соответствующий кеш в зависимости от типа поиска
+    IEnumerable<object> getCacheByType(ScheduleSearchType type) => type switch
+    {
+        ScheduleSearchType.Employee => IdentityCache.Select(x => x.Object),
+        ScheduleSearchType.Cab => CabsCache.Select(x => x.Object),
+        ScheduleSearchType.Group => GroupsCache.Select(x => x.Object),
+        _ => throw new ArgumentException($"Unsupported ScheduleSearchType: {type}", nameof(type)),
+    };
+
+    // Возвращает идентификатор для элемента кеша
+    string getIdByType(ScheduleSearchType type, object item) => type switch
+    {
+        ScheduleSearchType.Employee => ((IResultOutIdentity)item).Id.ToString(),
+        ScheduleSearchType.Cab => ((IResultOutCab)item).Adress,
+        ScheduleSearchType.Group => ((IResultOutGroup)item).Id.ToString(),
+        _ => throw new ArgumentException($"Unsupported ScheduleSearchType: {type}", nameof(type)),
+    };
+
+
     public IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnly date, ScheduleSearchType type,
         ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false, int delay = 700)
     {
         return GetAllScheduleAsync(date, type, ScheduleCallType.Standart, showImportantLessons,
-                showRussianHorizonLesson, delay:delay, overrideCache: overrideCache)
+                showRussianHorizonLesson, delay: delay, overrideCache: overrideCache)
             .GetAwaiter()
             .GetResult();
     }
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id,
+    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(
+        DateOnly date,
+        ScheduleSearchType type,
+        string id,
         ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false)
+        bool showImportantLessons = true,
+        bool showRussianHorizonLesson = true,
+        bool overrideCache = false)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
 
-        if (!overrideCache)
+        if (!overrideCache && ExtractFromScheduleCache(date, type, id) is IResultOutScheduleFromDate cache) // Пытаемся извлечь данные из кэша
         {
-            var cachedItem = ExtractFromCache(date, type, id);
-            if (cachedItem != null) return cachedItem;
+            return cache;
         }
-        
+
         var url = GetScheduleUrl(date, type, id);
-        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url);
+        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url).ConfigureAwait(false);
+
         var newSchedule = ParseScheduleResult(date, result, type, id, scheduleCallType, showImportantLessons, showRussianHorizonLesson);
-        if(!overrideCache) SaveToCache(newSchedule, (newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date) ? DefaultLifeTimeInMinutesLong : DefaultLifeTimeInMinutesShort));
+
+        if (!overrideCache) // Сохранение данных в кэш, чтобы не напригать лишний раз сайт СГК
+        {
+            SaveToCache(newSchedule, determineCacheLifeTime(newSchedule.Date));
+        }
+
         return newSchedule;
     }
 
-    private string GetScheduleUrl(DateOnly date, ScheduleSearchType type, string id)
+    int determineCacheLifeTime(DateOnly scheduleDate) // Код просто лучшее читается
     {
-        return type switch
-        {
-            ScheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&teacher={id}",
-            ScheduleSearchType.Group => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&group={id}",
-            ScheduleSearchType.Cab => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&cab={id}",
-            _ => throw new ArgumentOutOfRangeException()
-        };
+        return scheduleDate < DateOnly.FromDateTime(DateTime.Now)
+            ? DefaultLifeTimeInMinutesLong
+            : DefaultLifeTimeInMinutesShort;
     }
 
-    private IResultOutScheduleFromDate ParseScheduleResult(DateOnly date,
-        Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result, ScheduleSearchType searchType, string id,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
+
+    const string UrlDateSGK = "https://mfc.samgk.ru/schedule/api/get-rasp?date=";
+
+    string GetScheduleUrl(DateOnly date, ScheduleSearchType type, string id)
     {
-        var returnableResult = new ResultOutResultOutScheduleFromDate { Date = date, SearchType =searchType, IdValue = id};
-        // костыль чтобы по умолчанию включены внеурочка, тогда юзаем сдвигаем расписание
-        if ((showImportantLessons || showRussianHorizonLesson) && 
-            scheduleCallType == ScheduleCallType.Standart && (date.DayOfWeek == DayOfWeek.Monday ||
-                                                              date.DayOfWeek == DayOfWeek.Thursday && 
-                                                              date.Month != 6 && date.Month != 7))
-        {
-            scheduleCallType = ScheduleCallType.StandartWithShift;
-        }
-        returnableResult.CallType = scheduleCallType;
-        
-        if (result is null || result.Count == 0) return returnableResult;
-        
-        foreach (var array in result.Values)
-        {
-            foreach (var arrayScheduleItem in array)
-            {
-                foreach (var scheduleItem in arrayScheduleItem.Value)
-                {
-                    var lesson = new ResultOutResultOutLesson
-                    {
-                        NumPair = scheduleItem.Pair,
-                        NumLesson = scheduleItem.Number,
-                        Durations = scheduleItem.GetDurationLessonDetails(scheduleCallType),
-                        SubjectDetails = new ResultOutSubject
-                        {
-                            Id = scheduleItem.DisciplineInfo.Id,
-                            SubjectName = scheduleItem.DisciplineName,
-                            Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
-                            IsAttestation = scheduleItem.Zachet == 1,
-                        },
-                        EducationGroup = ExtractGroupFromCache(scheduleItem.Group)
-                    };
+        //return type switch // Хотя можно и так, но я люблю изобретать велосипед
+        //{
+        //    ScheduleSearchType.Employee => $"{UrlDateSGK}{date:yyyy-MM-dd}&teacher={id}",
+        //    ScheduleSearchType.Group => $"{UrlDateSGK}{date:yyyy-MM-dd}&group={id}",
+        //    ScheduleSearchType.Cab => $"{UrlDateSGK}{date:yyyy-MM-dd}&cab={id}",
+        //    _ => throw new ArgumentOutOfRangeException()
+        //};
 
-                    AddTeachersToLesson(scheduleItem, lesson);
-                    AddCabsToLesson(scheduleItem, lesson);
+        var queryParams = new Dictionary<ScheduleSearchType, string>
+        {
+            { ScheduleSearchType.Employee, "teacher" },
+            { ScheduleSearchType.Group, "group" },
+            { ScheduleSearchType.Cab, "cab" }
+        };
 
-                    returnableResult.Lessons.Add(lesson);
-                }
-            }
+        if (!queryParams.TryGetValue(type, out var queryParam))
+        {
+            throw new ArgumentOutOfRangeException(nameof(type), type, "Unsupported ScheduleSearchType");
         }
 
-        returnableResult.Lessons = returnableResult.Lessons.RemoveDuplicates().SortByLessons();
+        return $"{UrlDateSGK}{date:yyyy-MM-dd}&{queryParam}={id}";
+    }
+
+    // О господи, это что-то страшное
+    //private IResultOutScheduleFromDate ParseScheduleResult(DateOnly date,
+    //    Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result, ScheduleSearchType searchType, string id,
+    //    ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+    //    bool showImportantLessons = true, bool showRussianHorizonLesson = true)
+    //{
+    //    var returnableResult = new ResultOutResultOutScheduleFromDate { Date = date, SearchType = searchType, IdValue = id };
+    //    // костыль чтобы по умолчанию включены внеурочка, тогда юзаем сдвигаем расписание
+    //    if ((showImportantLessons || showRussianHorizonLesson) &&
+    //        scheduleCallType == ScheduleCallType.Standart && (date.DayOfWeek == DayOfWeek.Monday ||
+    //                                                          date.DayOfWeek == DayOfWeek.Thursday &&
+    //                                                          date.Month != 6 && date.Month != 7))
+    //    {
+    //        scheduleCallType = ScheduleCallType.StandartWithShift;
+    //    }
+    //    returnableResult.CallType = scheduleCallType;
+
+    //    if (result is null || result.Count == 0) return returnableResult;
+
+    //    foreach (var array in result.Values)
+    //    {
+    //        foreach (var arrayScheduleItem in array)
+    //        {
+    //            foreach (var scheduleItem in arrayScheduleItem.Value)
+    //            {
+    //                var lesson = new ResultOutResultOutLesson
+    //                {
+    //                    NumPair = scheduleItem.Pair,
+    //                    NumLesson = scheduleItem.Number,
+    //                    Durations = scheduleItem.GetDurationLessonDetails(scheduleCallType),
+    //                    SubjectDetails = new ResultOutSubject
+    //                    {
+    //                        Id = scheduleItem.DisciplineInfo.Id,
+    //                        SubjectName = scheduleItem.DisciplineName,
+    //                        Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
+    //                        IsAttestation = scheduleItem.Zachet == 1,
+    //                    },
+    //                    EducationGroup = ExtractGroupFromCache(scheduleItem.Group)
+    //                };
+
+    //                AddTeachersToLesson(scheduleItem, lesson);
+    //                AddCabsToLesson(scheduleItem, lesson);
+
+    //                returnableResult.Lessons.Add(lesson);
+    //            }
+    //        }
+    //    }
+
+    //    returnableResult.Lessons = returnableResult.Lessons.RemoveDuplicates().SortByLessons();
+    //    return AddAdditionalLessons(date, returnableResult, showImportantLessons, showRussianHorizonLesson);
+    //}
+
+    private IResultOutScheduleFromDate ParseScheduleResult(
+        DateOnly date,
+        Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result,
+        ScheduleSearchType searchType,
+        string id,
+        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
+        bool showImportantLessons = true,
+        bool showRussianHorizonLesson = true)
+    {
+        var returnableResult = new ResultOutResultOutScheduleFromDate
+        {
+            Date = date,
+            SearchType = searchType,
+            IdValue = id,
+            CallType = determineScheduleCallType(date, scheduleCallType, showImportantLessons, showRussianHorizonLesson)
+        };
+
+        if (result == null || result.Count == 0)
+            return returnableResult;
+
+        // Обработка расписания
+        foreach (var scheduleItem in result.Values.SelectMany(array => array.Values).SelectMany(items => items))
+        {
+            var lesson = createLesson(scheduleItem, returnableResult.CallType);
+            returnableResult.Lessons.Add(lesson);
+        }
+
+        // Удаление дубликатов, сортировка и то сё
+        returnableResult.Lessons = returnableResult.Lessons
+            .RemoveDuplicates()
+            .SortByLessons();
+
         return AddAdditionalLessons(date, returnableResult, showImportantLessons, showRussianHorizonLesson);
     }
 
-    private void AddTeachersToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
+    // Определение типа звонков
+    ScheduleCallType determineScheduleCallType(
+        DateOnly date,
+        ScheduleCallType scheduleCallType,
+        bool showImportantLessons,
+        bool showRussianHorizonLesson)
     {
-        foreach (var itemTeacher in scheduleItem.Teacher
-                     .Select(idTeacher => IdentityCache.Select(x=> x.Object).FirstOrDefault(x => x.Id == idTeacher))
-                     .OfType<IResultOutIdentity>())
+        if ((showImportantLessons || showRussianHorizonLesson) &&
+            scheduleCallType == ScheduleCallType.Standart &&
+            (date.DayOfWeek == DayOfWeek.Monday || date.DayOfWeek == DayOfWeek.Thursday) &&
+            date.Month is not (6 or 7))
         {
-            lesson.Identity.Add(itemTeacher);
+            return ScheduleCallType.StandartWithShift;
+        }
+        return scheduleCallType;
+    }
+
+    // Создание объекта урока
+    ResultOutResultOutLesson createLesson(ScheduleItem scheduleItem, ScheduleCallType scheduleCallType)
+    {
+        var lesson = new ResultOutResultOutLesson
+        {
+            NumPair = scheduleItem.Pair,
+            NumLesson = scheduleItem.Number,
+            Durations = scheduleItem.GetDurationLessonDetails(scheduleCallType),
+            SubjectDetails = new ResultOutSubject
+            {
+                Id = scheduleItem.DisciplineInfo.Id,
+                SubjectName = scheduleItem.DisciplineName,
+                Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
+                IsAttestation = scheduleItem.Zachet == 1
+            },
+            EducationGroup = ExtractFromGroupCache(scheduleItem.Group)
+        };
+
+        AddTeachersToLesson(scheduleItem, lesson);
+        AddCabsToLesson(scheduleItem, lesson);
+
+        return lesson;
+    }
+
+
+    void AddTeachersToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
+    {
+        var teachersById = IdentityCache
+            .Select(r => r.Object)
+            .Where(r => r is IResultOutIdentity)
+            .ToDictionary(r => r.Id, x => x);
+
+        foreach (var teacher in scheduleItem.Teacher)
+        {
+            if (teachersById.TryGetValue(teacher, out var teacherData))
+            {
+                lesson.Identity.Add(teacherData);
+            }
         }
     }
 
-    private void AddCabsToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
+
+    void AddCabsToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
     {
-        foreach (var itemCab in scheduleItem.Cab
-                     .Select(idCab => CabsCache.Select(x=> x.Object).FirstOrDefault(x => x.Adress == idCab))
-                     .OfType<IResultOutCab>())
+        var cabsByAddress = CabsCache
+            .Select(r => r.Object)
+            .Where(r => r is IResultOutCab)
+            .ToDictionary(r => r.Adress, x => x);
+
+        foreach (var idCab in scheduleItem.Cab)
         {
-            lesson.Cabs.Add(itemCab);
+            if (cabsByAddress.TryGetValue(idCab, out var cabinetData))
+            {
+                lesson.Cabs.Add(cabinetData);
+            }
         }
+
     }
 
-    private IResultOutScheduleFromDate AddAdditionalLessons(DateOnly date, IResultOutScheduleFromDate returnableResult,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true)
+    //private IResultOutScheduleFromDate AddAdditionalLessons(DateOnly date, IResultOutScheduleFromDate returnableResult,
+    //    bool showImportantLessons = true, bool showRussianHorizonLesson = true) // Это прям очень что-то страшное
+    //{
+    //    var firstLesson = returnableResult.Lessons.FirstOrDefault();
+
+    //    // Разговоры о важном
+    //    if (showImportantLessons && (firstLesson != null && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
+    //                                                         firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
+    //                                                     && date.DayOfWeek == DayOfWeek.Monday && date.Month != 6 &&
+    //                                                     date.Month != 7))
+    //    {
+    //        returnableResult.Lessons = returnableResult.Lessons.AddTalkImportantLesson().SortByLessons();
+    //    }
+
+    //    // россия мои горизонты
+    //    if (showRussianHorizonLesson && (firstLesson?.EducationGroup?.Course == 1
+    //                                     && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
+    //                                         firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
+    //                                     && date.DayOfWeek == DayOfWeek.Thursday && date.Month != 6 && date.Month != 7))
+    //    {
+    //        returnableResult.Lessons = returnableResult.Lessons.AddRussianMyHorizonTalk().SortByLessons();
+    //    }
+
+    //    return returnableResult;
+    //}
+    IResultOutScheduleFromDate AddAdditionalLessons( // Проверить
+        DateOnly date,
+        IResultOutScheduleFromDate returnableResult,
+        bool showImportantLessons = true,
+        bool showRussianHorizonLesson = true)
     {
         var firstLesson = returnableResult.Lessons.FirstOrDefault();
 
+        bool IsLessonAtFirstPair() =>
+            firstLesson != null && (firstLesson.NumPair == 1 && (firstLesson.NumLesson == 1 || firstLesson.NumLesson == 0));
+
+        bool IsSummerMonth() => date.Month == 6 || date.Month == 7;
+
         // Разговоры о важном
-        if (showImportantLessons && (firstLesson != null && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
-                                                             firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
-                                                         && date.DayOfWeek == DayOfWeek.Monday && date.Month != 6 &&
-                                                         date.Month != 7))
+        if (showImportantLessons && IsLessonAtFirstPair() && date.DayOfWeek == DayOfWeek.Monday && !IsSummerMonth())
         {
-            returnableResult.Lessons = returnableResult.Lessons.AddTalkImportantLesson().SortByLessons();
+            returnableResult.Lessons = returnableResult.Lessons
+                .AddTalkImportantLesson()
+                .SortByLessons();
         }
 
-        // россия мои горизонты
-        if (showRussianHorizonLesson && (firstLesson?.EducationGroup?.Course == 1
-                                         && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
-                                             firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
-                                         && date.DayOfWeek == DayOfWeek.Thursday && date.Month != 6 && date.Month != 7))
+        // Россия мои горизонты
+        if (showRussianHorizonLesson && firstLesson?.EducationGroup?.Course == 1 && IsLessonAtFirstPair()
+            && date.DayOfWeek == DayOfWeek.Thursday && !IsSummerMonth())
         {
-            returnableResult.Lessons = returnableResult.Lessons.AddRussianMyHorizonTalk().SortByLessons();
+            returnableResult.Lessons = returnableResult.Lessons
+                .AddRussianMyHorizonTalk()
+                .SortByLessons();
         }
 
         return returnableResult;

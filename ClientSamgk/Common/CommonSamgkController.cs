@@ -1,13 +1,10 @@
-using ClientSamgk.Models;
 using ClientSamgk.Utils;
 using ClientSamgkApiModelResponse.Groups;
 using ClientSamgkApiModelResponse.Teachers;
 using ClientSamgkOutputResponse.Implementation.Cabs;
 using ClientSamgkOutputResponse.Implementation.Groups;
 using ClientSamgkOutputResponse.Implementation.Identity;
-using ClientSamgkOutputResponse.Interfaces.Cabs;
 using ClientSamgkOutputResponse.Interfaces.Groups;
-using ClientSamgkOutputResponse.Interfaces.Identity;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -16,25 +13,51 @@ namespace ClientSamgk.Common;
 public class CommonSamgkController : CommonCache
 {
     private readonly RestClient _client = new(new HttpClient());
+    const string urlApiSgk = "https://mfc.samgk.ru/api/";
 
-    private async Task<RestResponse?> SendRequestAndGetResponse(string url, Method method = Method.Get,
-        object? body = null)
+    async Task<RestResponse?> ExecuteRequest(string url, Method method = Method.Get, object? body = null)
     {
-        var options = new RestRequest(url);
-        options.ConfigureAntiGreedHeaders();
-        if (body is not null && method is Method.Post or Method.Put) options.AddBody(body);
-        return await _client.ExecuteAsync(options, method).ConfigureAwait(false);
-    }
+        var request = new RestRequest(url);
+        request.ConfigureAntiGreedHeaders();
 
+        if (body is not null && (method is (Method.Post or Method.Put)))
+        {
+            request.AddBody(body);
+        }
+
+        return await _client.ExecuteAsync(request, method).ConfigureAwait(false);
+    }
 
     protected async Task<T?> SendRequest<T>(string url, Method method = Method.Get, object? body = null)
     {
-        var restResponse = await SendRequestAndGetResponse(url, method, body).ConfigureAwait(false);
-        if (restResponse is null || !restResponse.IsSuccessStatusCode || restResponse.Content == null) return default;
-        return TryDeserializeObjectOrGetDefault<T>(restResponse.Content);
+        var restResponse = await ExecuteRequest(url, method, body).ConfigureAwait(false);
+
+        if (restResponse?.IsSuccessStatusCode is not true || string.IsNullOrEmpty(restResponse?.Content))
+        {
+            return default;
+        }
+
+        return TryDeserializeSafe<T>(restResponse.Content);
     }
 
-    private T? TryDeserializeObjectOrGetDefault<T>(string restResponseContent)
+    //protected async Task SendRequest(string url, Method method = Method.Get, object? body = null) // Нигде не используется
+    //{
+    //    await ExecuteRequest(url, method, body);
+    //}
+
+    protected async Task UpdateIfCacheIsOutdated()
+    {
+        if (!ShouldForceUpdateCache)
+        {
+            return;
+        }
+
+        await configuringCacheTeachers().ConfigureAwait(false);
+        await configuringCacheCabs().ConfigureAwait(false);
+        await configuringCacheGroups().ConfigureAwait(false);
+    }
+
+    T? TryDeserializeSafe<T>(string restResponseContent)
     {
         try
         {
@@ -46,78 +69,73 @@ public class CommonSamgkController : CommonCache
         }
     }
 
-    protected async Task SendRequest(string url, Method method = Method.Get, object? body = null)
+    async Task configuringCacheGroups()
     {
-        await SendRequestAndGetResponse(url, method, body);
-    }
+        var resultApiGroups = await SendRequest<IList<SamGkGroupApiResult>>($"{urlApiSgk}groups").ConfigureAwait(false);
 
-    protected async Task UpdateIfCacheIsOutdated()
-    {
-        if (!IsRequiredToForceUpdateCache()) return;
+        if (resultApiGroups == null || !resultApiGroups.Any())
+        {
+            return;
+        }
 
-        await ConfiguringCacheTeachers().ConfigureAwait(false);
-        await ConfiguringCacheCabs().ConfigureAwait(false);
-        await ConfiguringCacheGroups().ConfigureAwait(false);
-    }
+        GroupsCache = [];
 
-    private async Task ConfiguringCacheGroups()
-    {
-        var resultApiGroups = await SendRequest<IList<SamGkGroupApiResult>>("https://mfc.samgk.ru/api/groups").ConfigureAwait(false);
-
-        if (resultApiGroups == null || !resultApiGroups.Any()) return;
-
-        GroupsCache = new List<LifeTimeMemory<IResultOutGroup>>();
-        
         var items = resultApiGroups
             .Select(IResultOutGroup (x) => new ResultOutGroup
             {
                 Id = x.Id,
                 Name = x.Name,
-                Currator = ExtractIdentityFromCache(x.Currator),
+                Currator = ExtractFromIdentityCache(x.Currator),
             })
             .OrderBy(x => x.Name)
             .Where(x => x.Course <= 5)
             .ToList();
-        
-        foreach (var item in items) SaveToCache(item, DefaultLifeTimeInMinutesForCommon);
+
+        foreach (var item in items)
+        {
+            SaveToCache(item, DefaultLifeTimeInMinutesForCommon);
+        }
     }
 
-    private async Task ConfiguringCacheTeachers()
+    async Task configuringCacheTeachers()
     {
-        var resultApiTeachers = await SendRequest<IList<SamgkTeacherApiResult>>("https://mfc.samgk.ru/api/teachers").ConfigureAwait(false);
+        var resultApiTeachers = await SendRequest<IList<SamgkTeacherApiResult>>($"{urlApiSgk}teachers").ConfigureAwait(false);
 
-        if (resultApiTeachers == null || !resultApiTeachers.Any()) return;
+        if (resultApiTeachers == null || !resultApiTeachers.Any())
+        {
+            return;
+        }
 
-        IdentityCache = new List<LifeTimeMemory<IResultOutIdentity>>();
-        
-        var items = resultApiTeachers
-            .Select(IResultOutIdentity (x) => new ResultOutIdentity
-                        {
-                            Id = Convert.ToInt64(x.Id),
-                            Name = x.Name
-                        })
-                        .OrderBy(x => x.Name)
-                        .ToList();
-        
-        foreach (var item in items) SaveToCache(item, DefaultLifeTimeInMinutesForCommon);
-    }
+        IdentityCache = [];
 
-    private async Task ConfiguringCacheCabs()
-    {
-        var resultApiCabs = await SendRequest<Dictionary<string, string>>("https://mfc.samgk.ru/api/cabs").ConfigureAwait(false);
-
-        if (resultApiCabs == null || !resultApiCabs.Any()) return;
-
-        CabsCache = new List<LifeTimeMemory<IResultOutCab>>();
-
-        var items = resultApiCabs
-            .Select(IResultOutCab (x) => new ResultOutCab
+        foreach (var teacher in resultApiTeachers.OrderBy(t => t.Name))
+        {
+            var resultOutIdentity = new ResultOutIdentity
             {
-                Adress = x.Value
-            })
-            .OrderBy(x => x.Adress)
-            .ToList();
-        
-        foreach (var item in items) SaveToCache(item, DefaultLifeTimeInMinutesForCommon);
+                Id = Convert.ToInt64(teacher.Id),
+                Name = teacher.Name
+            };
+
+            SaveToCache(resultOutIdentity, DefaultLifeTimeInMinutesForCommon);
+        }
+    }
+
+    async Task configuringCacheCabs()
+    {
+        var resultApiCabs = await SendRequest<Dictionary<string, string>>($"{urlApiSgk}cabs").ConfigureAwait(false);
+
+        if (resultApiCabs == null || !resultApiCabs.Any())
+        {
+            return;
+        }
+
+        // Создаем кэш
+        CabsCache = [];
+
+        // Сохраняем данные в кэш, упрощая порядок операций
+        foreach (var item in resultApiCabs.OrderBy(x => x.Value))
+        {
+            SaveToCache(new ResultOutCab { Adress = item.Value }, DefaultLifeTimeInMinutesForCommon);
+        }
     }
 }

@@ -14,7 +14,7 @@ public class AccountController : CommonSamgkController, IIdentityController
     public async Task<IList<IResultOutIdentity>> GetTeachersAsync()
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return IdentityCache.Select(x=>x.Object).OrderBy(x=> x.Name).ToList();
+        return IdentityCache.Select(r => r.Object).OrderBy(r => r.Name).ToList();
     }
 
     public IResultOutIdentity? GetTeacher(string teacherName)
@@ -30,13 +30,13 @@ public class AccountController : CommonSamgkController, IIdentityController
     public async Task<IResultOutIdentity?> GetTeacherAsync(long id)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return ExtractIdentityFromCache(id);
+        return ExtractFromIdentityCache(id);
     }
 
     public async Task<IResultOutIdentity?> GetTeacherAsync(string teacherName)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return IdentityCache.Select(x=> x.Object)
-            .FirstOrDefault(x=> string.Equals(x.Name, teacherName, StringComparison.CurrentCultureIgnoreCase));
+        return IdentityCache.Select(r => r.Object)
+            .FirstOrDefault(x => string.Equals(x.Name, teacherName, StringComparison.CurrentCultureIgnoreCase));
     }
 }
