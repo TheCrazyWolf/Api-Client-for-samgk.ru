@@ -17,7 +17,7 @@ public class CommonCache
     protected IList<LifeTimeMemory<IResultOutCab>> CabsCache = [];
     protected IList<LifeTimeMemory<IResultOutGroup>> GroupsCache = [];
     protected IList<LifeTimeMemory<IResultOutIdentity>> IdentityCache = [];
-    protected bool ShouldForceUpdateCache => IsCacheOutdated(CabsCache) || IsCacheOutdated(IdentityCache) || IsCacheOutdated(GroupsCache);
+    protected bool ForceUpdateCache => IsCacheOutdated(CabsCache) || IsCacheOutdated(IdentityCache) || IsCacheOutdated(GroupsCache);
     protected void ClearCacheIfOutDate()
     {
         ClearCache(ScheduleCache);

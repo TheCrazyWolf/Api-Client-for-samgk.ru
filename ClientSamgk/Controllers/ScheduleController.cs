@@ -404,7 +404,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     //    return AddAdditionalLessons(date, returnableResult, showImportantLessons, showRussianHorizonLesson);
     //}
 
-    private IResultOutScheduleFromDate ParseScheduleResult(
+    IResultOutScheduleFromDate ParseScheduleResult(
         DateOnly date,
         Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result,
         ScheduleSearchType searchType,
@@ -486,7 +486,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         var teachersById = IdentityCache
             .Select(r => r.Object)
             .Where(r => r is IResultOutIdentity)
-            .ToDictionary(r => r.Id, x => x);
+            .ToDictionary(i => i.Id, x => x);
 
         foreach (var teacher in scheduleItem.Teacher)
         {
@@ -503,7 +503,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         var cabsByAddress = CabsCache
             .Select(r => r.Object)
             .Where(r => r is IResultOutCab)
-            .ToDictionary(r => r.Adress, x => x);
+            .ToDictionary(c => c.Adress, x => x);
 
         foreach (var idCab in scheduleItem.Cab)
         {

@@ -6,21 +6,15 @@ namespace ClientSamgk.Controllers;
 
 public class GroupsController : CommonSamgkController, IGroupController
 {
-    public IList<IResultOutGroup> GetGroups()
-    {
-        return GetGroupsAsync().GetAwaiter().GetResult();
-    }
+    public IList<IResultOutGroup> GetGroups() => GetGroupsAsync().GetAwaiter().GetResult();
 
     public async Task<IList<IResultOutGroup>> GetGroupsAsync()
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return GroupsCache.Select(x=> x.Object).OrderBy(x=> x.Name).ToList();
+        return GroupsCache.Select(x=> x.Object).OrderBy(x=> x.Name).ToArray();
     }
 
-    public IResultOutGroup? GetGroup(long idGroup)
-    {
-        return GetGroupAsync(idGroup).GetAwaiter().GetResult();
-    }
+    public IResultOutGroup? GetGroup(long idGroup) => GetGroupAsync(idGroup).GetAwaiter().GetResult();
 
     public async Task<IResultOutGroup?> GetGroupAsync(long idGroup)
     {
@@ -28,10 +22,7 @@ public class GroupsController : CommonSamgkController, IGroupController
         return GroupsCache.Select(x=> x.Object).FirstOrDefault(x=> x.Id == idGroup);
     }
 
-    public IResultOutGroup? GetGroup(string searchGroup)
-    {
-        return GetGroupAsync(searchGroup).GetAwaiter().GetResult();
-    }
+    public IResultOutGroup? GetGroup(string searchGroup) => GetGroupAsync(searchGroup).GetAwaiter().GetResult();
 
     public async Task<IResultOutGroup?> GetGroupAsync(string searchGroup)
     {

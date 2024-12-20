@@ -6,21 +6,15 @@ namespace ClientSamgk.Controllers;
 
 public class CabsController : CommonSamgkController, ICabController
 {
-    public IList<IResultOutCab> GetCabs()
-    {
-        return GetCabsAsync().GetAwaiter().GetResult();
-    }
+    public IList<IResultOutCab> GetCabs() => GetCabsAsync().GetAwaiter().GetResult();
 
     public async Task<IList<IResultOutCab>> GetCabsAsync()
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return CabsCache.Select(r => r.Object).OrderBy(r => r.Adress).ToList();
+        return CabsCache.Select(r => r.Object).OrderBy(r => r.Adress).ToArray();
     }
 
-    public IResultOutCab? GetCab(string cabName)
-    {
-        return GetCabAsync(cabName).GetAwaiter().GetResult();
-    }
+    public IResultOutCab? GetCab(string cabName) => GetCabAsync(cabName).GetAwaiter().GetResult();
 
     public async Task<IResultOutCab?> GetCabAsync(string cabName)
     {
@@ -31,33 +25,24 @@ public class CabsController : CommonSamgkController, ICabController
     public async Task<IList<IResultOutCab>> GetCabsAsync(string campusNumber)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return CabsCache.Select(r => r.Object).Where(x => x.Campus == campusNumber).ToList();
+        return CabsCache.Select(r => r.Object).Where(x => x.Campus == campusNumber).ToArray();
     }
 
-    public IList<IResultOutCab> GetCabs(string campusNumber)
-    {
-        return GetCabsAsync(campusNumber).GetAwaiter().GetResult();
-    }
+    public IList<IResultOutCab> GetCabs(string campusNumber) => GetCabsAsync(campusNumber).GetAwaiter().GetResult();
 
-    public IList<string> GetCampuses()
-    {
-        return GetCampusesAsync().GetAwaiter().GetResult();
-    }
+    public IList<string> GetCampuses() => GetCampusesAsync().GetAwaiter().GetResult();
 
     public async Task<IList<string>> GetCampusesAsync()
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return CabsCache.Select(r => r.Object).Select(r => r.Campus).Distinct().ToList();
+        return CabsCache.Select(r => r.Object).Select(r => r.Campus).Distinct().ToArray();
     }
 
     public async Task<IList<IResultOutCab>> GetCabsFromCampusAsync(string campusName)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return CabsCache.Select(r => r.Object).Where(r => string.Equals(r.Campus, campusName, StringComparison.CurrentCultureIgnoreCase)).ToList();
+        return CabsCache.Select(r => r.Object).Where(r => string.Equals(r.Campus, campusName, StringComparison.CurrentCultureIgnoreCase)).ToArray();
     }
 
-    public IList<IResultOutCab> GetCabsFromCampus(string campusName)
-    {
-        return GetCabsFromCampusAsync(campusName).GetAwaiter().GetResult();
-    }
+    public IList<IResultOutCab> GetCabsFromCampus(string campusName) => GetCabsFromCampusAsync(campusName).GetAwaiter().GetResult();
 }

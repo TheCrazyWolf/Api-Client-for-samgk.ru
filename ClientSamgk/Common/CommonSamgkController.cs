@@ -13,7 +13,7 @@ namespace ClientSamgk.Common;
 public class CommonSamgkController : CommonCache
 {
     private readonly RestClient _client = new(new HttpClient());
-    const string urlApiSgk = "https://mfc.samgk.ru/api/";
+    const string _urlApiSgk = "https://mfc.samgk.ru/api/";
 
     async Task<RestResponse?> ExecuteRequest(string url, Method method = Method.Get, object? body = null)
     {
@@ -47,7 +47,7 @@ public class CommonSamgkController : CommonCache
 
     protected async Task UpdateIfCacheIsOutdated()
     {
-        if (!ShouldForceUpdateCache)
+        if (!ForceUpdateCache)
         {
             return;
         }
@@ -71,7 +71,7 @@ public class CommonSamgkController : CommonCache
 
     async Task configuringCacheGroups()
     {
-        var resultApiGroups = await SendRequest<IList<SamGkGroupApiResult>>($"{urlApiSgk}groups").ConfigureAwait(false);
+        var resultApiGroups = await SendRequest<IList<SamGkGroupApiResult>>($"{_urlApiSgk}groups").ConfigureAwait(false);
 
         if (resultApiGroups == null || !resultApiGroups.Any())
         {
@@ -89,7 +89,7 @@ public class CommonSamgkController : CommonCache
             })
             .OrderBy(x => x.Name)
             .Where(x => x.Course <= 5)
-            .ToList();
+            .ToArray();
 
         foreach (var item in items)
         {
@@ -99,7 +99,7 @@ public class CommonSamgkController : CommonCache
 
     async Task configuringCacheTeachers()
     {
-        var resultApiTeachers = await SendRequest<IList<SamgkTeacherApiResult>>($"{urlApiSgk}teachers").ConfigureAwait(false);
+        var resultApiTeachers = await SendRequest<IList<SamgkTeacherApiResult>>($"{_urlApiSgk}teachers").ConfigureAwait(false);
 
         if (resultApiTeachers == null || !resultApiTeachers.Any())
         {
@@ -122,7 +122,7 @@ public class CommonSamgkController : CommonCache
 
     async Task configuringCacheCabs()
     {
-        var resultApiCabs = await SendRequest<Dictionary<string, string>>($"{urlApiSgk}cabs").ConfigureAwait(false);
+        var resultApiCabs = await SendRequest<Dictionary<string, string>>($"{_urlApiSgk}cabs").ConfigureAwait(false);
 
         if (resultApiCabs == null || !resultApiCabs.Any())
         {

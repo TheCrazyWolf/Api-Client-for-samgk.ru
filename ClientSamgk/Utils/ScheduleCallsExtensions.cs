@@ -4,7 +4,7 @@ using ClientSamgkOutputResponse.Implementation.Schedule;
 
 namespace ClientSamgk.Utils;
 
-public static class ScheduleCallsExtensions
+public static class ScheduleCallsExtensions // Утром сделаю, а то тут прям поносище. P.s. нужно сообразить как это оптимизировать
 {
     public static IList<DurationLessonDetails> GetDurationLessonDetails(this ScheduleItem scheduleItem,
         ScheduleCallType callsType = ScheduleCallType.Standart)
