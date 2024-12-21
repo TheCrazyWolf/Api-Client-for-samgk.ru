@@ -8,7 +8,7 @@ public class ResultOutCab : IResultOutCab
     public string Campus => GetPartOfAddress(0);
     public string Auditory => GetPartOfAddress(1);
 
-    string GetPartOfAddress(int index) // Проверить!!
+    string GetPartOfAddress(int index)
     {
         var parts = Adress.Split('/');
         return parts.Length == 2 && index < parts.Length ? parts[index] : Adress;
