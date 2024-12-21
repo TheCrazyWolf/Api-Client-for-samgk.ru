@@ -11,7 +11,7 @@ public interface IMemoryCacheController
     void ClearIfOutDate();
     
     /// <summary>
-    /// Принудительная очитка кеша.
+    /// Принудительная очитка кэша.
     /// </summary>
     void Clear();
 }

@@ -11,10 +11,7 @@ public class MemoryCacheController : CommonSamgkController, IMemoryCacheControll
         ClearCacheIfOutDate();
     }
 
-    public void ClearIfOutDate()
-    {
-        ClearIfOutDateAsync().GetAwaiter().GetResult();
-    }
+    public void ClearIfOutDate() => ClearIfOutDateAsync().GetAwaiter().GetResult();
 
     public void Clear()
     {
