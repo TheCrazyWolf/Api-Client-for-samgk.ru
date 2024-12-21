@@ -90,16 +90,16 @@ public static class ScheduleCallsExtensions // Без понятия, как с�
     
     public static IList<DurationLessonDetails> GetDurationLessonDetails(this ScheduleItem scheduleItem, ScheduleCallType type = ScheduleCallType.Standart) => type switch
     {
-        ScheduleCallType.Standart => getDurationLessonsDetails(scheduleItem, StandartSchedules),
-        ScheduleCallType.StandartShort => getDurationLessonsDetails(scheduleItem, StandartShortSchedules),
-        ScheduleCallType.SuperShort => getDurationLessonsDetails(scheduleItem, SuperShortSchedules),
-        ScheduleCallType.StandartWithShift => getDurationLessonsDetails(scheduleItem, StandartWithShiftSchedules),
-        ScheduleCallType.SuperShortWithShift => getDurationLessonsDetails(scheduleItem, SuperShortWithShiftSchedules),
-        ScheduleCallType.ShortWithShift => getDurationLessonsDetails(scheduleItem, ShortWithShiftSchedules),
+        ScheduleCallType.Standart => GetDurationLessonsDetails(scheduleItem, StandartSchedules),
+        ScheduleCallType.StandartShort => GetDurationLessonsDetails(scheduleItem, StandartShortSchedules),
+        ScheduleCallType.SuperShort => GetDurationLessonsDetails(scheduleItem, SuperShortSchedules),
+        ScheduleCallType.StandartWithShift => GetDurationLessonsDetails(scheduleItem, StandartWithShiftSchedules),
+        ScheduleCallType.SuperShortWithShift => GetDurationLessonsDetails(scheduleItem, SuperShortWithShiftSchedules),
+        ScheduleCallType.ShortWithShift => GetDurationLessonsDetails(scheduleItem, ShortWithShiftSchedules),
         _ => throw new ArgumentException($"Unsupported ScheduleCallType: {type}", nameof(type)),
     };
 
-    static IList<DurationLessonDetails> getDurationLessonsDetails(ScheduleItem scheduleItem,
+    private static IList<DurationLessonDetails> GetDurationLessonsDetails(ScheduleItem scheduleItem,
         IDictionary<int, IList<DurationLessonDetails>> scheduleCalls)
     {
         if (!scheduleCalls.TryGetValue(scheduleItem.Pair, out var lessons))
