@@ -40,7 +40,7 @@ public class CommonSamgkController : CommonCache
         return TryDeserializeSafe<T>(restResponse.Content);
     }
 
-    //protected async Task SendRequest(string url, Method method = Method.Get, object? body = null) // Нигде не используется
+    //protected async Task SendRequest(string url, Method method = Method.Get, object? body = null) // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     //{
     //    await ExecuteRequest(url, method, body);
     //}
@@ -129,10 +129,10 @@ public class CommonSamgkController : CommonCache
             return;
         }
 
-        // Создаем кэш
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
         CabsCache = [];
 
-        // Сохраняем данные в кэш, упрощая порядок операций
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         foreach (var item in resultApiCabs.OrderBy(x => x.Value))
         {
             SaveToCache(new ResultOutCab { Adress = item.Value }, DefaultLifeTimeInMinutesForCommon);
