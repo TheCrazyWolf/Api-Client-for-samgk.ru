@@ -5,18 +5,12 @@ namespace ClientSamgkOutputResponse.Implementation.Cabs;
 public class ResultOutCab : IResultOutCab
 {
     public string Adress { get; set; } = string.Empty;
-    public string Campus => getCampus(Adress);
-    public string Auditory => getAuditory(Adress);
+    public string Campus => GetPartOfAddress(0);
+    public string Auditory => GetPartOfAddress(1);
 
-    string getCampus(string fullAdress)
+    string GetPartOfAddress(int index) // Проверить!!
     {
-        var array = fullAdress.Split('/');
-        return array.Length != 2 ? fullAdress : array[0];
-    }
-
-    string getAuditory(string fullAdress)
-    {
-        var array = fullAdress.Split('/');
-        return array.Length != 2 ? fullAdress : array[1];
+        var parts = Adress.Split('/');
+        return parts.Length == 2 && index < parts.Length ? parts[index] : Adress;
     }
 }
