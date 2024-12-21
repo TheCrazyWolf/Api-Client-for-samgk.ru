@@ -7,7 +7,7 @@ public class ResultOutIdentity : IResultOutIdentity
     public long Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string ShortName => GetShortName();
-    string GetShortName() // Проверить
+    string GetShortName()
     {
         var teacherNameParts = Name.Split([' '], StringSplitOptions.RemoveEmptyEntries);
         return teacherNameParts.Length >= 3

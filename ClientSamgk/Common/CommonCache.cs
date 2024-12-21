@@ -54,7 +54,7 @@ public class CommonCache
 
     void ClearCache<T>(IList<LifeTimeMemory<T>> cache) where T : class
     {
-        foreach (var item in cache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToArray())
+        foreach (var item in cache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
         {
             cache.Remove(item);
         }

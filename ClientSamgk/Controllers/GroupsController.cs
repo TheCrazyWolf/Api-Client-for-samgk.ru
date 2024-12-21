@@ -11,7 +11,7 @@ public class GroupsController : CommonSamgkController, IGroupController
     public async Task<IList<IResultOutGroup>> GetGroupsAsync()
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return GroupsCache.Select(x=> x.Object).OrderBy(x=> x.Name).ToArray();
+        return GroupsCache.Select(x=> x.Object).OrderBy(x=> x.Name).ToList();
     }
 
     public IResultOutGroup? GetGroup(long idGroup) => GetGroupAsync(idGroup).GetAwaiter().GetResult();

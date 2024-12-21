@@ -89,7 +89,7 @@ public class CommonSamgkController : CommonCache
             })
             .OrderBy(x => x.Name)
             .Where(x => x.Course <= 5)
-            .ToArray();
+            .ToList();
 
         foreach (var item in items)
         {

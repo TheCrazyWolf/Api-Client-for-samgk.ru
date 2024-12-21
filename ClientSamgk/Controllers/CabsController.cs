@@ -11,7 +11,7 @@ public class CabsController : CommonSamgkController, ICabController
     public async Task<IList<IResultOutCab>> GetCabsAsync()
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return CabsCache.Select(r => r.Object).OrderBy(r => r.Adress).ToArray();
+        return CabsCache.Select(r => r.Object).OrderBy(r => r.Adress).ToList();
     }
 
     public IResultOutCab? GetCab(string cabName) => GetCabAsync(cabName).GetAwaiter().GetResult();
@@ -25,7 +25,7 @@ public class CabsController : CommonSamgkController, ICabController
     public async Task<IList<IResultOutCab>> GetCabsAsync(string campusNumber)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return CabsCache.Select(r => r.Object).Where(x => x.Campus == campusNumber).ToArray();
+        return CabsCache.Select(r => r.Object).Where(x => x.Campus == campusNumber).ToList();
     }
 
     public IList<IResultOutCab> GetCabs(string campusNumber) => GetCabsAsync(campusNumber).GetAwaiter().GetResult();
@@ -35,13 +35,13 @@ public class CabsController : CommonSamgkController, ICabController
     public async Task<IList<string>> GetCampusesAsync()
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return CabsCache.Select(r => r.Object).Select(r => r.Campus).Distinct().ToArray();
+        return CabsCache.Select(r => r.Object).Select(r => r.Campus).Distinct().ToList();
     }
 
     public async Task<IList<IResultOutCab>> GetCabsFromCampusAsync(string campusName)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return CabsCache.Select(r => r.Object).Where(r => string.Equals(r.Campus, campusName, StringComparison.CurrentCultureIgnoreCase)).ToArray();
+        return CabsCache.Select(r => r.Object).Where(r => string.Equals(r.Campus, campusName, StringComparison.CurrentCultureIgnoreCase)).ToList();
     }
 
     public IList<IResultOutCab> GetCabsFromCampus(string campusName) => GetCabsFromCampusAsync(campusName).GetAwaiter().GetResult();

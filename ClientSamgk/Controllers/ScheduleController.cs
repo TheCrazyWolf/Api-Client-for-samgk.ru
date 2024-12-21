@@ -171,13 +171,13 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
 
-        var cache = getCacheByType(type);
+        var cache = GetCacheByType(type);
 
         List<IResultOutScheduleFromDate> result = [];
 
         foreach (var item in cache)
         {
-            var id = getIdByType(type, item);
+            var id = GetIdByType(type, item);
             var scheduleFromDate = await GetScheduleAsync(date, type, id,
                 scheduleCallType: scheduleCallType,
                 showImportantLessons: showImportantLessons,
@@ -193,7 +193,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         return result;
     }
 
-    IEnumerable<object> getCacheByType(ScheduleSearchType type) => type switch
+    IEnumerable<object> GetCacheByType(ScheduleSearchType type) => type switch
     {
         ScheduleSearchType.Employee => IdentityCache.Select(x => x.Object),
         ScheduleSearchType.Cab => CabsCache.Select(x => x.Object),
@@ -201,7 +201,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         _ => throw new ArgumentException($"Unsupported ScheduleSearchType: {type}", nameof(type)),
     };
 
-    string getIdByType(ScheduleSearchType type, object item) => type switch
+    string GetIdByType(ScheduleSearchType type, object item) => type switch
     {
         ScheduleSearchType.Employee => ((IResultOutIdentity)item).Id.ToString(),
         ScheduleSearchType.Cab => ((IResultOutCab)item).Adress,
@@ -212,13 +212,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
     public IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnly date, ScheduleSearchType type,
         ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false, int delay = 700)
-    {
-        return GetAllScheduleAsync(date, type, ScheduleCallType.Standart, showImportantLessons,
-                showRussianHorizonLesson, delay: delay, overrideCache: overrideCache)
-            .GetAwaiter()
-            .GetResult();
-    }
+        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false, int delay = 700) => GetAllScheduleAsync(date, type, ScheduleCallType.Standart, showImportantLessons,
+                showRussianHorizonLesson, delay: delay, overrideCache: overrideCache).GetAwaiter().GetResult();
 
     public async Task<IResultOutScheduleFromDate> GetScheduleAsync(
         DateOnly date,
@@ -253,14 +248,6 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
     string GetScheduleUrl(DateOnly date, ScheduleSearchType type, string id)
     {
-        //return type switch // Хотя можно и так, но я люблю изобретать велосипед
-        //{
-        //    ScheduleSearchType.Employee => $"{UrlDateSGK}{date:yyyy-MM-dd}&teacher={id}",
-        //    ScheduleSearchType.Group => $"{UrlDateSGK}{date:yyyy-MM-dd}&group={id}",
-        //    ScheduleSearchType.Cab => $"{UrlDateSGK}{date:yyyy-MM-dd}&cab={id}",
-        //    _ => throw new ArgumentOutOfRangeException()
-        //};
-
         var queryParams = new Dictionary<ScheduleSearchType, string>
         {
             { ScheduleSearchType.Employee, "teacher" },
@@ -290,7 +277,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             Date = date,
             SearchType = searchType,
             IdValue = id,
-            CallType = determineScheduleCallType(date, scheduleCallType, showImportantLessons, showRussianHorizonLesson)
+            CallType = DetermineScheduleCallType(date, scheduleCallType, showImportantLessons, showRussianHorizonLesson)
         };
 
         if (result == null || result.Count == 0)
@@ -298,19 +285,17 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
         foreach (var scheduleItem in result.Values.SelectMany(array => array.Values).SelectMany(items => items))
         {
-            var lesson = createLesson(scheduleItem, returnableResult.CallType);
+            var lesson = CreateLesson(scheduleItem, returnableResult.CallType);
             returnableResult.Lessons.Add(lesson);
         }
 
 
-        returnableResult.Lessons = returnableResult.Lessons
-            .RemoveDuplicates()
-            .SortByLessons();
+        returnableResult.Lessons = returnableResult.Lessons.RemoveDuplicates().SortByLessons();
 
         return AddAdditionalLessons(date, returnableResult, showImportantLessons, showRussianHorizonLesson);
     }
 
-    ScheduleCallType determineScheduleCallType(
+    ScheduleCallType DetermineScheduleCallType(
         DateOnly date,
         ScheduleCallType scheduleCallType,
         bool showImportantLessons,
@@ -326,7 +311,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         return scheduleCallType;
     }
 
-    ResultOutResultOutLesson createLesson(ScheduleItem scheduleItem, ScheduleCallType scheduleCallType)
+    ResultOutResultOutLesson CreateLesson(ScheduleItem scheduleItem, ScheduleCallType scheduleCallType)
     {
         var lesson = new ResultOutResultOutLesson
         {
