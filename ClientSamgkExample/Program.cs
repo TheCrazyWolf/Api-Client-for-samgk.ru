@@ -5,40 +5,33 @@ using ClientSamgkOutputResponse.Enums;
 
 IClientSamgkApi api = new ClientSamgkApi();
 
-// Получить список групп
-var groupsArray = await api.Groups.GetGroupsAsync();
+//var groups = await api.Groups.GetGroupsAsync(); // Получить список групп
+//var groupsTeachers = await api.Accounts.GetTeachersAsync(); // Получить список преподавателей
+//var cabsInCampus = await api.Cabs.GetCabsAsync("5"); // Получить список кабинетов по корпусу
+//var cab = await api.Cabs.GetCabAsync("501"); // Получить кабинет
 
-// Получить список преподавателей
-var groupsTeachers = await api.Accounts.GetTeachersAsync();
+DateOnly dateOnly = new DateOnly(2024, 12, 23); // Дата
+//var scheduleFromDate = await api.Schedule.GetScheduleAsync(dateOnly, ScheduleSearchType.Employee, "2294"); // Получение расписание за день
+var group = await api.Groups.GetGroupAsync("ис-24-07"); // или с использованием объектов реализующих интерфейсов: IOutResultIdentity, IOutResultCab, IOutResultGroup
 
-// Получение расписание за день
-DateOnly dateOnly = new DateOnly(2024,09,16);
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(dateOnly, ScheduleSearchType.Employee, "2294");
-
-// или с использованием объектов реализующих интерфейсы
-// IOutResultIdentity, IOutResultCab, IOutResultGroup
-var obj = await api.Groups.GetGroupAsync("ис-23-01");
-
-if (obj is null) throw new Exception($"{nameof(obj)} is null)");
-
-scheduleFromDate = await api.Schedule.GetScheduleAsync(dateOnly, obj);
-    
-// Получение расписание диапозона дат
-DateOnly dateOnlyStart = new DateOnly(2024,09,16);
-DateOnly dateOnlyEnd = new DateOnly(2024,09,16);
-
-var resultScheduleCollection = await api.Schedule
-    .GetScheduleAsync(dateOnlyStart, dateOnlyEnd, obj);
-    
-// Получение расписание за день по преподавателям, кабинету или группам
-// долгая выгрузка
-var resultScheduleCollectionFromDateAll = await api.Schedule
-    .GetAllScheduleAsync(dateOnlyStart, ScheduleSearchType.Employee, delay: 1000);
-    
-// пример вывода расписания
-
-foreach (var item in scheduleFromDate.Lessons)
+if (group is null)
 {
-    Console.WriteLine($"{item.NumPair}.{item.NumLesson} - {item.SubjectDetails.FullSubjectName}");
+    throw new Exception($"{nameof(group)} is null)");
 }
-    
+
+var scheduleFromDate = await api.Schedule.GetScheduleAsync(dateOnly, group);
+
+// Получение расписание диапозона дат
+//DateOnly dateOnlyStart = new DateOnly(2024, 12, 23);
+//DateOnly dateOnlyEnd = new DateOnly(2024, 12, 23);
+
+//var resultScheduleCollection = await api.Schedule.GetScheduleAsync(dateOnlyStart, dateOnlyEnd, group);
+//var resultScheduleCollectionFromDateAll = await api.Schedule.GetAllScheduleAsync(dateOnlyStart, ScheduleSearchType.Employee, delay: 1000); // Получение расписание за день по преподавателям, кабинету или группам (долгая выгрузка)
+
+foreach (var item in scheduleFromDate.Lessons) // пример вывода расписания
+{
+    var f = item.Durations.FirstOrDefault();
+    Console.WriteLine($"{item.NumPair}.{item.NumLesson} - {f.StartTime} | {f.EndTime} - {item.SubjectDetails.FullSubjectName}");
+}
+
+Console.ReadLine();

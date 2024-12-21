@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ClientSamgkOutputResponse.Enums;
 
-public enum ScheduleSearchType
+public enum ScheduleSearchType : byte
 {
     [Display(Name = "Преподаватель")]
     Employee, 

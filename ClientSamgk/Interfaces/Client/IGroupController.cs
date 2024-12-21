@@ -5,35 +5,40 @@ namespace ClientSamgk.Interfaces.Client;
 public interface IGroupController
 {
     /// <summary>
-    /// Получить список групп
+    /// Получить список групп.
     /// </summary>
     /// <returns>Коллекция объектов реализующий интерфейс IResultOutGroup</returns>
     IList<IResultOutGroup> GetGroups();
+
     /// <summary>
-    /// Получить список групп
+    /// Получить список групп.
     /// </summary>
     /// <returns>Коллекция объектов реализующий интерфейс IResultOutGroup</returns>
     Task<IList<IResultOutGroup>> GetGroupsAsync();
+
     /// <summary>
-    /// Получить группу по ID
+    /// Получить группу по ID.
     /// </summary>
     /// <param name="idGroup">ID группы</param>
     /// <returns>Объект реализующий интерфейс IResultOutGroup, null - если ничего не нашлось</returns>
     IResultOutGroup? GetGroup(long idGroup);
+
     /// <summary>
-    /// Получить группу по ID
+    /// Получить группу по ID.
     /// </summary>
     /// <param name="idGroup">ID группы</param>
     /// <returns>Объект реализующий интерфейс IResultOutGroup, null - если ничего не нашлось</returns>
     Task<IResultOutGroup?> GetGroupAsync(long idGroup);
+
     /// <summary>
-    /// Поиск группы по Названию
+    /// Поиск группы по Названию.
     /// </summary>
     /// <param name="searchGroup">Например, ИС-23-01</param>
     /// <returns>Объект реализующий интерфейс IResultOutGroup, null - если ничего не нашлось</returns>
     IResultOutGroup? GetGroup(string searchGroup);
+
     /// <summary>
-    /// Поиск группы по Названию
+    /// Поиск группы по Названию.
     /// </summary>
     /// <param name="searchGroup">Например, ИС-23-01</param>
     /// <returns>Объект реализующий интерфейс IResultOutGroup, null - если ничего не нашлось</returns>

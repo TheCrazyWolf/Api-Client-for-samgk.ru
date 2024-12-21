@@ -5,23 +5,27 @@ namespace ClientSamgkOutputResponse.Interfaces.Schedule;
 public interface IResultOutScheduleFromDate
 {
     /// <summary>
-    /// Дата
+    /// Дата.
     /// </summary>
     public DateOnly Date { get; set; }
+
     /// <summary>
-    /// Коллекция занятия
+    /// Коллекция занятия.
     /// </summary>
     public IList<IResultOutLesson> Lessons { get; set; }
+
     /// <summary>
-    /// Тип поиска
+    /// Тип поиска.
     /// </summary>
     public ScheduleSearchType SearchType { get; set; }
+
     /// <summary>
-    /// Что ищем
+    /// Что ищем.
     /// </summary>
     public string IdValue { get; set; }
+
     /// <summary>
-    /// Типы звонков
+    /// Типы звонков.
     /// </summary>
     public ScheduleCallType CallType { get; set; }
 }

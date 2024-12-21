@@ -9,17 +9,18 @@ public class ResultOutGroup : IResultOutGroup
     public string Name { get; set; } = string.Empty;
     public IResultOutIdentity? Currator { get; set; }
     public int Course => CalculateCourseOfEducation(DateTime.Now);
-
-    private int CalculateCourseOfEducation(DateTime dateOfCalculate)
+    int CalculateCourseOfEducation(DateTime dateOfCalculate)
     {
-        var arrays = Name.Split('-');
-        if (arrays.Length <= 2) return 0;
-        if (!int.TryParse(arrays[1], out int shortEnrollmentYear)) return 0;
-        // переписать это говно
+        var parts = Name.Split('-');
+
+        if (parts.Length <= 2 || !int.TryParse(parts[1], out int shortEnrollmentYear))
+            return 0;
+
         int enrollmentYear = 2000 + shortEnrollmentYear;
-        var currentDate = dateOfCalculate;
-        if (currentDate.Month >= 9)
-            return (currentDate.Year - enrollmentYear + 1); 
-        return (currentDate.Year - enrollmentYear);
+
+        return dateOfCalculate.Month >= 9
+            ? dateOfCalculate.Year - enrollmentYear + 1
+            : dateOfCalculate.Year - enrollmentYear;
     }
+
 }

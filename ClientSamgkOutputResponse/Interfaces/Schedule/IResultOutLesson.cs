@@ -9,31 +9,37 @@ namespace ClientSamgkOutputResponse.Interfaces.Schedule;
 public interface IResultOutLesson
 {
     /// <summary>
-    /// Список преподавателей ведущий урок
+    /// Список преподавателей ведущий урок.
     /// </summary>
     public IList<IResultOutIdentity> Identity { get; set; }
+
     /// <summary>
-    /// Информация о группеы
+    /// Информация о группе.
     /// </summary>
     public IResultOutGroup? EducationGroup { get; set; }
+
     /// <summary>
     /// Информация о предмете
     /// </summary>
     public IResultOutSubjectItem SubjectDetails { get; set; }
+
     /// <summary>
-    /// Список кабинетов в которых проходят занятия
+    /// Список кабинетов в которых проходят занятия.
     /// </summary>
     public IList<IResultOutCab> Cabs { get; set; }
+
     /// <summary>
-    /// Номер пары
+    /// Номер пары.
     /// </summary>
     public long NumPair { get; set; }
+
     /// <summary>
-    /// Номер урока
+    /// Номер урока.
     /// </summary>
     public long NumLesson { get; set; }
+
     /// <summary>
-    /// Информация о длительности занятий
+    /// Информация о длительности занятий.
     /// </summary>
     public IList<DurationLessonDetails> Durations { get; set; }
 }
