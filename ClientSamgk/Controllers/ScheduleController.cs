@@ -185,7 +185,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     private void AddTeachersToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
     {
         foreach (var itemTeacher in scheduleItem.Teacher
-                     .Select(idTeacher => IdentityCache.Select(x=> x.Object).FirstOrDefault(x => x.Id == idTeacher))
+                     .Select(idTeacher => IdentityCache.Select(x => x.Object).FirstOrDefault(x => x.Id == idTeacher))
                      .OfType<IResultOutIdentity>())
         {
             lesson.Identity.Add(itemTeacher);
@@ -195,7 +195,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     private void AddCabsToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
     {
         foreach (var itemCab in scheduleItem.Cab
-                     .Select(idCab => CabsCache.Select(x=> x.Object).FirstOrDefault(x => x.Adress == idCab))
+                     .Select(idCab => CabsCache.Select(x => x.Object).FirstOrDefault(x => x.Adress == idCab))
                      .OfType<IResultOutCab>())
         {
             lesson.Cabs.Add(itemCab);
@@ -207,20 +207,24 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     {
         var firstLesson = returnableResult.Lessons.FirstOrDefault();
 
+        var isFirstPair = firstLesson is { NumPair: 1, NumLesson: 1 } or { NumPair: 1, NumLesson: 0 };
+        var isNotInJuneJuly = date.Month != 6 && date.Month != 7;
+
         // Разговоры о важном
-        if (showImportantLessons && (firstLesson != null && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
-                                                             firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
-                                                         && date.DayOfWeek == DayOfWeek.Monday && date.Month != 6 &&
-                                                         date.Month != 7))
+        if (showImportantLessons
+            && isFirstPair
+            && date.DayOfWeek == DayOfWeek.Monday
+            && isNotInJuneJuly)
         {
             returnableResult.Lessons = returnableResult.Lessons.AddTalkImportantLesson().SortByLessons();
         }
 
         // россия мои горизонты
-        if (showRussianHorizonLesson && (firstLesson?.EducationGroup?.Course == 1
-                                         && (firstLesson.NumPair == 1 && firstLesson.NumLesson == 1 ||
-                                             firstLesson.NumPair == 1 && firstLesson.NumLesson == 0)
-                                         && date.DayOfWeek == DayOfWeek.Thursday && date.Month != 6 && date.Month != 7))
+        if (showRussianHorizonLesson
+            && firstLesson?.EducationGroup?.Course == 1
+            && isFirstPair
+            && date.DayOfWeek == DayOfWeek.Thursday
+            && isNotInJuneJuly)
         {
             returnableResult.Lessons = returnableResult.Lessons.AddRussianMyHorizonTalk().SortByLessons();
         }
