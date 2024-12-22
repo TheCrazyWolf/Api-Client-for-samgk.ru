@@ -15,7 +15,7 @@ namespace ClientSamgk.Controllers;
 
 public class ScheduleController : CommonSamgkController, ISсheduleController
 {
-    private readonly Uri _scheduleApiEndpointUri = new ("https://mfc.samgk.ru/schedule/api/get-rasp");
+    private readonly Uri _scheduleApiEndpointUri = new("https://mfc.samgk.ru/schedule/api/get-rasp");
 
     public IList<IResultOutScheduleFromDate> GetSchedule(ScheduleQuery query)
     {
@@ -26,9 +26,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         CancellationToken cToken = default)
     {
         ArgumentNullException.ThrowIfNull(query);
-
         await UpdateIfCacheIsOutdated(cToken).ConfigureAwait(false);
-        var resultFromDates = new List<IResultOutScheduleFromDate>();
 
         var dates = query.StartDate.HasValue && query.EndDate.HasValue
             ? DateTimeUtils.GetDateRange(query.StartDate.Value, query.EndDate.Value)
@@ -36,29 +34,45 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                 ? [query.Date.Value]
                 : throw new ArgumentException("Query must contains any date or range of dates");
 
-        foreach (var currentDate in dates)
-        {
-            if (!query.OverrideCache)
+        var ids = query.WithAllForType
+            ? query.SearchType switch
             {
-                var cachedItem = ExtractFromCache(currentDate, query.SearchType, query.SearchId);
-                if (cachedItem != null) resultFromDates.Add(cachedItem);
+                ScheduleSearchType.Employee => IdentityCache.Select(x => x.Object.Id.ToString()).AsEnumerable(),
+                ScheduleSearchType.Group => GroupsCache.Select(x => x.Object.Id.ToString()).ToList(),
+                ScheduleSearchType.Cab => CabsCache.Select(x => x.Object.Adress).ToList(),
+                _ => throw new ArgumentOutOfRangeException(nameof(query.SearchType))
             }
+            : [query.SearchId];
 
-            var url = GetScheduleUrl(query);
-            var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url, cToken: cToken);
-            var newSchedule = ParseScheduleResult(currentDate, result, query);
-            if (!query.OverrideCache)
-                SaveToCache(newSchedule, newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date)
-                            ? DefaultLifeTimeInMinutesLong
-                            : DefaultLifeTimeInMinutesShort);
+        var resultFromDates = await dates
+            .SelectMany(date => ids.Select(id => (date, id)))
+            .LoopAsyncResult<(DateOnly, string), IResultOutScheduleFromDate>(async pair =>
+                await RequestSchedule(query, pair.Item1, pair.Item2, cToken));
 
-            resultFromDates.Add(newSchedule);
+        return resultFromDates.ToList();
+    }
 
-            if (query.Delay > 0)
-                await Task.Delay(query.Delay, cToken).ConfigureAwait(false);
+    private async Task<IResultOutScheduleFromDate> RequestSchedule(ScheduleQuery query, DateOnly date, string id,
+        CancellationToken cToken = default)
+    {
+        if (!query.OverrideCache)
+        {
+            var cachedItem = ExtractFromCache(date, query.SearchType, id);
+            if (cachedItem != null) return cachedItem;
         }
 
-        return resultFromDates;
+        var url = GetScheduleUrl(query.SearchType, date, id);
+        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url, cToken: cToken);
+        var newSchedule = ParseScheduleResult(date, result, query);
+        if (!query.OverrideCache)
+            SaveToCache(newSchedule, newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date)
+                ? DefaultLifeTimeInMinutesLong
+                : DefaultLifeTimeInMinutesShort);
+
+        if (query.Delay > 0)
+            await Task.Delay(query.Delay, cToken).ConfigureAwait(false);
+
+        return newSchedule;
     }
 
     private Uri GetScheduleUrl(ScheduleSearchType searchType, DateOnly date, string id)
@@ -82,9 +96,9 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             { Date = date, SearchType = query.SearchType, IdValue = query.SearchId! };
         // костыль чтобы по умолчанию включены внеурочка, тогда юзаем сдвигаем расписание
         if ((query.ShowImportantLessons || query.ShowRussianHorizonLesson) &&
-            query.ScheduleCallType == ScheduleCallType.Standart && (date.DayOfWeek == DayOfWeek.Monday ||
-                                                              date.DayOfWeek == DayOfWeek.Thursday &&
-                                                              date.Month != 6 && date.Month != 7))
+            query.ScheduleCallType == ScheduleCallType.Standart
+            && (date.DayOfWeek == DayOfWeek.Monday || date.DayOfWeek == DayOfWeek.Thursday
+                && date.Month != 6 && date.Month != 7))
             returnableResult.CallType = ScheduleCallType.StandartWithShift;
         else
             returnableResult.CallType = query.ScheduleCallType;
