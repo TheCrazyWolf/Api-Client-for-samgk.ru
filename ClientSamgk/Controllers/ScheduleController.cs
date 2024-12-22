@@ -7,7 +7,6 @@ using ClientSamgkOutputResponse.Enums;
 using ClientSamgkOutputResponse.Implementation.Education;
 using ClientSamgkOutputResponse.Implementation.Schedule;
 using ClientSamgkOutputResponse.Interfaces.Cabs;
-using ClientSamgkOutputResponse.Interfaces.Groups;
 using ClientSamgkOutputResponse.Interfaces.Identity;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
 
