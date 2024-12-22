@@ -1,5 +1,6 @@
 using ClientSamgk.Common;
 using ClientSamgk.Interfaces.Client;
+using ClientSamgk.Models;
 using ClientSamgk.Utils;
 using ClientSamgkApiModelResponse.Shedules;
 using ClientSamgkOutputResponse.Enums;
@@ -14,6 +15,7 @@ namespace ClientSamgk.Controllers;
 
 public class ScheduleController : CommonSamgkController, ISсheduleController
 {
+    private readonly Uri _scheduleApiEndpointUri = new ("https://mfc.samgk.ru/schedule/api/get-rasp");
 
     {
     }
@@ -103,6 +105,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, string id,
         ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
         bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false)
+    private Uri GetScheduleUrl(ScheduleQuery query)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
 
@@ -118,15 +121,15 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         if(!overrideCache) SaveToCache(newSchedule, (newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date) ? DefaultLifeTimeInMinutesLong : DefaultLifeTimeInMinutesShort));
         return newSchedule;
     }
+        ArgumentNullException.ThrowIfNull(query.SearchId);
 
-    private string GetScheduleUrl(DateOnly date, ScheduleSearchType type, string id)
     {
-        return type switch
+        return query.SearchType switch
         {
-            ScheduleSearchType.Employee => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&teacher={id}",
-            ScheduleSearchType.Group => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&group={id}",
-            ScheduleSearchType.Cab => $"https://mfc.samgk.ru/schedule/api/get-rasp?date={date:yyyy-MM-dd}&cab={id}",
-            _ => throw new ArgumentOutOfRangeException()
+            ScheduleSearchType.Employee => new Uri(_scheduleApiEndpointUri, $"?date={query.Date:yyyy-MM-dd}&teacher={query.SearchId}"),
+            ScheduleSearchType.Group => new Uri(_scheduleApiEndpointUri,$"?date={query.Date:yyyy-MM-dd}&group={query.SearchId}"),
+            ScheduleSearchType.Cab => new Uri(_scheduleApiEndpointUri,$"?date={query.Date:yyyy-MM-dd}&cab={query.SearchId}"),
+            _ => throw new ArgumentOutOfRangeException(nameof(query.SearchType))
         };
     }
 
