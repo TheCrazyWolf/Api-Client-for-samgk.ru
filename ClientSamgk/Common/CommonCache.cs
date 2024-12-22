@@ -13,10 +13,10 @@ public class CommonCache
     protected int DefaultLifeTimeInMinutesLong = 43200; // 1 месяц
     protected int DefaultLifeTimeInMinutesShort = 10; // 10 минут
 
-    protected IList<LifeTimeMemory<IResultOutScheduleFromDate>> ScheduleCache = [];
     protected IList<LifeTimeMemory<IResultOutCab>> CabsCache = [];
     protected IList<LifeTimeMemory<IResultOutGroup>> GroupsCache = [];
     protected IList<LifeTimeMemory<IResultOutIdentity>> IdentityCache = [];
+    protected IList<LifeTimeMemory<IResultOutScheduleFromDate>> ScheduleCache = [];
     protected bool ForceUpdateCache => IsCacheOutdated(CabsCache) || IsCacheOutdated(IdentityCache) || IsCacheOutdated(GroupsCache);
     protected void ClearCacheIfOutDate()
     {

@@ -4,6 +4,13 @@ namespace ClientSamgkOutputResponse.Implementation.Identity;
 
 public class ResultOutIdentity : IResultOutIdentity
 {
+    public ResultOutIdentity(long id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
+    public ResultOutIdentity() { }
+
     public long Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string ShortName => GetShortName();

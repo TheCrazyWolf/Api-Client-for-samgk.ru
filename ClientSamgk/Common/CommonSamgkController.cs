@@ -15,7 +15,7 @@ public class CommonSamgkController : CommonCache
     private readonly RestClient _client = new(new HttpClient());
     const string _urlApiSgk = "https://mfc.samgk.ru/api/";
 
-    async Task<RestResponse?> ExecuteRequest(string url, Method method = Method.Get, object? body = null)
+    async Task<RestResponse?> ExecuteRequest(Uri url, Method method = Method.Get, object? body = null, CancellationToken cToken = default)
     {
         var request = new RestRequest(url);
         request.ConfigureAntiGreedHeaders();
@@ -25,12 +25,12 @@ public class CommonSamgkController : CommonCache
             request.AddBody(body);
         }
 
-        return await _client.ExecuteAsync(request, method).ConfigureAwait(false);
+        return await _client.ExecuteAsync(request, method, cToken).ConfigureAwait(false);
     }
 
-    protected async Task<T?> SendRequest<T>(string url, Method method = Method.Get, object? body = null)
+    protected async Task<T?> SendRequest<T>(Uri url, Method method = Method.Get, object? body = null, CancellationToken cToken = default)
     {
-        var restResponse = await ExecuteRequest(url, method, body).ConfigureAwait(false);
+        var restResponse = await ExecuteRequest(url, method, body, cToken).ConfigureAwait(false);
 
         if (restResponse?.IsSuccessStatusCode is not true || string.IsNullOrEmpty(restResponse?.Content))
         {
@@ -40,21 +40,16 @@ public class CommonSamgkController : CommonCache
         return TryDeserializeSafe<T>(restResponse.Content);
     }
 
-    //protected async Task SendRequest(string url, Method method = Method.Get, object? body = null) // Нигде не используется
-    //{
-    //    await ExecuteRequest(url, method, body);
-    //}
-
-    protected async Task UpdateIfCacheIsOutdated()
+    protected async Task UpdateIfCacheIsOutdated(CancellationToken cToken = default)
     {
         if (!ForceUpdateCache)
         {
             return;
         }
 
-        await configuringCacheTeachers().ConfigureAwait(false);
-        await configuringCacheCabs().ConfigureAwait(false);
-        await configuringCacheGroups().ConfigureAwait(false);
+        await ConfiguringCacheTeachers(cToken).ConfigureAwait(false);
+        await ConfiguringCacheCabs(cToken).ConfigureAwait(false);
+        await ConfiguringCacheGroups(cToken).ConfigureAwait(false);
     }
 
     T? TryDeserializeSafe<T>(string restResponseContent)
@@ -69,9 +64,9 @@ public class CommonSamgkController : CommonCache
         }
     }
 
-    async Task configuringCacheGroups()
+    async Task ConfiguringCacheGroups(CancellationToken cToken = default)
     {
-        var resultApiGroups = await SendRequest<IList<SamGkGroupApiResult>>($"{_urlApiSgk}groups").ConfigureAwait(false);
+        var resultApiGroups = await SendRequest<IList<SamGkGroupApiResult>>(new Uri($"{_urlApiSgk}groups"), cToken: cToken).ConfigureAwait(false);
 
         if (resultApiGroups == null || !resultApiGroups.Any())
         {
@@ -97,9 +92,9 @@ public class CommonSamgkController : CommonCache
         }
     }
 
-    async Task configuringCacheTeachers()
+    async Task ConfiguringCacheTeachers(CancellationToken cToken = default)
     {
-        var resultApiTeachers = await SendRequest<IList<SamgkTeacherApiResult>>($"{_urlApiSgk}teachers").ConfigureAwait(false);
+        var resultApiTeachers = await SendRequest<IList<SamgkTeacherApiResult>>(new Uri($"{_urlApiSgk}teachers"), cToken: cToken).ConfigureAwait(false);
 
         if (resultApiTeachers == null || !resultApiTeachers.Any())
         {
@@ -110,29 +105,23 @@ public class CommonSamgkController : CommonCache
 
         foreach (var teacher in resultApiTeachers.OrderBy(t => t.Name))
         {
-            var resultOutIdentity = new ResultOutIdentity
-            {
-                Id = Convert.ToInt64(teacher.Id),
-                Name = teacher.Name
-            };
+            var resultOutIdentity = new ResultOutIdentity(Convert.ToInt64(teacher.Id), teacher.Name);
 
             SaveToCache(resultOutIdentity, DefaultLifeTimeInMinutesForCommon);
         }
     }
 
-    async Task configuringCacheCabs()
+    async Task ConfiguringCacheCabs(CancellationToken cToken = default)
     {
-        var resultApiCabs = await SendRequest<Dictionary<string, string>>($"{_urlApiSgk}cabs").ConfigureAwait(false);
+        var resultApiCabs = await SendRequest<Dictionary<string, string>>(new Uri($"{_urlApiSgk}cabs"), cToken: cToken).ConfigureAwait(false);
 
         if (resultApiCabs == null || !resultApiCabs.Any())
         {
             return;
         }
 
-        // Создаем кэш
         CabsCache = [];
 
-        // Сохраняем данные в кэш, упрощая порядок операций
         foreach (var item in resultApiCabs.OrderBy(x => x.Value))
         {
             SaveToCache(new ResultOutCab { Adress = item.Value }, DefaultLifeTimeInMinutesForCommon);

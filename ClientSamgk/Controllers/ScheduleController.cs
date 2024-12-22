@@ -1,12 +1,12 @@
 using ClientSamgk.Common;
 using ClientSamgk.Interfaces.Client;
+using ClientSamgk.Models;
 using ClientSamgk.Utils;
 using ClientSamgkApiModelResponse.Shedules;
 using ClientSamgkOutputResponse.Enums;
 using ClientSamgkOutputResponse.Implementation.Education;
 using ClientSamgkOutputResponse.Implementation.Schedule;
 using ClientSamgkOutputResponse.Interfaces.Cabs;
-using ClientSamgkOutputResponse.Interfaces.Groups;
 using ClientSamgkOutputResponse.Interfaces.Identity;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
 
@@ -14,318 +14,117 @@ namespace ClientSamgk.Controllers;
 
 public class ScheduleController : CommonSamgkController, ISсheduleController
 {
-    const string _urlDateSGK = "https://mfc.samgk.ru/schedule/api/get-rasp?date=";
+    private readonly Uri _scheduleApiEndpointUri = new("https://mfc.samgk.ru/schedule/api/get-rasp");
 
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutIdentity entity,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false) => GetScheduleAsync(date: date, type: ScheduleSearchType.Employee, entity.Id.ToString(), overrideCache: overrideCache).GetAwaiter().GetResult();
+    public IList<IResultOutScheduleFromDate> GetSchedule(ScheduleQuery query) => GetScheduleAsync(query).GetAwaiter().GetResult();
 
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutIdentity entity,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false) => await GetScheduleAsync(date: date, type: ScheduleSearchType.Employee, entity.Id.ToString(), overrideCache: overrideCache);
-
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate,
-        IResultOutIdentity entity, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false,
-        int delay = 700) => GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Employee, entity.Id.ToString(), delay: delay, overrideCache: overrideCache).GetAwaiter().GetResult();
-
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
-        IResultOutIdentity entity, ScheduleCallType scheduleCallType = ScheduleCallType.Standart, bool overrideCache = false,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, int delay = 700) => await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Employee, entity.Id.ToString(), delay: delay, overrideCache: overrideCache);
-
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutGroup entity,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false) => GetScheduleAsync(date: date, type: ScheduleSearchType.Group, entity.Id.ToString(), overrideCache: overrideCache).GetAwaiter().GetResult();
-
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutGroup entity,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false) => await GetScheduleAsync(date: date, type: ScheduleSearchType.Group, entity.Id.ToString(), overrideCache: overrideCache);
-
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutGroup entity,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false,
-        int delay = 700) => GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Group, entity.Id.ToString(), delay: delay, overrideCache: overrideCache).GetAwaiter().GetResult();
-
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
-        IResultOutGroup entity, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false,
-        int delay = 700) => await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Group,
-            entity.Id.ToString(), delay: delay, scheduleCallType: scheduleCallType,
-            showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, IResultOutCab entity,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart, bool overrideCache = false,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true) => GetScheduleAsync(date: date, type: ScheduleSearchType.Cab,
-                entity.Adress, scheduleCallType: scheduleCallType,
-                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache).GetAwaiter().GetResult();
-
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, IResultOutCab entity,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart, bool overrideCache = false,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true) => await GetScheduleAsync(date: date, type: ScheduleSearchType.Cab,
-            entity.Adress, scheduleCallType: scheduleCallType,
-            showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, IResultOutCab entity,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart, bool overrideCache = false,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true,
-        int delay = 700) => GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
-                entity.Adress, delay: delay, scheduleCallType: scheduleCallType,
-                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache).GetAwaiter().GetResult();
-
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
-        IResultOutCab entity, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false,
-        int delay = 700) => await GetScheduleAsync(startDate: startDate, endDate: endDate, type: ScheduleSearchType.Cab,
-            entity.Adress, delay: delay, scheduleCallType: scheduleCallType,
-            showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, string id,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false) => GetScheduleAsync(date: date, type: type, id: id, scheduleCallType: scheduleCallType,
-                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache)
-            .GetAwaiter()
-            .GetResult();
-
-    public IResultOutScheduleFromDate GetSchedule(DateOnly date, ScheduleSearchType type, long id,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false) => GetScheduleAsync(date: date, type: type, id: id.ToString(), scheduleCallType: scheduleCallType,
-                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache)
-            .GetAwaiter()
-            .GetResult();
-
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(DateOnly date, ScheduleSearchType type, long id,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false) => await GetScheduleAsync(date: date, type: type, id: id.ToString(), scheduleCallType: scheduleCallType,
-            showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
-        string id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false, int delay = 700)
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(ScheduleQuery query, CancellationToken cToken = default)
     {
-        return GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay,
-                scheduleCallType: scheduleCallType,
-                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache)
-            .GetAwaiter()
-            .GetResult();
-    }
+        ArgumentNullException.ThrowIfNull(query);
 
-    public IList<IResultOutScheduleFromDate> GetSchedule(DateOnly startDate, DateOnly endDate, ScheduleSearchType type,
-        long id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false, int delay = 700) => GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id, delay: delay,
-                scheduleCallType: scheduleCallType,
-                showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache)
-            .GetAwaiter()
-            .GetResult();
+        await UpdateIfCacheIsOutdated(cToken).ConfigureAwait(false);
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(
-        DateOnly startDate,
-        DateOnly endDate,
-        ScheduleSearchType type,
-        string id,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true,
-        bool showRussianHorizonLesson = true,
-        bool overrideCache = false,
-        int delay = 700)
-    {
-        await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-
-        List<IResultOutScheduleFromDate> resultOutScheduleFromDates = [];
-        var currentDate = startDate;
-
-        while (currentDate <= endDate)
+        IList<DateOnly> dates = query switch
         {
-            var schedule = await GetScheduleAsync(currentDate, type, id, scheduleCallType, showImportantLessons, showRussianHorizonLesson, overrideCache);
+            { StartDate: not null, EndDate: not null } => DateTimeUtils.GetDateRange(query.StartDate.Value, query.EndDate.Value),
+            { Date: not null } => [query.Date.Value],
+            _ => throw new ArgumentException("Query must contain a date or a range of dates")
+        };
 
-            if (schedule.Lessons.Any())
+        IEnumerable<string> ids;
+
+        if (query.WithAllForType)
+        {
+            ids = query.SearchType switch
             {
-                resultOutScheduleFromDates.Add(schedule);
-            }
-
-            currentDate = currentDate.AddDays(1);
-
-            if (delay > 0)
-            {
-                await Task.Delay(delay).ConfigureAwait(false);
-            }
+                ScheduleSearchType.Employee => IdentityCache.Select(x => x.Object.Id.ToString()),
+                ScheduleSearchType.Group => GroupsCache.Select(x => x.Object.Id.ToString()),
+                ScheduleSearchType.Cab => CabsCache.Select(x => x.Object.Adress),
+                _ => throw new ArgumentOutOfRangeException(nameof(query.SearchType))
+            };
+        }
+        else
+        {
+            ids = [query.SearchId];
         }
 
-        return resultOutScheduleFromDates;
+        var resultFromDates = await dates
+        .SelectMany(date => ids.Select(id => (date, id)))
+        .LoopAsyncResult<(DateOnly, string), IResultOutScheduleFromDate>(async pair => await RequestSchedule(query, pair.Item1, pair.Item2, cToken).ConfigureAwait(false));
+
+        return resultFromDates.ToList();
     }
 
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(DateOnly startDate, DateOnly endDate,
-        ScheduleSearchType type, long id, ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false, int delay = 700) => await GetScheduleAsync(startDate: startDate, endDate: endDate, type: type, id: id.ToString(),
-            delay: delay, scheduleCallType: scheduleCallType,
-            showImportantLessons: showImportantLessons, showRussianHorizonLesson: showRussianHorizonLesson, overrideCache: overrideCache);
-
-    public async Task<IList<IResultOutScheduleFromDate>> GetAllScheduleAsync(
-        DateOnly date,
-        ScheduleSearchType type,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true,
-        bool showRussianHorizonLesson = true,
-        bool overrideCache = false,
-        int delay = 700)
+    private async Task<IResultOutScheduleFromDate> RequestSchedule(ScheduleQuery query, DateOnly date, string id, CancellationToken cToken = default)
     {
-        await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-
-        var cache = GetCacheByType(type);
-
-        List<IResultOutScheduleFromDate> result = [];
-
-        foreach (var item in cache)
+        if (!query.OverrideCache && ExtractFromScheduleCache(date, query.SearchType, id) is IResultOutScheduleFromDate cachedItem)
         {
-            var id = GetIdByType(type, item);
-            var scheduleFromDate = await GetScheduleAsync(date, type, id,
-                scheduleCallType: scheduleCallType,
-                showImportantLessons: showImportantLessons,
-                showRussianHorizonLesson: showRussianHorizonLesson,
-                overrideCache: overrideCache);
-
-            if (scheduleFromDate.Lessons.Count > 0)
-            {
-                result.Add(scheduleFromDate);
-            }
+            return cachedItem;
         }
 
-        return result;
-    }
+        var url = GetScheduleUrl(query.SearchType, date, id);
 
-    IEnumerable<object> GetCacheByType(ScheduleSearchType type) => type switch
-    {
-        ScheduleSearchType.Employee => IdentityCache.Select(x => x.Object),
-        ScheduleSearchType.Cab => CabsCache.Select(x => x.Object),
-        ScheduleSearchType.Group => GroupsCache.Select(x => x.Object),
-        _ => throw new ArgumentException($"Unsupported ScheduleSearchType: {type}", nameof(type)),
-    };
+        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url, cToken: cToken).ConfigureAwait(false);
 
-    string GetIdByType(ScheduleSearchType type, object item) => type switch
-    {
-        ScheduleSearchType.Employee => ((IResultOutIdentity)item).Id.ToString(),
-        ScheduleSearchType.Cab => ((IResultOutCab)item).Adress,
-        ScheduleSearchType.Group => ((IResultOutGroup)item).Id.ToString(),
-        _ => throw new ArgumentException($"Unsupported ScheduleSearchType: {type}", nameof(type)),
-    };
+        var newSchedule = ParseScheduleResult(date, result, query);
 
-
-    public IList<IResultOutScheduleFromDate> GetAllSchedule(DateOnly date, ScheduleSearchType type,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true, bool showRussianHorizonLesson = true, bool overrideCache = false, int delay = 700) => GetAllScheduleAsync(date, type, ScheduleCallType.Standart, showImportantLessons,
-                showRussianHorizonLesson, delay: delay, overrideCache: overrideCache).GetAwaiter().GetResult();
-
-    public async Task<IResultOutScheduleFromDate> GetScheduleAsync(
-        DateOnly date,
-        ScheduleSearchType type,
-        string id,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true,
-        bool showRussianHorizonLesson = true,
-        bool overrideCache = false)
-    {
-        await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-
-        if (!overrideCache && ExtractFromScheduleCache(date, type, id) is IResultOutScheduleFromDate cache) // Пытаемся извлечь данные из кэша
+        if (!query.OverrideCache)
         {
-            return cache;
+            SaveToCache(newSchedule, newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date)
+                ? DefaultLifeTimeInMinutesLong
+                : DefaultLifeTimeInMinutesShort);
         }
 
-        var url = GetScheduleUrl(date, type, id);
-        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url).ConfigureAwait(false);
-
-        var newSchedule = ParseScheduleResult(date, result, type, id, scheduleCallType, showImportantLessons, showRussianHorizonLesson);
-
-        if (!overrideCache)
-        {
-            SaveToCache(newSchedule, DetermineCacheLifeTime(newSchedule.Date));
-        }
+        if (query.Delay > 0)
+            await Task.Delay(query.Delay, cToken).ConfigureAwait(false);
 
         return newSchedule;
     }
 
-    int DetermineCacheLifeTime(DateOnly scheduleDate) => scheduleDate < DateOnly.FromDateTime(DateTime.Now) ? DefaultLifeTimeInMinutesLong : DefaultLifeTimeInMinutesShort;
-
-    string GetScheduleUrl(DateOnly date, ScheduleSearchType type, string id)
+    private Uri GetScheduleUrl(ScheduleSearchType searchType, DateOnly date, string id)
     {
-        var queryParams = new Dictionary<ScheduleSearchType, string>
+        ArgumentNullException.ThrowIfNull(id);
+
+        return searchType switch
         {
-            { ScheduleSearchType.Employee, "teacher" },
-            { ScheduleSearchType.Group, "group" },
-            { ScheduleSearchType.Cab, "cab" }
+            ScheduleSearchType.Employee => new Uri(_scheduleApiEndpointUri, $"?date={date:yyyy-MM-dd}&teacher={id}"),
+            ScheduleSearchType.Group => new Uri(_scheduleApiEndpointUri, $"?date={date:yyyy-MM-dd}&group={id}"),
+            ScheduleSearchType.Cab => new Uri(_scheduleApiEndpointUri, $"?date={date:yyyy-MM-dd}&cab={id}"),
+            _ => throw new ArgumentOutOfRangeException(nameof(searchType))
         };
-
-        if (!queryParams.TryGetValue(type, out var queryParam))
-        {
-            throw new ArgumentOutOfRangeException(nameof(type), type, "Unsupported ScheduleSearchType");
-        }
-
-        return $"{_urlDateSGK}{date:yyyy-MM-dd}&{queryParam}={id}";
     }
 
-    IResultOutScheduleFromDate ParseScheduleResult(
-        DateOnly date,
-        Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result,
-        ScheduleSearchType searchType,
-        string id,
-        ScheduleCallType scheduleCallType = ScheduleCallType.Standart,
-        bool showImportantLessons = true,
-        bool showRussianHorizonLesson = true)
+    private IResultOutScheduleFromDate ParseScheduleResult(DateOnly date,
+        Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result, ScheduleQuery query)
     {
-        var returnableResult = new ResultOutResultOutScheduleFromDate
-        {
-            Date = date,
-            SearchType = searchType,
-            IdValue = id,
-            CallType = DetermineScheduleCallType(date, scheduleCallType, showImportantLessons, showRussianHorizonLesson)
-        };
+        var schedule = new ResultOutResultOutScheduleFromDate(date, query.SearchType, query.SearchId!);
 
         if (result == null || result.Count == 0)
-            return returnableResult;
+        {
+            return schedule;
+        }
 
         foreach (var scheduleItem in result.Values.SelectMany(array => array.Values).SelectMany(items => items))
         {
-            var lesson = CreateLesson(scheduleItem, returnableResult.CallType);
-            returnableResult.Lessons.Add(lesson);
+            var lesson = CreateLesson(scheduleItem, schedule.CallType);
+            schedule.Lessons.Add(lesson);
         }
 
 
-        returnableResult.Lessons = returnableResult.Lessons.RemoveDuplicates().SortByLessons();
+        schedule.Lessons = schedule.Lessons.RemoveDuplicates().SortByLessons();
 
-        return AddAdditionalLessons(date, returnableResult, showImportantLessons, showRussianHorizonLesson);
+        return AddAdditionalLessons(date, schedule);
     }
-
-    ScheduleCallType DetermineScheduleCallType(
-        DateOnly date,
-        ScheduleCallType scheduleCallType,
-        bool showImportantLessons,
-        bool showRussianHorizonLesson)
+    private ResultOutResultOutLesson CreateLesson(ScheduleItem scheduleItem, ScheduleCallType scheduleCallType)
     {
-        if ((showImportantLessons || showRussianHorizonLesson) &&
-            scheduleCallType == ScheduleCallType.Standart &&
-            (date.DayOfWeek == DayOfWeek.Monday || date.DayOfWeek == DayOfWeek.Thursday) &&
-            date.Month is not (6 or 7))
-        {
-            return ScheduleCallType.StandartWithShift;
-        }
-        return scheduleCallType;
-    }
-
-    ResultOutResultOutLesson CreateLesson(ScheduleItem scheduleItem, ScheduleCallType scheduleCallType)
-    {
-        var lesson = new ResultOutResultOutLesson
+        var lesson = new ResultOutResultOutLesson()
         {
             NumPair = scheduleItem.Pair,
             NumLesson = scheduleItem.Number,
             Durations = scheduleItem.GetDurationLessonDetails(scheduleCallType),
-            SubjectDetails = new ResultOutSubject
-            {
-                Id = scheduleItem.DisciplineInfo.Id,
-                SubjectName = scheduleItem.DisciplineName,
-                Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
-                IsAttestation = scheduleItem.Zachet == 1
-            },
-            EducationGroup = ExtractFromGroupCache(scheduleItem.Group)
+            SubjectDetails = new ResultOutSubject(scheduleItem.DisciplineInfo.Id, scheduleItem.DisciplineName, $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}", scheduleItem.Zachet == 1),
+            EducationGroup = ExtractFromGroupCache(scheduleItem.Group),
         };
 
         AddTeachersToLesson(scheduleItem, lesson);
@@ -334,8 +133,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         return lesson;
     }
 
-
-    void AddTeachersToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
+    private void AddTeachersToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
     {
         var teachersById = IdentityCache
             .Select(r => r.Object)
@@ -351,8 +149,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
     }
 
-
-    void AddCabsToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
+    private void AddCabsToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
     {
         var cabsByAddress = CabsCache
             .Select(r => r.Object)
@@ -369,7 +166,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
     }
 
-    IResultOutScheduleFromDate AddAdditionalLessons(
+    private IResultOutScheduleFromDate AddAdditionalLessons(
         DateOnly date,
         IResultOutScheduleFromDate returnableResult,
         bool showImportantLessons = true,
