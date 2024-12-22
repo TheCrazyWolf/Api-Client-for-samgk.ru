@@ -47,7 +47,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         var resultFromDates = await dates
             .SelectMany(date => ids.Select(id => (date, id)))
             .LoopAsyncResult<(DateOnly, string), IResultOutScheduleFromDate>(async pair =>
-                await RequestSchedule(query, pair.Item1, pair.Item2, cToken));
+                await RequestSchedule(query, pair.Item1, pair.Item2, cToken).ConfigureAwait(false));
 
         return resultFromDates.ToList();
     }
@@ -62,7 +62,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
 
         var url = GetScheduleUrl(query.SearchType, date, id);
-        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url, cToken: cToken);
+        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url, cToken: cToken)
+            .ConfigureAwait(false);
         var newSchedule = ParseScheduleResult(date, result, query);
         if (!query.OverrideCache)
             SaveToCache(newSchedule, newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date)
