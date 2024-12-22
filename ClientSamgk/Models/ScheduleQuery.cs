@@ -82,13 +82,13 @@ public sealed class ScheduleQuery
         return this;
     }
 
-    public ScheduleQuery ShowImportant(bool show = true)
+    public ScheduleQuery WithShowImportant(bool show = true)
     {
         ShowImportantLessons = show;
         return this;
     }
 
-    public ScheduleQuery ShowRussianHorizon(bool show = true)
+    public ScheduleQuery WithShowRussianHorizon(bool show = true)
     {
         ShowRussianHorizonLesson = show;
         return this;
