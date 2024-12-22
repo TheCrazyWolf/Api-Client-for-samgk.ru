@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ClientSamgk;
-using ClientSamgk.Controllers;
 using ClientSamgk.Interfaces.Client;
 using ClientSamgk.Models;
 using ClientSamgkOutputResponse.Enums;
@@ -11,13 +10,13 @@ IClientSamgkApi api = new ClientSamgkApi();
 var groupsArray = await api.Groups.GetGroupsAsync();
 
 // Получить список преподавателей
-var groupsTeachers = await api.Accounts.GetTeachersAsync();
+var teachers = await api.Accounts.GetTeachersAsync();
 
 // Получение расписание за день
 DateOnly dateOnly = new DateOnly(2024,09,16);
 var query = new ScheduleQuery()
     .WithDate(dateOnly)
-    .WithSearchType(ScheduleSearchType.Employee, "2294");
+    .WithSearchType(ScheduleSearchType.Employee, 2294);
 var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
 
 // или с использованием объектов реализующих интерфейсы
