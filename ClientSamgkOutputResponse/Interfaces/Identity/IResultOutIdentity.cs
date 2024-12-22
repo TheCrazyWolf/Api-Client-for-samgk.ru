@@ -6,15 +6,14 @@ public interface IResultOutIdentity
     /// ID сотрудника.
     /// </summary>
     public long Id { get; set; }
-    
+
     /// <summary>
     /// Фио преподавателя.
     /// </summary>
     public string Name { get; set; }
-    
+
     /// <summary>
     /// Короткое имя в формате Фамилия И.О.
     /// </summary>
     public string ShortName { get; }
-    
 }

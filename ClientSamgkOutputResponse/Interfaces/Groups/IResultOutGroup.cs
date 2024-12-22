@@ -18,7 +18,7 @@ public interface IResultOutGroup
     /// ID куратора группы, которые не работает и не совпадает с реальной жизнью. // Правда
     /// </summary>
     public IResultOutIdentity? Currator { get; set; }
-    
+
     /// <summary>
     /// № курса обучения.
     /// </summary>
