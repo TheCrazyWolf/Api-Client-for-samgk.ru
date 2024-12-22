@@ -7,35 +7,39 @@ using ClientSamgkOutputResponse.Interfaces.Schedule;
 
 namespace ClientSamgk.Common;
 
-public class CommonCache 
+public class CommonCache
 {
     protected int DefaultLifeTimeInMinutesForCommon = 2880; // 2 дня
     protected int DefaultLifeTimeInMinutesLong = 43200; // 1 месяц
     protected int DefaultLifeTimeInMinutesShort = 10; // 10минут
-    
-    protected IList<LifeTimeMemory<IResultOutScheduleFromDate>> ScheduleCache = new List<LifeTimeMemory<IResultOutScheduleFromDate>>();
+
+    protected IList<LifeTimeMemory<IResultOutScheduleFromDate>> ScheduleCache =
+        new List<LifeTimeMemory<IResultOutScheduleFromDate>>();
+
     protected IList<LifeTimeMemory<IResultOutCab>> CabsCache = new List<LifeTimeMemory<IResultOutCab>>();
     protected IList<LifeTimeMemory<IResultOutGroup>> GroupsCache = new List<LifeTimeMemory<IResultOutGroup>>();
     protected IList<LifeTimeMemory<IResultOutIdentity>> IdentityCache = new List<LifeTimeMemory<IResultOutIdentity>>();
-    
+
     public IResultOutScheduleFromDate? ExtractFromCache(DateOnly date, ScheduleSearchType type, string? id)
     {
         ClearCacheIfOutDate();
-        return ScheduleCache.FirstOrDefault(x => x.Object.Date == date && x.Object.SearchType == type && x.Object.IdValue == id)?.Object;
+        return ScheduleCache
+            .FirstOrDefault(x => x.Object.Date == date && x.Object.SearchType == type && x.Object.IdValue == id)
+            ?.Object;
     }
-    
+
     public IResultOutCab? ExtractCabFromCache(string? id)
     {
         ClearCacheIfOutDate();
         return CabsCache.FirstOrDefault(x => x.Object.Adress == id)?.Object;
     }
-    
+
     public IResultOutGroup? ExtractGroupFromCache(long? id)
     {
         ClearCacheIfOutDate();
         return GroupsCache.FirstOrDefault(x => x.Object.Id == id)?.Object;
     }
-    
+
     public IResultOutIdentity? ExtractIdentityFromCache(long? id)
     {
         ClearCacheIfOutDate();
@@ -52,7 +56,7 @@ public class CommonCache
         };
         ScheduleCache.Add(item);
     }
-    
+
     protected void SaveToCache(IResultOutIdentity identity, int lifeTimeInMinutes)
     {
         var item = new LifeTimeMemory<IResultOutIdentity>()
@@ -63,7 +67,7 @@ public class CommonCache
         };
         IdentityCache.Add(item);
     }
-    
+
     protected void SaveToCache(IResultOutGroup schedule, int lifeTimeInMinutes)
     {
         var item = new LifeTimeMemory<IResultOutGroup>()
@@ -74,7 +78,7 @@ public class CommonCache
         };
         GroupsCache.Add(item);
     }
-    
+
     protected void SaveToCache(IResultOutCab schedule, int lifeTimeInMinutes)
     {
         var item = new LifeTimeMemory<IResultOutCab>()
@@ -92,16 +96,17 @@ public class CommonCache
         {
             ScheduleCache.Remove(item);
         }
-        
+
         foreach (var item in CabsCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
         {
             CabsCache.Remove(item);
         }
-        
+
         foreach (var item in GroupsCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
         {
             GroupsCache.Remove(item);
         }
+
         foreach (var item in IdentityCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
         {
             IdentityCache.Remove(item);
