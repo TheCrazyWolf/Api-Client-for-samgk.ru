@@ -60,56 +60,76 @@ var cabs = await api.Cabs.GetCabsFromCampusAsync("5");
 
 ## Расписание
 
-### Получение расписания из объектов реализующих интерфейсы
-Метод GetScheduleAsync поддерживает получение расписание из объектов
-реализующих интерфейс IResultOutCab, IResultOutGroup, IResultOutIdentity
-Пример:
-```csharp
-var obj = await api.Groups.GetGroupAsync("ис-23-01"); 
-if (obj is null) throw new Exception($"{nameof(obj)} is null)");
+### Построение запроса
+Метод GetScheduleAsync принимает ScheduleQuery. Для выполнения запроса 
+необходимо собрать свой запрос используя группу методов, например:
 
-// obj - будет хранится объект реализующих интерфейс IResultOutGroup
+### Стандартный запрос
+Получить расписание за конкретный день, указать перечисление ScheduleSearchType
+```csharp
 DateOnly dateOnly = new DateOnly(2024,09,16);
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(dateOnly, obj);
+var query = new ScheduleQuery()
+    .WithDate(dateOnly)
+    .WithSearchType(ScheduleSearchType.Employee, 2294);
+var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
 ```
 
-### Получение расписания стандартным способом
-Метод GetScheduleAsync поддерживает получение расписание путем указания
-перечисления ScheduleSearchType
+### Запрос с объектами реализующих интерфейсы
+такие как IResultOutCab, IResultOutGroup, IResultOutIdentity
 Пример:
 ```csharp
+var teachers = await api.Accounts.GetTeachersAsync();
 DateOnly dateOnly = new DateOnly(2024,09,16);
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(dateOnly, ScheduleSearchType.Employee, 2294);
+var query = new ScheduleQuery()
+    .WithDate(dateOnly)
+    .WithEmployee(teachers.First());
+var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
 ```
 
 ### Получение расписания используя диапазон дат
-Метод GetScheduleAsync поддерживает получение расписания из диапазона дат. Где 1000 - в параметрах, это delay - задержка
-между запросами. По умолчанию 700 мс.
+Используйте метод WithDateRange для передачи диапазон дат по расписанию.
+Обратите внимание, что по умолчанию настроена задержка в 700 мс.
+Вы можете настраивать нужную вам задержку с помощью метода WithDelay
 Пример:
 ```csharp
-DateOnly dateOnlyStart = new DateOnly(2024,09,16);
-DateOnly dateOnlyEnd = new DateOnly(2024,09,16);
-var scheduleFromDates = await api.Schedule.GetScheduleAsync(dateOnlyStart, dateOnlyEnd, ScheduleSearchType.Employee, 2294, 1000);
+var teachers = await api.Accounts.GetTeachersAsync();
+DateOnly start = new DateOnly(2024,09,16);
+DateOnly end = new DateOnly(2024,09,17);
+var query = new ScheduleQuery()
+    .WithDateRange(start, end)
+    .WithDelay(500)
+    .WithEmployee(teachers.First());
+var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
 ```
 
 ### Получение расписания за весь день по группам, преподавателю или кабинету
-Метод GetAllScheduleAsync выгружает расписание за весь день по определенному типу
-Где 1000 - в параметрах, это delay - задержка
-между запросами. По умолчанию 700 мс.
+
 Пример:
 ```csharp
-DateOnly dateOnly = new DateOnly(2024,09,16);
-var resultScheduleCollectionFromDateAll = await api.Schedule.GetAllScheduleAsync(dateOnly, ScheduleSearchType.Employee, 1000);
+var query = new ScheduleQuery()
+    .WithDate(dateOnlyStart)
+    .WithAllForSearchType(ScheduleSearchType.Employee)
+    .WithDelay(1000);
+var resultScheduleCollectionFromDateAll = await api.Schedule.GetScheduleAsync(query);
 ```
 
 
 ### Установка расписания звонков/ скрытие разговоров о важном/мои горизонты
-Метод GetScheduleAsync принимает параметры как перечисление ScheduleCallType, showImportantLessons и showRussianHorizonLesson
-Пример получение сокращенного расписания
+Методы WithShowImportant, WithShowRussianHorizon принимают параметры на скрытие и показ 
+внеурочный занятий.
+
+Метод WithScheduleCallType принимает перечисление типа ScheduleCallType, чтобы
+получить нужное расписание звонков
 ```csharp
+var groups = await api.Groups.GetGroupsAsync();
 DateOnly dateOnly = new DateOnly(2024,09,16);
-var result = await api.Schedule.GetScheduleAsync(date: dateOnly, type: ScheduleSearchType.Employee, id: 2288, 
-    scheduleCallType: ScheduleCallType.StandartShort, showRussianHorizonLesson: true, showImportantLessons: true);
+var query = new ScheduleQuery()
+    .WithDate(dateOnly)
+    .WithShowImportant(true)
+    .WithShowRussianHorizon(false)
+    .WithScheduleCallType(ScheduleCallType.StandartWithShift)
+    .WithGroup(groups.First());
+var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
 ```
 
 ### Отказ от кеширования расписания
@@ -117,11 +137,15 @@ var result = await api.Schedule.GetScheduleAsync(date: dateOnly, type: ScheduleS
 для того чтобы не обращаться к серверам повторно. По умолчанию, прошедшие даты кешируется с длительностью 1 месяц, сегодняшние
 и последующие в 5-10 минут. Кеширование производится в рамках одного экземпляра класса.
 
-Отказ от кеширования производится параметром overrideCache
+Отказ от кеширования производится методом WithOverrideCache
 ```csharp
+var groups = await api.Groups.GetGroupsAsync();
 DateOnly dateOnly = new DateOnly(2024,09,16);
-var result = await api.Schedule.GetScheduleAsync(date: dateOnly, type: ScheduleSearchType.Employee, id: 2288, 
-    scheduleCallType: ScheduleCallType.StandartShort, overrideCache: true);
+var query = new ScheduleQuery()
+    .WithDate(dateOnly)
+    .WithOverrideCache(true)
+    .WithGroup(groups.First());
+var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
 ```
 
 
