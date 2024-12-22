@@ -61,16 +61,17 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         return resultFromDates;
     }
 
-    private Uri GetScheduleUrl(ScheduleQuery query)
+    private Uri GetScheduleUrl(ScheduleSearchType searchType, DateOnly date, string id)
     {
-        ArgumentNullException.ThrowIfNull(query.SearchId);
+        ArgumentNullException.ThrowIfNull(id);
 
-        return query.SearchType switch
+        return searchType switch
         {
-            ScheduleSearchType.Employee => new Uri(_scheduleApiEndpointUri, $"?date={query.Date:yyyy-MM-dd}&teacher={query.SearchId}"),
-            ScheduleSearchType.Group => new Uri(_scheduleApiEndpointUri,$"?date={query.Date:yyyy-MM-dd}&group={query.SearchId}"),
-            ScheduleSearchType.Cab => new Uri(_scheduleApiEndpointUri,$"?date={query.Date:yyyy-MM-dd}&cab={query.SearchId}"),
-            _ => throw new ArgumentOutOfRangeException(nameof(query.SearchType))
+            ScheduleSearchType.Employee => new Uri(_scheduleApiEndpointUri,
+                $"?date={date:yyyy-MM-dd}&teacher={id}"),
+            ScheduleSearchType.Group => new Uri(_scheduleApiEndpointUri, $"?date={date:yyyy-MM-dd}&group={id}"),
+            ScheduleSearchType.Cab => new Uri(_scheduleApiEndpointUri, $"?date={date:yyyy-MM-dd}&cab={id}"),
+            _ => throw new ArgumentOutOfRangeException(nameof(searchType))
         };
     }
 

@@ -2,7 +2,7 @@
 
 public static class DateTimeUtils
 {
-    public static IReadOnlyList<DateOnly> GetDateRange(DateOnly startDate, DateOnly endDate)
+    public static IList<DateOnly> GetDateRange(DateOnly startDate, DateOnly endDate)
     {
         var daysCount = (endDate.ToDateTime(TimeOnly.MinValue) - startDate.ToDateTime(TimeOnly.MinValue)).Days + 1;
         var dateRange = new List<DateOnly>(daysCount);
