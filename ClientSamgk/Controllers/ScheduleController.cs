@@ -181,20 +181,24 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     {
         var firstLesson = returnableResult.Lessons.FirstOrDefault();
 
-        bool IsLessonAtFirstPair() =>
-            firstLesson != null && (firstLesson.NumPair == 1 && (firstLesson.NumLesson == 1 || firstLesson.NumLesson == 0));
-
-        bool IsSummerMonth() => date.Month == 6 || date.Month == 7;
+        var isLessonAtFirstPair = firstLesson is { NumPair: 1, NumLesson: 1 or 0 };
+        var isSummerMonth = date.Month is 6 or 7;
 
         // Разговоры о важном
-        if (showImportantLessons && IsLessonAtFirstPair() && date.DayOfWeek == DayOfWeek.Monday && !IsSummerMonth())
+        if (showImportantLessons
+            && isLessonAtFirstPair
+            && date.DayOfWeek == DayOfWeek.Monday
+            && !isSummerMonth)
         {
             returnableResult.Lessons = returnableResult.Lessons.AddTalkImportantLesson().SortByLessons();
         }
 
         // Россия мои горизонты
-        if (showRussianHorizonLesson && firstLesson?.EducationGroup?.Course == 1 && IsLessonAtFirstPair()
-            && date.DayOfWeek == DayOfWeek.Thursday && !IsSummerMonth())
+        if (showRussianHorizonLesson
+            && firstLesson?.EducationGroup?.Course == 1
+            && isLessonAtFirstPair
+            && date.DayOfWeek == DayOfWeek.Thursday
+            && !isSummerMonth)
         {
             returnableResult.Lessons = returnableResult.Lessons.AddRussianMyHorizonTalk().SortByLessons();
         }
