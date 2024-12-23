@@ -16,9 +16,13 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 {
     private readonly Uri _scheduleApiEndpointUri = new("https://mfc.samgk.ru/schedule/api/get-rasp");
 
-    public IList<IResultOutScheduleFromDate> GetSchedule(ScheduleQuery query) => GetScheduleAsync(query).GetAwaiter().GetResult();
+    /// <inheritdoc />
+    public IList<IResultOutScheduleFromDate> GetSchedule(ScheduleQuery query) =>
+        GetScheduleAsync(query).GetAwaiter().GetResult();
 
-    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(ScheduleQuery query, CancellationToken cToken = default)
+    /// <inheritdoc />
+    public async Task<IList<IResultOutScheduleFromDate>> GetScheduleAsync(ScheduleQuery query,
+        CancellationToken cToken = default)
     {
         ArgumentNullException.ThrowIfNull(query);
 
