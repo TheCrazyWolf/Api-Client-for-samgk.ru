@@ -36,22 +36,14 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             _ => throw new ArgumentException("Query must contain a date or a range of dates")
         };
 
-        IEnumerable<string> ids;
-
-        if (query.WithAllForType)
-        {
-            ids = query.SearchType switch
+        IEnumerable<string> ids = query.WithAllForType
+            ? query.SearchType switch
             {
                 ScheduleSearchType.Employee => IdentityCache.Select(x => x.Object.Id.ToString()),
                 ScheduleSearchType.Group => GroupsCache.Select(x => x.Object.Id.ToString()),
                 ScheduleSearchType.Cab => CabsCache.Select(x => x.Object.Adress),
                 _ => throw new ArgumentOutOfRangeException(nameof(query.SearchType))
-            };
-        }
-        else
-        {
-            ids = [query.SearchId];
-        }
+            } : [query.SearchId];
 
         var resultFromDates = await dates
             .SelectMany(date => ids.Select(id => (date, id)))
@@ -170,7 +162,6 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                 lesson.Cabs.Add(cabinetData);
             }
         }
-
     }
 
     private IResultOutScheduleFromDate AddAdditionalLessons(
