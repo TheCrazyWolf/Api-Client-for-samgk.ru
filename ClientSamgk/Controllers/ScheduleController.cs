@@ -43,7 +43,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                 ScheduleSearchType.Group => GroupsCache.Select(x => x.Object.Id.ToString()),
                 ScheduleSearchType.Cab => CabsCache.Select(x => x.Object.Adress),
                 _ => throw new ArgumentOutOfRangeException(nameof(query.SearchType))
-            } : [query.SearchId];
+            } : [query.SearchId ?? throw new ArgumentException("Query must contain any search id")];
 
         var resultFromDates = await dates
             .SelectMany(date => ids.Select(id => (date, id)))
