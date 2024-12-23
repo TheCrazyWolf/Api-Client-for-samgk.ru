@@ -136,7 +136,6 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     {
         var teachersById = IdentityCache
             .Select(r => r.Object)
-            .Where(r => r is IResultOutIdentity)
             .ToDictionary(i => i.Id, x => x);
 
         foreach (var teacher in scheduleItem.Teacher)
@@ -152,7 +151,6 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     {
         var cabsByAddress = CabsCache
             .Select(r => r.Object)
-            .Where(r => r is IResultOutCab)
             .ToDictionary(c => c.Adress, x => x);
 
         foreach (var idCab in scheduleItem.Cab)
