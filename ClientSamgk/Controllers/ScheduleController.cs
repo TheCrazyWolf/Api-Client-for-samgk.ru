@@ -85,7 +85,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     {
         ArgumentNullException.ThrowIfNull(id);
         var param = GetParamForScheduleUri(searchType);
-        return new Uri(_scheduleApiEndpointUri, $"?date={date:yyyy-MM-dd}&P{param}={id}");
+        return new Uri(_scheduleApiEndpointUri, $"?date={date:yyyy-MM-dd}&{param}={id}");
     }
 
     private string GetParamForScheduleUri(ScheduleSearchType searchType)
