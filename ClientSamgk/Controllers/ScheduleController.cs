@@ -84,12 +84,17 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     private Uri GetScheduleUrl(ScheduleSearchType searchType, DateOnly date, string id)
     {
         ArgumentNullException.ThrowIfNull(id);
+        var param = GetParamForScheduleUri(searchType);
+        return new Uri(_scheduleApiEndpointUri, $"?date={date:yyyy-MM-dd}&P{param}={id}");
+    }
 
+    private string GetParamForScheduleUri(ScheduleSearchType searchType)
+    {
         return searchType switch
         {
-            ScheduleSearchType.Employee => new Uri(_scheduleApiEndpointUri, $"?date={date:yyyy-MM-dd}&teacher={id}"),
-            ScheduleSearchType.Group => new Uri(_scheduleApiEndpointUri, $"?date={date:yyyy-MM-dd}&group={id}"),
-            ScheduleSearchType.Cab => new Uri(_scheduleApiEndpointUri, $"?date={date:yyyy-MM-dd}&cab={id}"),
+            ScheduleSearchType.Employee => "teacher",
+            ScheduleSearchType.Group => "group",
+            ScheduleSearchType.Cab => "cab",
             _ => throw new ArgumentOutOfRangeException(nameof(searchType))
         };
     }
