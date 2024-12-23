@@ -9,7 +9,7 @@
 
 ### Установка из nuget
 1. Имя пакета ClientSamgk
-2. или вручную
+2. Вручную
 ``
 dotnet add package ClientSamgk 
 ``
@@ -28,7 +28,7 @@ var teachers = await api.Accounts.GetTeachersAsync();
 ```
 ### Получение объекта преподавателя
 ```csharp
-var obj = await api.Accounts.GetTeacherAsync("кулагин алексей александрович");
+var teacher = await api.Accounts.GetTeacherAsync("кулагин алексей александрович");
 ```
 
 ## Группы
@@ -39,7 +39,7 @@ var groups = await api.Groups.GetGroupsAsync();
 
 ### Получение объекта по название группы
 ```csharp
-var obj = await api.Groups.GetGroupAsync("ис-23-01");
+var group = await api.Groups.GetGroupAsync("ис-23-01");
 ```
 
 ## Кабинеты, корпуса
@@ -55,107 +55,92 @@ var campuses = await api.Cabs.GetCampusesAsync();
 
 ### Получение списка кабинетов по корпусу
 ```csharp
-var cabs = await api.Cabs.GetCabsFromCampusAsync("5");
+var cabsInCampus = await api.Cabs.GetCabsAsync("5"); 
+или
+var cabsInCampus = await api.Cabs.GetCabsFromCampusAsync("5");
 ```
 
 ## Расписание
 
-### Построение запроса
-Метод GetScheduleAsync принимает ScheduleQuery. Для выполнения запроса 
-необходимо собрать свой запрос используя группу методов, например:
-
-### Стандартный запрос
-Получить расписание за конкретный день, указать перечисление ScheduleSearchType
+### Получение расписания из объектов реализующих интерфейсы
+Метод GetScheduleAsync поддерживает получение расписания из объектов, реализующих интерфейсы IResultOutCab, IResultOutGroup, IResultOutIdentity.
 ```csharp
-DateOnly dateOnly = new DateOnly(2024,09,16);
+var group = await api.Groups.GetGroupAsync("ис-23-01");  // group - будет хранится объект реализующих интерфейс IResultOutGroup
+
+ArgumentNullException.ThrowIfNull(group, $"{nameof(group)} is null)");
+
+var dateSearchAndGroup = new ScheduleQuery()
+    .WithDate(new DateOnly(2024, 12, 23))
+    .WithGroup(group);
+
+var scheduleFromDateAndGroup = await api.Schedule.GetScheduleAsync(dateSearchAndGroup);
+```
+
+### Получение расписания стандартным способом
+Метод GetScheduleAsync позволяет получать расписание с помощью перечисления ScheduleSearchType.
+```csharp
 var query = new ScheduleQuery()
     .WithDate(dateOnly)
     .WithSearchType(ScheduleSearchType.Employee, 2294);
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
-```
 
-### Запрос с объектами реализующих интерфейсы
-такие как IResultOutCab, IResultOutGroup, IResultOutIdentity
-Пример:
-```csharp
-var teachers = await api.Accounts.GetTeachersAsync();
-DateOnly dateOnly = new DateOnly(2024,09,16);
-var query = new ScheduleQuery()
-    .WithDate(dateOnly)
-    .WithEmployee(teachers.First());
 var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
 ```
 
 ### Получение расписания используя диапазон дат
-Используйте метод WithDateRange для передачи диапазон дат по расписанию.
-Обратите внимание, что по умолчанию настроена задержка в 700 мс.
-Вы можете настраивать нужную вам задержку с помощью метода WithDelay
-Пример:
+Метод GetScheduleAsync поддерживает получение расписания по диапазону дат.
 ```csharp
-var teachers = await api.Accounts.GetTeachersAsync();
-DateOnly start = new DateOnly(2024,09,16);
-DateOnly end = new DateOnly(2024,09,17);
+DateOnly dateOnlyStart = new DateOnly(2024, 09, 16);
+DateOnly dateOnlyEnd = new DateOnly(2024, 09, 17);
+
 var query = new ScheduleQuery()
-    .WithDateRange(start, end)
-    .WithDelay(500)
-    .WithEmployee(teachers.First());
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
+    .WithDateRange(dateOnlyStart, dateOnlyEnd)
+    .WithSearchType(ScheduleSearchType.Employee, 2294)
+    .WithDelay(1000); // (по умолчанию 700 мс)
+
+var scheduleFromDates = await api.Schedule.GetScheduleAsync(query);
 ```
 
-### Получение расписания за весь день по группам, преподавателю или кабинету
-
-Пример:
+### Получение расписания за весь день по группам/преподавателю/кабинету
 ```csharp
+DateOnly dateOnlyStart = new DateOnly(2024, 09, 16);
 var query = new ScheduleQuery()
     .WithDate(dateOnlyStart)
     .WithAllForSearchType(ScheduleSearchType.Employee)
-    .WithDelay(1000);
-var resultScheduleCollectionFromDateAll = await api.Schedule.GetScheduleAsync(query);
+    .WithDelay(1000); // (по умолчанию 700 мс)
+
+var schedules = await api.Schedule.GetScheduleAsync(query);
 ```
 
 
-### Установка расписания звонков/ скрытие разговоров о важном/мои горизонты
-Методы WithShowImportant, WithShowRussianHorizon принимают параметры на скрытие и показ 
-внеурочный занятий.
-
-Метод WithScheduleCallType принимает перечисление типа ScheduleCallType, чтобы
-получить нужное расписание звонков
+### Установка расписания звонков и скрытие разговоров о важном/Россия мои горизонты
 ```csharp
-var groups = await api.Groups.GetGroupsAsync();
-DateOnly dateOnly = new DateOnly(2024,09,16);
 var query = new ScheduleQuery()
-    .WithDate(dateOnly)
-    .WithShowImportant(true)
-    .WithShowRussianHorizon(false)
-    .WithScheduleCallType(ScheduleCallType.StandartWithShift)
-    .WithGroup(groups.First());
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
+    .WithDate(new DateOnly(2024, 09, 16))
+    .WithSearchType(ScheduleSearchType.Employee, 2288)
+    .WithScheduleCallType(ScheduleCallType.StandartShort)
+    .WithShowRussianHorizon() // Скрывает Россия - мои горизонты
+    .WithShowImportant(); // Скрывает Разговоры о важном
+
+var schedule = await api.Schedule.GetScheduleAsync(query);
 ```
 
-### Отказ от кеширования расписания
-Метод GetScheduleAsync по умолчанию кеширует расписание в область оперативной памяти с разными сроком жизни, 
-для того чтобы не обращаться к серверам повторно. По умолчанию, прошедшие даты кешируется с длительностью 1 месяц, сегодняшние
-и последующие в 5-10 минут. Кеширование производится в рамках одного экземпляра класса.
-
-Отказ от кеширования производится методом WithOverrideCache
+### Отказ от кэширования расписания
+Метод GetScheduleAsync кэширует расписание: прошедшие даты — на 1 месяц, текущие и будущие — на 5-10 минут. Кэширование работает в рамках экземпляра класса. Отказ от кэширования осуществляется с помощью метода WithOverrideCache.
 ```csharp
-var groups = await api.Groups.GetGroupsAsync();
-DateOnly dateOnly = new DateOnly(2024,09,16);
 var query = new ScheduleQuery()
-    .WithDate(dateOnly)
-    .WithOverrideCache(true)
-    .WithGroup(groups.First());
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
+    .WithDate(new DateOnly(2024, 09, 16))
+    .WithSearchType(ScheduleSearchType.Employee, 2288)
+    .WithScheduleCallType(ScheduleCallType.StandartShort)
+    .WithOverrideCache(true);
+
+var schedule = await api.Schedule.GetScheduleAsync(query);
 ```
 
 
-### Принудительная очистка кеша или устаревших данных
-По умолчанию при вызове любых методов из библиотеки запускается процесс очистки
-устаревших данных, но вы можете сделать это вручную или очистить полностью все данные
+### Принудительная очистка кэша и устаревших данных
+По умолчанию при вызове методов происходит очистка устаревших данных, но можно сделать это вручную или очистить все данные.
 ```csharp
-// Очистка устаревших данных
-await api.Cache.ClearIfOutDate();
-
-// Очистка всего
-api.Cache.Clear();
+api.Cache.Clear(); // Принудительно очищает весь кэш
+api.Cache.ClearIfOutDate(); // Очистка кэша если данные устарели.
+await api.Cache.ClearIfOutDateAsync(); // Очистка кэша если данные устарели. (с поддержкой ожидания)
 ```

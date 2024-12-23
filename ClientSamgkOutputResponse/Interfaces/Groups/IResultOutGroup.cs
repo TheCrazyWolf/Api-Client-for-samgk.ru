@@ -5,7 +5,7 @@ namespace ClientSamgkOutputResponse.Interfaces.Groups;
 public interface IResultOutGroup
 {
     /// <summary>
-    /// ID группы
+    /// ID группы.
     /// </summary>
     public long Id { get; set; }
 
@@ -15,12 +15,12 @@ public interface IResultOutGroup
     public string Name { get; set; }
 
     /// <summary>
-    /// ID куратора группы, которые не работает и не совпадает с реальной жизнью
+    /// ID куратора группы, которые не работает и не совпадает с реальной жизнью. // Правда
     /// </summary>
     public IResultOutIdentity? Currator { get; set; }
 
     /// <summary>
-    /// № курса обучения
+    /// № курса обучения.
     /// </summary>
     public int Course { get; }
 }
