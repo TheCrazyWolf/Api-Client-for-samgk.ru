@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - "*"
+  pull_request:
+    paths:
+      - '**.cs'
 
 env:
   DOTNET_VERSION: "9.0.x"
