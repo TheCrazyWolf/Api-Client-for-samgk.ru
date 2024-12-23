@@ -67,7 +67,7 @@ var cabsInCampus = await api.Cabs.GetCabsFromCampusAsync("5");
 ```csharp
 var group = await api.Groups.GetGroupAsync("ис-23-01");  // group - будет хранится объект реализующих интерфейс IResultOutGroup
 
-ArgumentNullException.ThrowIfNull(query, $"{nameof(obj)} is null)");
+ArgumentNullException.ThrowIfNull(group, $"{nameof(group)} is null)");
 
 var dateSearchAndGroup = new ScheduleQuery()
     .WithDate(new DateOnly(2024, 12, 23))
