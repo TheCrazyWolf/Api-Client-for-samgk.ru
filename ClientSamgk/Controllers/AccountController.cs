@@ -28,6 +28,7 @@ public class AccountController : CommonSamgkController, IIdentityController
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
 
-        return IdentityCache.Select(r => r.Object).FirstOrDefault(x => string.Equals(x.Name, teacherName, StringComparison.CurrentCultureIgnoreCase));
+        return IdentityCache.Select(r => r.Object).FirstOrDefault(x =>
+            string.Equals(x.Name, teacherName, StringComparison.CurrentCultureIgnoreCase));
     }
 }

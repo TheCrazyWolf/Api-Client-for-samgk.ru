@@ -25,5 +25,5 @@ public interface IClientSamgkApi
     /// <summary>
     /// Методы для работы с кэшем.
     /// </summary>
-    public IMemoryCacheController Cache { get;  } 
+    public IMemoryCacheController Cache { get; }
 }

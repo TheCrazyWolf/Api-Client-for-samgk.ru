@@ -1,4 +1,3 @@
-// See https://aka.ms/new-console-template for more information
 using ClientSamgk;
 using ClientSamgk.Interfaces.Client;
 using ClientSamgk.Models;
@@ -20,7 +19,9 @@ var query = new ScheduleQuery()
     .WithDate(dateOnly)
     .WithSearchType(ScheduleSearchType.Employee, 2294);
 
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(query); // Получение расписание за день или с использованием объектов реализующих интерфейсов: IOutResultIdentity, IOutResultCab, IOutResultGroup
+// Получение расписание за день или с использованием объектов реализующих интерфейсов: IOutResultIdentity, IOutResultCab, IOutResultGroup
+var scheduleFromDate = await api.Schedule
+    .GetScheduleAsync(query);
 
 if (group is null)
 {

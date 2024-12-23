@@ -19,7 +19,8 @@ public class CabsController : CommonSamgkController, ICabController
     public async Task<IResultOutCab?> GetCabAsync(string cabName)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return CabsCache.Select(r => r.Object).FirstOrDefault(x => x.Adress.Equals(cabName, StringComparison.CurrentCultureIgnoreCase));
+        return CabsCache.Select(r => r.Object)
+            .FirstOrDefault(x => x.Adress.Equals(cabName, StringComparison.CurrentCultureIgnoreCase));
     }
 
     public async Task<IList<IResultOutCab>> GetCabsAsync(string campusNumber)
@@ -41,8 +42,10 @@ public class CabsController : CommonSamgkController, ICabController
     public async Task<IList<IResultOutCab>> GetCabsFromCampusAsync(string campusName)
     {
         await UpdateIfCacheIsOutdated().ConfigureAwait(false);
-        return CabsCache.Select(r => r.Object).Where(r => string.Equals(r.Campus, campusName, StringComparison.CurrentCultureIgnoreCase)).ToList();
+        return CabsCache.Select(r => r.Object)
+            .Where(r => string.Equals(r.Campus, campusName, StringComparison.CurrentCultureIgnoreCase)).ToList();
     }
 
-    public IList<IResultOutCab> GetCabsFromCampus(string campusName) => GetCabsFromCampusAsync(campusName).GetAwaiter().GetResult();
+    public IList<IResultOutCab> GetCabsFromCampus(string campusName) =>
+        GetCabsFromCampusAsync(campusName).GetAwaiter().GetResult();
 }

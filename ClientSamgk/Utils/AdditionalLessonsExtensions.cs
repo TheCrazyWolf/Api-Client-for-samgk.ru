@@ -42,12 +42,15 @@ public static class AdditionalLessonsExtensions
         return lessons;
     }
 
-    public static IList<IResultOutLesson> SortByLessons(this IList<IResultOutLesson> lesson) => lesson.OrderBy(l => l.NumPair).ThenBy(x => x.NumLesson).ToList();
-    public static IList<IResultOutLesson> RemoveDuplicates(this IList<IResultOutLesson> lesson) => lesson.GroupBy(l => new
-    {
-        l.NumPair,
-        l.NumLesson,
-        l.EducationGroup?.Id,
-        SubjectName = l.SubjectDetails.FullSubjectName
-    }).Select(g => g.First()).ToList();
+    public static IList<IResultOutLesson> SortByLessons(this IList<IResultOutLesson> lesson) =>
+        lesson.OrderBy(l => l.NumPair).ThenBy(x => x.NumLesson).ToList();
+
+    public static IList<IResultOutLesson> RemoveDuplicates(this IList<IResultOutLesson> lesson) =>
+        lesson.GroupBy(l => new
+        {
+            l.NumPair,
+            l.NumLesson,
+            l.EducationGroup?.Id,
+            SubjectName = l.SubjectDetails.FullSubjectName
+        }).Select(g => g.First()).ToList();
 }

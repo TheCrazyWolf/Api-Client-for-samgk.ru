@@ -26,7 +26,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
         IList<DateOnly> dates = query switch
         {
-            { StartDate: not null, EndDate: not null } => DateTimeUtils.GetDateRange(query.StartDate.Value, query.EndDate.Value),
+            { StartDate: not null, EndDate: not null } => DateTimeUtils.GetDateRange(query.StartDate.Value,
+                query.EndDate.Value),
             { Date: not null } => [query.Date.Value],
             _ => throw new ArgumentException("Query must contain a date or a range of dates")
         };
@@ -49,23 +50,25 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         }
 
         var resultFromDates = await dates
-        .SelectMany(date => ids.Select(id => (date, id)))
-        .LoopAsyncResult<(DateOnly, string), IResultOutScheduleFromDate>(async pair => await RequestSchedule(query, pair.Item1, pair.Item2, cToken).ConfigureAwait(false));
+            .SelectMany(date => ids.Select(id => (date, id)))
+            .LoopAsyncResult<(DateOnly, string), IResultOutScheduleFromDate>(async pair =>
+                await RequestSchedule(query, pair.Item1, pair.Item2, cToken).ConfigureAwait(false));
 
         return resultFromDates.ToList();
     }
 
 
-    private async Task<IResultOutScheduleFromDate> RequestSchedule(ScheduleQuery query, DateOnly date, string id, CancellationToken cToken = default)
+    private async Task<IResultOutScheduleFromDate> RequestSchedule(ScheduleQuery query, DateOnly date, string id,
+        CancellationToken cToken = default)
     {
-        if (!query.OverrideCache && ExtractFromScheduleCache(date, query.SearchType, id) is IResultOutScheduleFromDate cachedItem)
-        {
+        if (!query.OverrideCache
+            && ExtractFromScheduleCache(date, query.SearchType, id) is { } cachedItem)
             return cachedItem;
-        }
 
         var url = GetScheduleUrl(query.SearchType, date, id);
 
-        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url, cToken: cToken).ConfigureAwait(false);
+        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url, cToken: cToken)
+            .ConfigureAwait(false);
 
         var newSchedule = ParseScheduleResult(date, result, query);
 
@@ -100,10 +103,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     {
         var schedule = new ResultOutResultOutScheduleFromDate(date, query.SearchType, query.SearchId!);
 
-        if (result == null || result.Count == 0)
-        {
-            return schedule;
-        }
+        if (result == null || result.Count == 0) return schedule;
 
         foreach (var scheduleItem in result.Values.SelectMany(array => array.Values).SelectMany(items => items))
         {
@@ -116,6 +116,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
         return AddAdditionalLessons(date, schedule);
     }
+
     private ResultOutResultOutLesson CreateLesson(ScheduleItem scheduleItem, ScheduleCallType scheduleCallType)
     {
         var lesson = new ResultOutResultOutLesson()
@@ -123,7 +124,9 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             NumPair = scheduleItem.Pair,
             NumLesson = scheduleItem.Number,
             Durations = scheduleItem.GetDurationLessonDetails(scheduleCallType),
-            SubjectDetails = new ResultOutSubject(scheduleItem.DisciplineInfo.Id, scheduleItem.DisciplineName, $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}", scheduleItem.Zachet == 1),
+            SubjectDetails = new ResultOutSubject(scheduleItem.DisciplineInfo.Id, scheduleItem.DisciplineName,
+                $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
+                scheduleItem.Zachet == 1),
             EducationGroup = ExtractFromGroupCache(scheduleItem.Group),
         };
 

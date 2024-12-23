@@ -17,7 +17,7 @@ public class MemoryCacheController : CommonSamgkController, IMemoryCacheControll
     {
         CabsCache = [];
         IdentityCache = [];
-        GroupsCache = [];  
+        GroupsCache = [];
         ScheduleCache = [];
     }
 }

@@ -8,8 +8,12 @@ public interface IMemoryCacheController
     /// Очистка кеша если данные устарели.
     /// </summary>
     Task ClearIfOutDateAsync();
+
+    /// <summary>
+    /// Очистка кеша если устарели
+    /// </summary>
     void ClearIfOutDate();
-    
+
     /// <summary>
     /// Принудительная очитка кэша.
     /// </summary>

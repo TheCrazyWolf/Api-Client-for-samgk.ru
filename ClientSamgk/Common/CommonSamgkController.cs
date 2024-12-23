@@ -15,7 +15,8 @@ public class CommonSamgkController : CommonCache
     private readonly RestClient _client = new(new HttpClient());
     const string _urlApiSgk = "https://mfc.samgk.ru/api/";
 
-    async Task<RestResponse?> ExecuteRequest(Uri url, Method method = Method.Get, object? body = null, CancellationToken cToken = default)
+    async Task<RestResponse?> ExecuteRequest(Uri url, Method method = Method.Get, object? body = null,
+        CancellationToken cToken = default)
     {
         var request = new RestRequest(url);
         request.ConfigureAntiGreedHeaders();
@@ -28,7 +29,8 @@ public class CommonSamgkController : CommonCache
         return await _client.ExecuteAsync(request, method, cToken).ConfigureAwait(false);
     }
 
-    protected async Task<T?> SendRequest<T>(Uri url, Method method = Method.Get, object? body = null, CancellationToken cToken = default)
+    protected async Task<T?> SendRequest<T>(Uri url, Method method = Method.Get, object? body = null,
+        CancellationToken cToken = default)
     {
         var restResponse = await ExecuteRequest(url, method, body, cToken).ConfigureAwait(false);
 
@@ -42,10 +44,7 @@ public class CommonSamgkController : CommonCache
 
     protected async Task UpdateIfCacheIsOutdated(CancellationToken cToken = default)
     {
-        if (!ForceUpdateCache)
-        {
-            return;
-        }
+        if (!ForceUpdateCache) return;
 
         await ConfiguringCacheTeachers(cToken).ConfigureAwait(false);
         await ConfiguringCacheCabs(cToken).ConfigureAwait(false);
@@ -66,7 +65,9 @@ public class CommonSamgkController : CommonCache
 
     async Task ConfiguringCacheGroups(CancellationToken cToken = default)
     {
-        var resultApiGroups = await SendRequest<IList<SamGkGroupApiResult>>(new Uri($"{_urlApiSgk}groups"), cToken: cToken).ConfigureAwait(false);
+        var resultApiGroups =
+            await SendRequest<IList<SamGkGroupApiResult>>(new Uri($"{_urlApiSgk}groups"), cToken: cToken)
+                .ConfigureAwait(false);
 
         if (resultApiGroups == null || !resultApiGroups.Any())
         {
@@ -94,7 +95,9 @@ public class CommonSamgkController : CommonCache
 
     async Task ConfiguringCacheTeachers(CancellationToken cToken = default)
     {
-        var resultApiTeachers = await SendRequest<IList<SamgkTeacherApiResult>>(new Uri($"{_urlApiSgk}teachers"), cToken: cToken).ConfigureAwait(false);
+        var resultApiTeachers =
+            await SendRequest<IList<SamgkTeacherApiResult>>(new Uri($"{_urlApiSgk}teachers"), cToken: cToken)
+                .ConfigureAwait(false);
 
         if (resultApiTeachers == null || !resultApiTeachers.Any())
         {
@@ -113,7 +116,8 @@ public class CommonSamgkController : CommonCache
 
     async Task ConfiguringCacheCabs(CancellationToken cToken = default)
     {
-        var resultApiCabs = await SendRequest<Dictionary<string, string>>(new Uri($"{_urlApiSgk}cabs"), cToken: cToken).ConfigureAwait(false);
+        var resultApiCabs = await SendRequest<Dictionary<string, string>>(new Uri($"{_urlApiSgk}cabs"), cToken: cToken)
+            .ConfigureAwait(false);
 
         if (resultApiCabs == null || !resultApiCabs.Any())
         {
