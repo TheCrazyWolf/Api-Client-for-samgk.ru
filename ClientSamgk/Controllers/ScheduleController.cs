@@ -102,7 +102,14 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     private IResultOutScheduleFromDate ParseScheduleResult(DateOnly date,
         Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result, ScheduleQuery query)
     {
-        var schedule = new ResultOutResultOutScheduleFromDate(date, query.SearchType, query.SearchId!);
+        var schedule =
+            new ResultOutResultOutScheduleFromDate(date, query.SearchType, query.SearchId!, query.ScheduleCallType);
+
+        if ((query.ShowImportantLessons || query.ShowRussianHorizonLesson) &&
+            query.ScheduleCallType == ScheduleCallType.Standart
+            && (date.DayOfWeek == DayOfWeek.Monday || date.DayOfWeek == DayOfWeek.Thursday
+                && date.Month != 6 && date.Month != 7))
+            schedule.CallType = ScheduleCallType.StandartWithShift;
 
         if (result == null || result.Count == 0) return schedule;
 
@@ -111,7 +118,6 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             var lesson = CreateLesson(scheduleItem, schedule.CallType);
             schedule.Lessons.Add(lesson);
         }
-
 
         schedule.Lessons = schedule.Lessons.RemoveDuplicates().SortByLessons();
 
@@ -125,7 +131,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             NumPair = scheduleItem.Pair,
             NumLesson = scheduleItem.Number,
             Durations = scheduleItem.GetDurationLessonDetails(scheduleCallType),
-            SubjectDetails = new ResultOutSubject(scheduleItem.DisciplineInfo.Id, $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
+            SubjectDetails = new ResultOutSubject(scheduleItem.DisciplineInfo.Id,
+                $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
                 $"{scheduleItem.DisciplineName}",
                 scheduleItem.Zachet == 1),
             EducationGroup = ExtractFromGroupCache(scheduleItem.Group),
