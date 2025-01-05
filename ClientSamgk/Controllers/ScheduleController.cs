@@ -125,8 +125,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
             NumPair = scheduleItem.Pair,
             NumLesson = scheduleItem.Number,
             Durations = scheduleItem.GetDurationLessonDetails(scheduleCallType),
-            SubjectDetails = new ResultOutSubject(scheduleItem.DisciplineInfo.Id, scheduleItem.DisciplineName,
-                $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
+            SubjectDetails = new ResultOutSubject(scheduleItem.DisciplineInfo.Id, $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
+                $"{scheduleItem.DisciplineName}",
                 scheduleItem.Zachet == 1),
             EducationGroup = ExtractFromGroupCache(scheduleItem.Group),
         };
