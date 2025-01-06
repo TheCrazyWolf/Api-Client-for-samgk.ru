@@ -51,8 +51,10 @@ var resultScheduleCollectionFromDateAll = await api.Schedule
     
 // пример вывода расписания
 
-foreach (var item in scheduleFromDate.FirstOrDefault().Lessons)
-{
-    Console.WriteLine($"{item.NumPair}.{item.NumLesson} - {item.SubjectDetails.FullSubjectName}");
-}
+var resultOutLessons = scheduleFromDate.FirstOrDefault()?.Lessons;
+if (resultOutLessons != null)
+    foreach (var item in resultOutLessons)
+    {
+        Console.WriteLine($"{item.NumPair}.{item.NumLesson} - {item.SubjectDetails.FullSubjectName}");
+    }
     

@@ -41,7 +41,9 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                 ScheduleSearchType.Cab => CabsCache.Select(x => x.Object.Adress).ToList(),
                 _ => throw new ArgumentOutOfRangeException(nameof(query.SearchType))
             }
+#pragma warning disable CS8601 // Possible null reference assignment.
             : [query.SearchId];
+#pragma warning restore CS8601 // Possible null reference assignment.
 
         var resultFromDates = await dates
             .SelectMany(date => ids.Select(id => (date, id)))
