@@ -2,7 +2,7 @@
 
 namespace ClientSamgkOutputResponse.Enums;
 
-public enum ScheduleCallType : byte
+public enum ScheduleCallType
 {
     [Display(Name = "Обычное")]
     Standart,

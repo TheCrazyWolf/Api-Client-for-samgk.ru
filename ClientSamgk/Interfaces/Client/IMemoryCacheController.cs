@@ -5,17 +5,13 @@ namespace ClientSamgk.Interfaces.Client;
 public interface IMemoryCacheController
 {
     /// <summary>
-    /// Очистка кеша если данные устарели.
+    /// Очистка кеша если данные устарели
     /// </summary>
     Task ClearIfOutDateAsync();
-
-    /// <summary>
-    /// Очистка кеша если устарели
-    /// </summary>
     void ClearIfOutDate();
-
+    
     /// <summary>
-    /// Принудительная очитка кэша.
+    /// Принудительная очитка кеша
     /// </summary>
     void Clear();
 }

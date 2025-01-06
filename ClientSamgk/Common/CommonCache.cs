@@ -11,66 +11,117 @@ public class CommonCache
 {
     protected int DefaultLifeTimeInMinutesForCommon = 2880; // 2 дня
     protected int DefaultLifeTimeInMinutesLong = 43200; // 1 месяц
-    protected int DefaultLifeTimeInMinutesShort = 10; // 10 минут
+    protected int DefaultLifeTimeInMinutesShort = 10; // 10минут
 
-    protected IList<LifeTimeMemory<IResultOutCab>> CabsCache = [];
-    protected IList<LifeTimeMemory<IResultOutGroup>> GroupsCache = [];
-    protected IList<LifeTimeMemory<IResultOutIdentity>> IdentityCache = [];
-    protected IList<LifeTimeMemory<IResultOutScheduleFromDate>> ScheduleCache = [];
+    protected IList<LifeTimeMemory<IResultOutScheduleFromDate>> ScheduleCache =
+        new List<LifeTimeMemory<IResultOutScheduleFromDate>>();
 
-    protected bool ForceUpdateCache =>
-        IsCacheOutdated(CabsCache) || IsCacheOutdated(IdentityCache) || IsCacheOutdated(GroupsCache);
+    protected IList<LifeTimeMemory<IResultOutCab>> CabsCache = new List<LifeTimeMemory<IResultOutCab>>();
+    protected IList<LifeTimeMemory<IResultOutGroup>> GroupsCache = new List<LifeTimeMemory<IResultOutGroup>>();
+    protected IList<LifeTimeMemory<IResultOutIdentity>> IdentityCache = new List<LifeTimeMemory<IResultOutIdentity>>();
 
-    protected void ClearCacheIfOutDate()
-    {
-        ClearCache(ScheduleCache);
-        ClearCache(CabsCache);
-        ClearCache(GroupsCache);
-        ClearCache(IdentityCache);
-    }
-
-    protected void SaveToCache(IResultOutScheduleFromDate schedule, int lifeTimeInMinutes) =>
-        SaveToCache(schedule, lifeTimeInMinutes, ScheduleCache);
-
-    protected void SaveToCache(IResultOutIdentity identity, int lifeTimeInMinutes) =>
-        SaveToCache(identity, lifeTimeInMinutes, IdentityCache);
-
-    protected void SaveToCache(IResultOutGroup group, int lifeTimeInMinutes) =>
-        SaveToCache(group, lifeTimeInMinutes, GroupsCache);
-
-    protected void SaveToCache(IResultOutCab cab, int lifeTimeInMinutes) =>
-        SaveToCache(cab, lifeTimeInMinutes, CabsCache);
-
-    public IResultOutScheduleFromDate? ExtractFromScheduleCache(DateOnly date, ScheduleSearchType type, string? id) =>
-        ExtractFromCache(r => r.Date == date && r.SearchType == type && r.IdValue == id, ScheduleCache);
-
-    public IResultOutCab? ExtractFromCabCache(string? id) => ExtractFromCache(r => r.Adress == id, CabsCache);
-    public IResultOutGroup? ExtractFromGroupCache(long? id) => ExtractFromCache(r => r.Id == id, GroupsCache);
-    public IResultOutIdentity? ExtractFromIdentityCache(long? id) => ExtractFromCache(r => r.Id == id, IdentityCache);
-
-    T? ExtractFromCache<T>(Func<T, bool> predicate, IList<LifeTimeMemory<T>> cache) where T : class
+    public IResultOutScheduleFromDate? ExtractFromCache(DateOnly date, ScheduleSearchType type, string? id)
     {
         ClearCacheIfOutDate();
-        return cache.FirstOrDefault(x => predicate(x.Object))?.Object;
+        return ScheduleCache
+            .FirstOrDefault(x => x.Object.Date == date && x.Object.SearchType == type && x.Object.IdValue == id)
+            ?.Object;
     }
 
-    void SaveToCache<T>(T item, int lifeTimeInMinutes, IList<LifeTimeMemory<T>> cache)
+    public IResultOutCab? ExtractCabFromCache(string? id)
     {
-        var cacheItem = new LifeTimeMemory<T>()
+        ClearCacheIfOutDate();
+        return CabsCache.FirstOrDefault(x => x.Object.Adress == id)?.Object;
+    }
+
+    public IResultOutGroup? ExtractGroupFromCache(long? id)
+    {
+        ClearCacheIfOutDate();
+        return GroupsCache.FirstOrDefault(x => x.Object.Id == id)?.Object;
+    }
+
+    public IResultOutIdentity? ExtractIdentityFromCache(long? id)
+    {
+        ClearCacheIfOutDate();
+        return IdentityCache.FirstOrDefault(x => x.Object.Id == id)?.Object;
+    }
+
+    protected void SaveToCache(IResultOutScheduleFromDate schedule, int lifeTimeInMinutes)
+    {
+        var item = new LifeTimeMemory<IResultOutScheduleFromDate>()
         {
-            Object = item,
+            Object = schedule,
             DateTimeCanBeDeleted = DateTime.Now.AddMinutes(lifeTimeInMinutes),
             DateTimeAdded = DateTime.Now
         };
-        cache.Add(cacheItem);
+        ScheduleCache.Add(item);
     }
 
-    void ClearCache<T>(IList<LifeTimeMemory<T>> cache) where T : class
+    protected void SaveToCache(IResultOutIdentity identity, int lifeTimeInMinutes)
     {
-        foreach (var item in cache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
-            cache.Remove(item);
+        var item = new LifeTimeMemory<IResultOutIdentity>()
+        {
+            Object = identity,
+            DateTimeCanBeDeleted = DateTime.Now.AddMinutes(lifeTimeInMinutes),
+            DateTimeAdded = DateTime.Now
+        };
+        IdentityCache.Add(item);
     }
 
-    bool IsCacheOutdated<T>(IList<LifeTimeMemory<T>> cache) =>
-        !cache.Any() || cache.Any(x => x.DateTimeCanBeDeleted <= DateTime.Now);
+    protected void SaveToCache(IResultOutGroup schedule, int lifeTimeInMinutes)
+    {
+        var item = new LifeTimeMemory<IResultOutGroup>()
+        {
+            Object = schedule,
+            DateTimeCanBeDeleted = DateTime.Now.AddMinutes(lifeTimeInMinutes),
+            DateTimeAdded = DateTime.Now
+        };
+        GroupsCache.Add(item);
+    }
+
+    protected void SaveToCache(IResultOutCab schedule, int lifeTimeInMinutes)
+    {
+        var item = new LifeTimeMemory<IResultOutCab>()
+        {
+            Object = schedule,
+            DateTimeCanBeDeleted = DateTime.Now.AddMinutes(lifeTimeInMinutes),
+            DateTimeAdded = DateTime.Now
+        };
+        CabsCache.Add(item);
+    }
+
+    protected void ClearCacheIfOutDate()
+    {
+        foreach (var item in ScheduleCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
+        {
+            ScheduleCache.Remove(item);
+        }
+
+        foreach (var item in CabsCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
+        {
+            CabsCache.Remove(item);
+        }
+
+        foreach (var item in GroupsCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
+        {
+            GroupsCache.Remove(item);
+        }
+
+        foreach (var item in IdentityCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
+        {
+            IdentityCache.Remove(item);
+        }
+    }
+
+    protected bool IsRequiredToForceUpdateCache()
+    {
+        if (CabsCache.Any(x => x.DateTimeCanBeDeleted <= DateTime.Now) || !CabsCache.Any())
+            return true;
+        if (IdentityCache.Any(x => x.DateTimeCanBeDeleted <= DateTime.Now) || !IdentityCache.Any())
+            return true;
+        if (GroupsCache.Any(x => x.DateTimeCanBeDeleted <= DateTime.Now) || !GroupsCache.Any())
+            return true;
+
+        return false;
+    }
 }

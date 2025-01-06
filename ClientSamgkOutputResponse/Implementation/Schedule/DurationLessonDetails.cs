@@ -10,4 +10,9 @@ public class DurationLessonDetails
         StartTime = startTime;
         EndTime = endTime;
     }
+
+    public DurationLessonDetails()
+    {
+            
+    }
 }

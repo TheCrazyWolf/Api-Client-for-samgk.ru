@@ -1,3 +1,4 @@
+﻿// See https://aka.ms/new-console-template for more information
 using ClientSamgk;
 using ClientSamgk.Interfaces.Client;
 using ClientSamgk.Models;
@@ -5,58 +6,53 @@ using ClientSamgkOutputResponse.Enums;
 
 IClientSamgkApi api = new ClientSamgkApi();
 
-var group = await api.Groups.GetGroupAsync("ИС-23-01"); // Получить группу
-var groups = await api.Groups.GetGroupsAsync(); // Получить список групп
-var teacher = await api.Accounts.GetTeacherAsync("Кулагин Алексей Александрович"); // Получить преподавателя
-var teachers = await api.Accounts.GetTeachersAsync(); // Получить список преподавателей
-var cab = await api.Cabs.GetCabAsync("501"); // Получить кабинет
-var cabs = await api.Cabs.GetCabsAsync(); // Получить список кабинетов
-var cabsInCampus = await api.Cabs.GetCabsAsync("5"); // Получить список кабинетов по корпусу
+// Получить список групп
+var groupsArray = await api.Groups.GetGroupsAsync();
 
-DateOnly dateOnly = new DateOnly(2024, 12, 23); // Дата-пример
+// Получить список преподавателей
+var teachers = await api.Accounts.GetTeachersAsync();
 
+// Получение расписание за день
+DateOnly dateOnly = new DateOnly(2024,09,16);
 var query = new ScheduleQuery()
     .WithDate(dateOnly)
     .WithSearchType(ScheduleSearchType.Employee, 2294);
+var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
 
-// Получение расписание за день или с использованием объектов реализующих интерфейсов: IOutResultIdentity, IOutResultCab, IOutResultGroup
-var scheduleFromDate = await api.Schedule
-    .GetScheduleAsync(query);
+// или с использованием объектов реализующих интерфейсы
+// IOutResultIdentity, IOutResultCab, IOutResultGroup
+var obj = await api.Groups.GetGroupAsync("ис-23-01");
 
-if (group is null)
-{
-    throw new Exception($"{nameof(group)} is null)");
-}
+if (obj is null) throw new Exception($"{nameof(obj)} is null)");
 
-var searchDateAndGroup = new ScheduleQuery().WithDate(dateOnly).WithGroup(group);
-
-scheduleFromDate = await api.Schedule.GetScheduleAsync(searchDateAndGroup);
-
+query = new ScheduleQuery()
+    .WithDate(dateOnly)
+    .WithGroup(obj);
+scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
+    
 // Получение расписание диапозона дат
-DateOnly dateOnlyStart = new DateOnly(2024, 12, 23);
-DateOnly dateOnlyEnd = new DateOnly(2024, 12, 23);
+DateOnly dateOnlyStart = new DateOnly(2024,09,16);
+DateOnly dateOnlyEnd = new DateOnly(2024,09,16);
 
-var dateSearchAndGroup = new ScheduleQuery()
+query = new ScheduleQuery()
     .WithDateRange(dateOnlyStart, dateOnlyEnd)
-    .WithGroup(group);
-
-var schedule = await api.Schedule.GetScheduleAsync(dateSearchAndGroup);
-
+    .WithGroup(obj);
+var resultScheduleCollection = await api.Schedule
+    .GetScheduleAsync(query);
+    
 // Получение расписание за день по преподавателям, кабинету или группам
-var getAll = new ScheduleQuery()
+// долгая выгрузка
+query = new ScheduleQuery()
     .WithDate(dateOnlyStart)
     .WithAllForSearchType(ScheduleSearchType.Employee)
     .WithDelay(1000);
+var resultScheduleCollectionFromDateAll = await api.Schedule
+    .GetScheduleAsync(query);
+    
+// пример вывода расписания
 
-var schedules = await api.Schedule.GetScheduleAsync(getAll);
-
-foreach (var item in scheduleFromDate.First().Lessons) // пример вывода расписания
+foreach (var item in scheduleFromDate.FirstOrDefault().Lessons)
 {
     Console.WriteLine($"{item.NumPair}.{item.NumLesson} - {item.SubjectDetails.FullSubjectName}");
 }
-
-api.Cache.Clear(); // Принудительно очищает весь кэш
-api.Cache.ClearIfOutDate(); // Очистка кэша если данные устарели.
-await api.Cache.ClearIfOutDateAsync(); // Очистка кэша если данные устарели. (с поддержкой ожидания)
-
-Console.ReadLine();
+    
