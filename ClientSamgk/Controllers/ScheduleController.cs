@@ -117,7 +117,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                     {
                         NumPair = scheduleItem.Pair,
                         NumLesson = scheduleItem.Number,
-                        Durations = scheduleItem.GetDurationLessonDetails(query.ScheduleCallType),
+                        Durations = scheduleItem.GetDurationLessonDetails(returnableResult.CallType),
                         SubjectDetails = new ResultOutSubject
                         {
                             Id = scheduleItem.DisciplineInfo.Id,
