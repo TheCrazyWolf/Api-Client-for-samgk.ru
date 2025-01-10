@@ -9,15 +9,15 @@ public class CacheOptions : ICacheOptions
         
     }
 
-    public CacheOptions(int lifeTimeInMinutesForCommon, int 
-        lifeTimeInMinutesLong, int lifeTimeInMinutesShort)
+    public CacheOptions(int lifeTimeCommonObjects, int 
+        lifeTimeObjectsForLong, int lifeTimeObjectsForShort)
     {
-        LifeTimeCommonObjects = lifeTimeInMinutesForCommon;
-        LifeTimeObjectsForLong = lifeTimeInMinutesLong;
-        LifeTimeObjectsForShort = lifeTimeInMinutesShort;
+        LifeTimeCommonObjectsObjects = lifeTimeCommonObjects;
+        LifeTimeObjectsForLong = lifeTimeObjectsForLong;
+        LifeTimeObjectsForShort = lifeTimeObjectsForShort;
     }
 
-    public int LifeTimeCommonObjects { get; } = 2880;
-    public int LifeTimeObjectsForLong { get; } = 43200;
-    public int LifeTimeObjectsForShort { get; } = 10;
+    public int LifeTimeCommonObjectsObjects { get; set; } = 2880;
+    public int LifeTimeObjectsForLong { get; set; } = 43200;
+    public int LifeTimeObjectsForShort { get; set; } = 10;
 }

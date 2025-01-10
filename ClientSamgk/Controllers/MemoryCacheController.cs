@@ -32,7 +32,7 @@ public class MemoryCacheController : CommonSamgkController, IMemoryCacheControll
 
     public void SetLifeTime(ICacheOptions options)
     {
-        DefaultLifeTimeInMinutesForCommon = options.LifeTimeCommonObjects;
+        DefaultLifeTimeInMinutesForCommon = options.LifeTimeCommonObjectsObjects;
         DefaultLifeTimeInMinutesLong = options.LifeTimeObjectsForLong;
         DefaultLifeTimeInMinutesShort = options.LifeTimeObjectsForShort;
     }
