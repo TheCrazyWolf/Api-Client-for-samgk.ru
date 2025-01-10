@@ -17,7 +17,7 @@ public class CacheOptions : ICacheOptions
         LifeTimeObjectsForShort = lifeTimeInMinutesShort;
     }
 
-    public int LifeTimeCommonObjects { get; }
-    public int LifeTimeObjectsForLong { get; }
-    public int LifeTimeObjectsForShort { get; }
+    public int LifeTimeCommonObjects { get; } = 2880;
+    public int LifeTimeObjectsForLong { get; } = 43200;
+    public int LifeTimeObjectsForShort { get; } = 10;
 }
