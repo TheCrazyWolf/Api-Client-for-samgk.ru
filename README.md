@@ -1,163 +1,61 @@
-# Библиотека для работы с API samgk.ru
+# ClientSamgk
+[![.NET](https://img.shields.io/badge/.NET-8.0%2C%209.0-512BD4)](#)
+[![language](https://img.shields.io/badge/language-C%23-239120)](https://learn.microsoft.com/ru-ru/dotnet/csharp/tour-of-csharp/overview)
+[![GitHub release](https://img.shields.io/github/v/release/TheCrazyWolf/Api-Client-for-samgk.ru)](https://github.com/TheCrazyWolf/Api-Client-for-samgk.ru/releases/latest)
+[![GitHub release date](https://img.shields.io/github/release-date/TheCrazyWolf/Api-Client-for-samgk.ru)](#)
+[![Nuget](https://img.shields.io/nuget/v/ClientSamgk)](https://www.nuget.org/packages/ClientSamgk)
+[![Nuget download count](https://img.shields.io/nuget/dt/ClientSamgk)](https://www.nuget.org/packages/ClientSamgk)
+[![getting started](https://img.shields.io/badge/docs-1D76DB)](https://clientsamgk-docs.vercel.app)
 
-Загрузить https://github.com/TheCrazyWolf/Api-Client-for-samgk.ru/releases
+.NET библиотека для REST API [Самарского государственного колледжа](https://samgk.ru)
 
-Документация: https://clientsamgk-docs.vercel.app
+## Оглавление
+- [Установка](#установка)
+- [Документация](#-документация)
+- [Участие в проекте](#-участие-в-проекте)
+- [Лицензия](#лицензия)
 
-### Зависимости
-1. Newtonsoft.Json.dll
-2. RestSharp.dll
-3. RestSharp.Serializers.NewtonsoftJson.dll
+## 🚀 Установка
 
-### Установка из nuget
-1. Имя пакета ClientSamgk
-2. или вручную
-``
-dotnet add package ClientSamgk 
-``
+Вы можете установить библиотеку, используя пакет из **NuGet** или загрузив файл `.nupkg` из последнего релиза на GitHub.
 
-# Пример работы с библиотекой
+### Установка через NuGet
 
-### Создание экземпляра класса
-```csharp
-IClientSamgkApi api = new ClientSamgkApi();
+```cmd
+dotnet add package ClientSamgk
 ```
 
-## Преподаватели
-### Получение списка преподавателей
-```csharp
-var teachers = await api.Accounts.GetTeachersAsync();
-```
-### Получение объекта преподавателя
-```csharp
-var obj = await api.Accounts.GetTeacherAsync("кулагин алексей александрович");
-```
+Больше информации доступно на странице NuGet: [ClientSamgk](https://www.nuget.org/packages/ClientSamgk).
 
-## Группы
-### Получение списка групп
-```csharp
-var groups = await api.Groups.GetGroupsAsync();
-```
+### Установка через nupkg file
 
-### Получение объекта по название группы
-```csharp
-var obj = await api.Groups.GetGroupAsync("ис-23-01");
+1. Скачайте nupkg файл из [последнего релиза](https://github.com/TheCrazyWolf/Api-Client-for-samgk.ru/releases/latest). 
+2. Создайте локальный источник NuGet:
+    * Создайте папку для локального хранения пакетов, например:
+        ```cmd
+        mkdir ./local-packages
+        ```
+    * Добавьте локальный источник в конфигурацию NuGet:
+        ```cmd
+        dotnet nuget add source <полный_путь_к_папке>/local-packages --name LocalPackages
+        ```
+4. Установите пакет в свой проект из локального источника (обязательно укажите версию):
+```cmd
+dotnet add package ClientSamgk --version=3.1.3 --source LocalPackages
 ```
 
-## Кабинеты, корпуса
-### Получение списка кабинетов
-```csharp
-var cabs = await api.Cabs.GetCabsAsync();
-```
+## 📚 Документация
 
-### Получение списка корпусов
-```csharp
-var campuses = await api.Cabs.GetCampusesAsync();
-```
+Подробную информацию о функционале библиотеки, API и примеры использования вы можете найти в [документации](https://clientsamgk-docs.vercel.app).
 
-### Получение списка кабинетов по корпусу
-```csharp
-var cabs = await api.Cabs.GetCabsFromCampusAsync("5");
-```
+## 📥 Участие в проекте
 
-## Расписание
+Есть **интересные идеи** или хотите **поделиться** своим вкладом? Узнайте больше о том, как принять участие в проекте, в разделе [Contributing](CONTRIBUTING.md). 
 
-### Построение запроса
-Метод GetScheduleAsync принимает ScheduleQuery. Для выполнения запроса 
-необходимо собрать свой запрос используя группу методов, например:
+Ваши предложения и улучшения помогут сделать проект лучше!
 
-### Стандартный запрос
-Получить расписание за конкретный день, указать перечисление ScheduleSearchType
-```csharp
-DateOnly dateOnly = new DateOnly(2024,09,16);
-var query = new ScheduleQuery()
-    .WithDate(dateOnly)
-    .WithSearchType(ScheduleSearchType.Employee, 2294);
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
-```
+## Лицензия
 
-### Запрос с объектами реализующих интерфейсы
-такие как IResultOutCab, IResultOutGroup, IResultOutIdentity
-Пример:
-```csharp
-var teachers = await api.Accounts.GetTeachersAsync();
-DateOnly dateOnly = new DateOnly(2024,09,16);
-var query = new ScheduleQuery()
-    .WithDate(dateOnly)
-    .WithEmployee(teachers.First());
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
-```
+Copyright © 2023-2025 TheCrazyWolf
 
-### Получение расписания используя диапазон дат
-Используйте метод WithDateRange для передачи диапазон дат по расписанию.
-Обратите внимание, что по умолчанию настроена задержка в 700 мс.
-Вы можете настраивать нужную вам задержку с помощью метода WithDelay
-Пример:
-```csharp
-var teachers = await api.Accounts.GetTeachersAsync();
-DateOnly start = new DateOnly(2024,09,16);
-DateOnly end = new DateOnly(2024,09,17);
-var query = new ScheduleQuery()
-    .WithDateRange(start, end)
-    .WithDelay(500)
-    .WithEmployee(teachers.First());
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
-```
-
-### Получение расписания за весь день по группам, преподавателю или кабинету
-
-Пример:
-```csharp
-var query = new ScheduleQuery()
-    .WithDate(dateOnlyStart)
-    .WithAllForSearchType(ScheduleSearchType.Employee)
-    .WithDelay(1000);
-var resultScheduleCollectionFromDateAll = await api.Schedule.GetScheduleAsync(query);
-```
-
-
-### Установка расписания звонков/ скрытие разговоров о важном/мои горизонты
-Методы WithShowImportant, WithShowRussianHorizon принимают параметры на скрытие и показ 
-внеурочный занятий.
-
-Метод WithScheduleCallType принимает перечисление типа ScheduleCallType, чтобы
-получить нужное расписание звонков
-```csharp
-var groups = await api.Groups.GetGroupsAsync();
-DateOnly dateOnly = new DateOnly(2024,09,16);
-var query = new ScheduleQuery()
-    .WithDate(dateOnly)
-    .WithShowImportant(true)
-    .WithShowRussianHorizon(false)
-    .WithScheduleCallType(ScheduleCallType.StandartWithShift)
-    .WithGroup(groups.First());
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
-```
-
-### Отказ от кеширования расписания
-Метод GetScheduleAsync по умолчанию кеширует расписание в область оперативной памяти с разными сроком жизни, 
-для того чтобы не обращаться к серверам повторно. По умолчанию, прошедшие даты кешируется с длительностью 1 месяц, сегодняшние
-и последующие в 5-10 минут. Кеширование производится в рамках одного экземпляра класса.
-
-Отказ от кеширования производится методом WithOverrideCache
-```csharp
-var groups = await api.Groups.GetGroupsAsync();
-DateOnly dateOnly = new DateOnly(2024,09,16);
-var query = new ScheduleQuery()
-    .WithDate(dateOnly)
-    .WithOverrideCache(true)
-    .WithGroup(groups.First());
-var scheduleFromDate = await api.Schedule.GetScheduleAsync(query);
-```
-
-
-### Принудительная очистка кеша или устаревших данных
-По умолчанию при вызове любых методов из библиотеки запускается процесс очистки
-устаревших данных, но вы можете сделать это вручную или очистить полностью все данные
-```csharp
-// Очистка устаревших данных
-await api.Cache.ClearIfOutDate();
-
-// Очистка всего
-api.Cache.Clear();
-```
+[![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](https://www.tldrlegal.com/license/mit-license)
