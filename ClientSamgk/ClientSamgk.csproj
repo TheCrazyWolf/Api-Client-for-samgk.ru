@@ -26,6 +26,7 @@
     <ItemGroup>
       <ProjectReference PrivateAssets="all" Include="..\ClientSamgk.Models.Api.Mfc\ClientSamgk.Models.Api.Mfc.csproj" />
       <ProjectReference PrivateAssets="all" Include="..\ClientSamgk.Models.Api\ClientSamgk.Models.Api.csproj" />
+      <ProjectReference Include="..\ClientSamgk.Models.Params\ClientSamgk.Models.Params.csproj" />
     </ItemGroup>
 
     <PropertyGroup>
