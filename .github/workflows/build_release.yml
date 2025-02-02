@@ -25,7 +25,7 @@ jobs:
       - name: Pack NuGet package
         run: dotnet pack --configuration Release --output ./output
       - name: Upload NuGet package as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ClientSamgk_${{ github.ref_name }}
           path: ./output/*.nupkg
