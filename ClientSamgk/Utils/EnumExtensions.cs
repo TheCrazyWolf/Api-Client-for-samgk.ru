@@ -13,4 +13,13 @@ public static class EnumExtensions
             .GetCustomAttribute<DisplayAttribute>()?
             .GetName() ?? value.ToString();
     }
+
+    public static string GetDescription(this Enum value)
+    {
+        return value.GetType()
+            .GetMember(value.ToString())
+            .FirstOrDefault()?
+            .GetCustomAttribute<DisplayAttribute>()?
+            .GetDescription() ?? value.ToString();
+    }
 }
