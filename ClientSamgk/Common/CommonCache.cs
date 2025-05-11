@@ -15,6 +15,7 @@ public class CommonCache
 
     protected IList<LifeTimeMemory<IResultOutScheduleFromDate>> ScheduleCache =
         new List<LifeTimeMemory<IResultOutScheduleFromDate>>();
+    private readonly object _scheduleCacheLock = new();
 
     protected IList<LifeTimeMemory<IResultOutCab>> CabsCache = new List<LifeTimeMemory<IResultOutCab>>();
     protected IList<LifeTimeMemory<IResultOutGroup>> GroupsCache = new List<LifeTimeMemory<IResultOutGroup>>();
@@ -23,9 +24,12 @@ public class CommonCache
     public IResultOutScheduleFromDate? ExtractFromCache(DateOnly date, ScheduleSearchType type, string? id)
     {
         ClearCacheIfOutDate();
-        return ScheduleCache
-            .FirstOrDefault(x => x.Object.Date == date && x.Object.SearchType == type && x.Object.IdValue == id)
-            ?.Object;
+        lock (_scheduleCacheLock)
+        {
+            return ScheduleCache
+                .FirstOrDefault(x => x.Object.Date == date && x.Object.SearchType == type && x.Object.IdValue == id)
+                ?.Object;
+        }
     }
 
     public IResultOutCab? ExtractCabFromCache(string? id)
@@ -54,7 +58,10 @@ public class CommonCache
             DateTimeCanBeDeleted = DateTime.Now.AddMinutes(lifeTimeInMinutes),
             DateTimeAdded = DateTime.Now
         };
-        ScheduleCache.Add(item);
+        lock (_scheduleCacheLock)
+        {
+            ScheduleCache.Add(item);
+        }
     }
 
     protected void SaveToCache(IResultOutIdentity identity, int lifeTimeInMinutes)
@@ -92,9 +99,12 @@ public class CommonCache
 
     protected void ClearCacheIfOutDate()
     {
-        foreach (var item in ScheduleCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
+        lock (_scheduleCacheLock)
         {
-            ScheduleCache.Remove(item);
+            foreach (var item in ScheduleCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
+            {
+                ScheduleCache.Remove(item);
+            }
         }
 
         foreach (var item in CabsCache.Where(x => DateTime.Now >= x.DateTimeCanBeDeleted).ToList())
