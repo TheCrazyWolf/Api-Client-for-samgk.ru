@@ -9,6 +9,7 @@ builder.Services.AddClientSamgk();
     b.LifeTimeObjectsForCommon = 20;
 });*/
 builder.Services.AddHostedService<TestService>();
+builder.Services.AddHostedService<TestDirectService>();
 
 var host = builder.Build();
 await host.RunAsync();
