@@ -22,6 +22,20 @@ public class ClientSamgkApi : IClientSamgkApi
     public ICabController Cabs { get; protected set; }
     public IMemoryCacheController Cache { get; protected set; }
 
+    protected ClientSamgkApi(
+        ISсheduleController schedule,
+        IIdentityController accounts,
+        IGroupController groups,
+        ICabController cabs,
+        IMemoryCacheController cache)
+    {
+        Schedule = schedule;
+        Accounts = accounts;
+        Groups = groups;
+        Cabs = cabs;
+        Cache = cache;
+    }
+
     public ClientSamgkApi(ICacheOptions? cacheOptions = null)
     {
         var restClient = new RestClient(new HttpClient());

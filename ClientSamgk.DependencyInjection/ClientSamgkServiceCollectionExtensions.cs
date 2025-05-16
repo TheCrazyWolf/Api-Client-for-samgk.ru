@@ -1,4 +1,5 @@
-﻿using ClientSamgk.Cache;
+﻿using ClientSamgk;
+using ClientSamgk.Cache;
 using ClientSamgk.Cache.Memory;
 using ClientSamgk.Controllers;
 using ClientSamgk.DataFetchers;
@@ -89,6 +90,8 @@ public static class ClientSamgkServiceCollectionExtensions
                     ServiceLifetime.Scoped)
             );
         }
+
+        serviceCollection.AddScoped<ClientSamgkApi>();
 
         return serviceCollection;
     }
