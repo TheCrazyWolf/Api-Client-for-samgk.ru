@@ -1,18 +1,28 @@
-using ClientSamgk.Common;
+using ClientSamgk.Cache;
 using ClientSamgk.Interfaces.Client;
 using ClientSamgk.Models;
 using ClientSamgk.Models.Api.Implementation.Education;
 using ClientSamgk.Models.Api.Implementation.Schedule;
 using ClientSamgk.Models.Api.Interfaces.Cabs;
+using ClientSamgk.Models.Api.Interfaces.Groups;
 using ClientSamgk.Models.Api.Interfaces.Identity;
 using ClientSamgk.Models.Api.Interfaces.Schedule;
 using ClientSamgk.Models.Api.Mfc.Shedules;
 using ClientSamgk.Models.Enums.Schedule;
+using ClientSamgk.Models.Params.Interfaces.Cache;
 using ClientSamgk.Utils;
+using RestSharp;
 
 namespace ClientSamgk.Controllers;
 
-public class ScheduleController : CommonSamgkController, ISсheduleController
+public class ScheduleController(
+    CacheManager<IResultOutIdentity> teachersCacheManager,
+    CacheManager<IResultOutGroup> groupsCacheManager,
+    CacheManager<IResultOutCab> cabsCacheManager,
+    ICache<IResultOutScheduleFromDate> schedulesCache,
+    ICacheOptions cacheOptions,
+    RestClient client
+) : ISсheduleController
 {
     private readonly Uri _scheduleApiEndpointUri = new("https://mfc.samgk.ru/schedule/api/get-rasp");
 
@@ -25,7 +35,11 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         CancellationToken cToken = default)
     {
         ArgumentNullException.ThrowIfNull(query);
-        await UpdateIfCacheIsOutdated(cToken).ConfigureAwait(false);
+
+        await teachersCacheManager.EnsureCacheAsync(cToken).ConfigureAwait(false);
+        await groupsCacheManager.EnsureCacheAsync(cToken).ConfigureAwait(false);
+        await cabsCacheManager.EnsureCacheAsync(cToken).ConfigureAwait(false);
+        schedulesCache.CleanupCache();
 
         var dates = query.StartDate.HasValue && query.EndDate.HasValue
             ? DateTimeUtils.GetDateRange(query.StartDate.Value, query.EndDate.Value)
@@ -36,9 +50,10 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
         var ids = query.WithAllForType
             ? query.SearchType switch
             {
-                ScheduleSearchType.Employee => IdentityCache.Select(x => x.Object.Id.ToString()).AsEnumerable(),
-                ScheduleSearchType.Group => GroupsCache.Select(x => x.Object.Id.ToString()).ToList(),
-                ScheduleSearchType.Cab => CabsCache.Select(x => x.Object.Adress).ToList(),
+                ScheduleSearchType.Employee => teachersCacheManager.Data.Select(x => x.Object.Id.ToString())
+                    .AsEnumerable(),
+                ScheduleSearchType.Group => groupsCacheManager.Data.Select(x => x.Object.Id.ToString()).ToList(),
+                ScheduleSearchType.Cab => cabsCacheManager.Data.Select(x => x.Object.Adress).ToList(),
                 _ => throw new ArgumentOutOfRangeException(nameof(query.SearchType))
             }
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -58,18 +73,22 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     {
         if (!query.OverrideCache)
         {
-            var cachedItem = ExtractFromCache(date, query.SearchType, id);
+            //var cachedItem = ExtractFromCache(date, query.SearchType, id);
+            var cachedItem = schedulesCache
+                .ExtractFromCache(x => x.Date == date && x.SearchType == query.SearchType && x.IdValue == id);
             if (cachedItem != null) return cachedItem;
         }
 
         var url = GetScheduleUrl(query.SearchType, date, id);
-        var result = await SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url, cToken: cToken)
+        var result = await client
+            .SendRequest<Dictionary<string, Dictionary<string, List<ScheduleItem>>>>(url, cToken: cToken)
             .ConfigureAwait(false);
         var newSchedule = ParseScheduleResult(date, result, query);
         if (!query.OverrideCache)
-            SaveToCache(newSchedule, newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date)
-                ? DefaultLifeTimeInMinutesLong
-                : DefaultLifeTimeInMinutesShort);
+            schedulesCache.SaveToCache(newSchedule,
+                newSchedule.Date < DateOnly.FromDateTime(DateTime.Now.Date)
+                    ? cacheOptions.LifeTimeObjectsForLong
+                    : cacheOptions.LifeTimeObjectsForShort);
 
         if (query.Delay > 0)
             await Task.Delay(query.Delay, cToken).ConfigureAwait(false);
@@ -125,7 +144,7 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
                             Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
                             IsAttestation = scheduleItem.Zachet == 1,
                         },
-                        EducationGroup = ExtractGroupFromCache(scheduleItem.Group)
+                        EducationGroup = groupsCacheManager.Cache.ExtractFromCache(x => x.Id == scheduleItem.Group)
                     };
 
                     AddTeachersToLesson(scheduleItem, lesson);
@@ -143,7 +162,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
     private void AddTeachersToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
     {
         foreach (var itemTeacher in scheduleItem.Teacher
-                     .Select(idTeacher => IdentityCache.Select(x => x.Object).FirstOrDefault(x => x.Id == idTeacher))
+                     .Select(idTeacher =>
+                         teachersCacheManager.Data.Select(x => x.Object).FirstOrDefault(x => x.Id == idTeacher))
                      .OfType<IResultOutIdentity>())
         {
             lesson.Identity.Add(itemTeacher);
@@ -152,8 +172,8 @@ public class ScheduleController : CommonSamgkController, ISсheduleController
 
     private void AddCabsToLesson(ScheduleItem scheduleItem, ResultOutResultOutLesson lesson)
     {
-        foreach (var itemCab in scheduleItem.Cab
-                     .Select(idCab => CabsCache.Select(x => x.Object).FirstOrDefault(x => x.Adress == idCab))
+        foreach (var itemCab in scheduleItem.Cab.Select(idCab =>
+                         cabsCacheManager.Data.Select(x => x.Object).FirstOrDefault(x => x.Adress == idCab))
                      .OfType<IResultOutCab>())
         {
             lesson.Cabs.Add(itemCab);
