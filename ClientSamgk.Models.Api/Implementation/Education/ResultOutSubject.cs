@@ -8,5 +8,6 @@ public class ResultOutSubject : IResultOutSubjectItem
     public string Index { get; set; } = string.Empty;
     public string SubjectName { get; set; } = string.Empty;
     public string FullSubjectName => $"{Index} {SubjectName}";
-    public bool IsAttestation { get; set; } 
+    public bool IsAttestation { get; set; }
+    public bool IsExam { get; set; }
 }

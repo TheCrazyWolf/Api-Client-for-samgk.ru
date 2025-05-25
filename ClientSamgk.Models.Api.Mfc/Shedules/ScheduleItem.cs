@@ -19,4 +19,5 @@ public class ScheduleItem
     [JsonProperty("facts_teacher")] public List<object> FactsTeacher { get; set; }
     [JsonProperty("invisible")] public int Invisible { get; set; }
     [JsonProperty("zachet")] public int Zachet { get; set; }
+    [JsonProperty("exam")] public int Exam { get; set; }
 }

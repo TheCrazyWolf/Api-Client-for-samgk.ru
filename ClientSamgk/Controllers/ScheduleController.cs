@@ -143,6 +143,7 @@ public class ScheduleController(
                             SubjectName = scheduleItem.DisciplineName,
                             Index = $"{scheduleItem.DisciplineInfo.IndexName}.{scheduleItem.DisciplineInfo.IndexNum}",
                             IsAttestation = scheduleItem.Zachet == 1,
+                            IsExam = scheduleItem.Exam == 1
                         },
                         EducationGroup = groupsCacheManager.Cache.ExtractFromCache(x => x.Id == scheduleItem.Group)
                     };

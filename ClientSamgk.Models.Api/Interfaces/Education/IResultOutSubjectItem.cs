@@ -25,4 +25,9 @@ public interface IResultOutSubjectItem
     /// Зачёт или нет
     /// </summary>
     public bool IsAttestation { get; set; }
+    
+    /// <summary>
+    /// Экзамен или нет
+    /// </summary>
+    public bool IsExam { get; set; }
 }
