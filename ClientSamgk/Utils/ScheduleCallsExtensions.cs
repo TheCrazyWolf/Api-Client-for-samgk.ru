@@ -66,27 +66,27 @@ public static class ScheduleCallsExtensions
         {
             1 =>
             [
-                new DurationLessonDetails(TimeOnly.Parse("08:25"), TimeOnly.Parse("09:10")),
-                new DurationLessonDetails(TimeOnly.Parse("09:15"), TimeOnly.Parse("10:00"))
+                new DurationLessonDetails(TimeOnly.Parse("08:00"), TimeOnly.Parse("08:45")),
+                new DurationLessonDetails(TimeOnly.Parse("08:55"), TimeOnly.Parse("09:40"))
             ],
             2 =>
             [
-                new DurationLessonDetails(TimeOnly.Parse("10:10"), TimeOnly.Parse("10:55")),
-                new DurationLessonDetails(TimeOnly.Parse("11:00"), TimeOnly.Parse("11:45"))
+                new DurationLessonDetails(TimeOnly.Parse("09:50"), TimeOnly.Parse("10:35")),
+                new DurationLessonDetails(TimeOnly.Parse("10:45"), TimeOnly.Parse("11:30"))
             ],
             3 =>
             [
-                new DurationLessonDetails(TimeOnly.Parse("12:15"), TimeOnly.Parse("13:00")),
-                new DurationLessonDetails(TimeOnly.Parse("13:05"), TimeOnly.Parse("13:50"))
+                new DurationLessonDetails(TimeOnly.Parse("12:00"), TimeOnly.Parse("12:45")),
+                new DurationLessonDetails(TimeOnly.Parse("12:55"), TimeOnly.Parse("13:40"))
             ],
             4 =>
             [
-                new DurationLessonDetails(TimeOnly.Parse("14:00"), TimeOnly.Parse("14:45")),
-                new DurationLessonDetails(TimeOnly.Parse("14:50"), TimeOnly.Parse("15:35"))
+                new DurationLessonDetails(TimeOnly.Parse("13:50"), TimeOnly.Parse("14:35")),
+                new DurationLessonDetails(TimeOnly.Parse("14:45"), TimeOnly.Parse("15:30"))
             ],
             5 =>
             [
-                new DurationLessonDetails(TimeOnly.Parse("15:45"), TimeOnly.Parse("16:30")),
+                new DurationLessonDetails(TimeOnly.Parse("15:40"), TimeOnly.Parse("16:25")),
                 new DurationLessonDetails(TimeOnly.Parse("16:35"), TimeOnly.Parse("17:20"))
             ],
             6 =>
