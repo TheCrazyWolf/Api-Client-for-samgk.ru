@@ -17,8 +17,8 @@ public static class ScheduleCallsExtensions
             ScheduleCallType.StandartWithShift => GetDurationLessonDetailsStandartWithShift(scheduleItem),
             ScheduleCallType.SuperShortWithShift => GetDurationLessonDetailsSuperShortWithShift(scheduleItem),
             ScheduleCallType.ShortWithShift => GetDurationLessonsDetailsShortWithShift(scheduleItem),
-            ScheduleCallType.StandartWith05112025 => GetDurationLessonDetailsStandartWith05112025(scheduleItem),
-            ScheduleCallType.StandartShortWith05112025 => GetDurationLessonDetailsStandartShortWith05112025(scheduleItem),
+            ScheduleCallType.StdWith0511 => GetDurationLessonDetailsStandartWith05112025(scheduleItem),
+            ScheduleCallType.StdrShrtWth0511 => GetDurationLessonDetailsStandartShortWith05112025(scheduleItem),
             _ => GetDurationLessonDetailsStandart(scheduleItem)
         };
     }
