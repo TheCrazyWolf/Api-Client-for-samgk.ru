@@ -114,7 +114,7 @@ public class ScheduleController(
         Dictionary<string, Dictionary<string, List<ScheduleItem>>>? result, ScheduleQuery query)
     {
         var returnableResult = new ResultOutResultOutScheduleFromDate
-            { Date = date, SearchType = query.SearchType, IdValue = query.SearchId! };
+            { Date = date, SearchType = query.SearchType, IdValue = query.SearchId!, CallType = query.ScheduleCallType };
 
         if (result is null || result.Count == 0) return returnableResult;
 
