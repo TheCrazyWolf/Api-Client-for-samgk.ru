@@ -115,14 +115,6 @@ public class ScheduleController(
     {
         var returnableResult = new ResultOutResultOutScheduleFromDate
             { Date = date, SearchType = query.SearchType, IdValue = query.SearchId! };
-        // костыль чтобы по умолчанию включены внеурочка, тогда юзаем сдвигаем расписание
-        if ((query.ShowImportantLessons || query.ShowRussianHorizonLesson) &&
-            query.ScheduleCallType == ScheduleCallType.Standart
-            && (date.DayOfWeek == DayOfWeek.Monday || date.DayOfWeek == DayOfWeek.Thursday
-                && date.Month != 6 && date.Month != 7))
-            returnableResult.CallType = ScheduleCallType.StandartWithShift;
-        else
-            returnableResult.CallType = query.ScheduleCallType;
 
         if (result is null || result.Count == 0) return returnableResult;
 
