@@ -16,7 +16,7 @@ public enum ScheduleCallType
     SuperShortWithShift,
     [Display(Name = "Сокращенное со сдвигом")]
     ShortWithShift,
-    [Display(Name = "ОБЫЧНОЕ_05.11.25")]
+    [Display(Name = "ОБЫЧНОЕ_С_05.11.25")]
     StandartWith05112025,
     [Display(Name = "ОБЫЧНОЕ_СОКР_ЗАН_1ЧАС_БЕЗ_СДВИГА_С_05.11.25")]
     StandartShortWith05112025,
