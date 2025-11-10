@@ -19,11 +19,13 @@ public static class ScheduleCallsExtensions
             ScheduleCallType.ShortWithShift => GetDurationLessonsDetailsShortWithShift(scheduleItem),
             ScheduleCallType.StdWith0511 => GetDurationLessonDetailsStandartWith05112025(scheduleItem),
             ScheduleCallType.StdrShrtWth0511 => GetDurationLessonDetailsStandartShortWith05112025(scheduleItem),
+            ScheduleCallType.StdrShiftWth0511 => GetDurationLessonDetailsStandartShiftWith05112025(scheduleItem),
             _ => GetDurationLessonDetailsStandart(scheduleItem)
         };
     }
 
-    private static IList<DurationLessonDetails> GetDurationLessonDetailsStandartShortWith05112025(ScheduleItem scheduleItem)
+    private static IList<DurationLessonDetails> GetDurationLessonDetailsStandartShortWith05112025(
+        ScheduleItem scheduleItem)
     {
         List<DurationLessonDetails> scheduleCalls = scheduleItem.Pair switch
         {
@@ -61,6 +63,67 @@ public static class ScheduleCallsExtensions
 
         return scheduleCalls;
     }
+
+    private static IList<DurationLessonDetails> GetDurationLessonDetailsStandartShiftWith05112025(
+        ScheduleItem scheduleItem)
+    {
+        List<DurationLessonDetails> scheduleCalls = scheduleItem.Pair switch
+        {
+            1 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("08:55"), TimeOnly.Parse("09:40")),
+                new DurationLessonDetails(TimeOnly.Parse("09:50"), TimeOnly.Parse("10:35"))
+            ],
+            2 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("10:45"), TimeOnly.Parse("11:30")),
+                new DurationLessonDetails(TimeOnly.Parse("12:00"), TimeOnly.Parse("12:45"))
+            ],
+            3 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("12:55"), TimeOnly.Parse("13:40")),
+                new DurationLessonDetails(TimeOnly.Parse("13:50"), TimeOnly.Parse("14:35"))
+            ],
+            4 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("14:45"), TimeOnly.Parse("15:30")),
+                new DurationLessonDetails(TimeOnly.Parse("15:40"), TimeOnly.Parse("16:25"))
+            ],
+            5 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("16:35"), TimeOnly.Parse("17:20")),
+                new DurationLessonDetails(TimeOnly.Parse("17:30"), TimeOnly.Parse("18:15"))
+            ],
+            6 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("18:25"), TimeOnly.Parse("19:10")),
+                new DurationLessonDetails(TimeOnly.Parse("19:20"), TimeOnly.Parse("20:05"))
+            ],
+            7 =>
+            [
+                new DurationLessonDetails(TimeOnly.Parse("20:15"), TimeOnly.Parse("00:00")),
+                new DurationLessonDetails(TimeOnly.Parse("00:00"), TimeOnly.Parse("00:00"))
+            ],
+
+            _ => []
+        };
+
+        if (!scheduleCalls.Any()) return [];
+
+        if (scheduleCalls.Count < 2) return [];
+        switch (scheduleItem.Number)
+        {
+            case 0:
+                return scheduleCalls;
+            case 1:
+                return [scheduleCalls[0]];
+            case 2:
+                return [scheduleCalls[1]];
+        }
+
+        return [];
+    }
+
 
     private static IList<DurationLessonDetails> GetDurationLessonDetailsStandartWith05112025(ScheduleItem scheduleItem)
     {

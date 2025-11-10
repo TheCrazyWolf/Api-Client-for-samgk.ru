@@ -20,4 +20,6 @@ public enum ScheduleCallType
     StdWith0511,
     [Display(Name = "ОБЫЧНОЕ_СОКР_ЗАН_1ЧАС_БЕЗ_СДВИГА_С_05.11.25")]
     StdrShrtWth0511,
+    [Display(Name = "ОБЫЧНОЕ_СДВИГ_С_05.11.25")]
+    StdrShiftWth0511,
 }
